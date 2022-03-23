@@ -1,0 +1,116 @@
+#version 450 core
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
+
+layout(rgba8, binding = 0) uniform image3D voxelMap_diffuse;
+layout(rgba8, binding = 1) uniform image3D voxelMap_normal;
+layout(rgba8, binding = 2) uniform image3D voxelMap_radiance;
+layout( binding = 3)uniform sampler2D _depthTexture;
+uniform mat4 model;
+uniform mat4 lightMat;
+uniform int openNormalBlend;
+struct DirLight
+{
+    vec3 lightDir;
+    vec3 lightPos;
+    vec4 lightColor;
+    
+};
+struct SpotLight 
+{
+    vec3 lightDir;
+    vec3 lightPos;
+    vec4 lightColor;
+    float cutOff;
+    
+};
+struct PointLight
+{
+    vec3 lightDir;
+    vec3 lightPos;
+    vec4 lightColor;
+    vec3 lightproperty;
+    
+};
+
+uniform DirLight dirLight;
+uniform SpotLight spotLight;
+uniform PointLight pointLights[4];
+uniform  mat4 model_inverse_t;
+#define NR_POINT_LIGHTS 4
+#define PI 3.14159274f
+const float EPSILON = 1e-30;
+vec4 voxelPosToWorldPos(vec3 voxelPos)
+{
+  
+   vec4 worldPos=model*vec4(voxelPos,1.0);
+    worldPos/=worldPos.w;
+    return worldPos;
+}
+float shadowCalc(vec4 worldPos,vec3 normal)
+{
+  vec4 projpos=lightMat*worldPos;
+  vec2 lightuv=(projpos/projpos.w).xy*0.5+0.5;
+  float depthz=(projpos/projpos.w).z*0.5+0.5;
+  float bias = max(0.05 * (1.0 - dot(-normal, dirLight.lightDir)), 0.001);
+  //bias=0.05;
+  float depthSample=texture(_depthTexture,lightuv).r;
+  float shadow=depthz-bias<depthSample?1.0:0.0;
+  return shadow;
+}
+
+vec4 CalcBRDF(vec4 worldPos,vec3 normal,vec4 albedo){
+
+ vec3 lightDir=-dirLight.lightDir;
+  vec3 W=normal*normal;
+  float Dx=lightDir.x;
+  float Dy=lightDir.y;
+  float Dz=lightDir.z;
+  Dx=normal.x>0.0?max(Dx,0):max(-Dx,0);
+  Dy=normal.y>0.0?max(Dy,0):max(-Dy,0);
+  Dz=normal.z>0.0?max(Dz,0):max(-Dz,0);
+
+  float brdf=Dx*W.x+Dy*W.y+Dz*W.z;
+  if(openNormalBlend==0)
+  return dot(normal,lightDir)*albedo;
+  else
+    return brdf*albedo;
+}
+vec4 CalcDirLight(vec4 worldPos,vec3 normal,vec4 albedo,float shadow){
+
+ if(shadow==0.0)
+ return vec4(0.0);
+ else
+  return vec4(1.0)*CalcBRDF(worldPos,normal,albedo);
+
+
+
+}
+void main() 
+{
+
+  // get index in global work group i.e x,y position
+  ivec3 id = ivec3(gl_GlobalInvocationID.xyz);
+  
+    vec4 albedo=imageLoad(voxelMap_diffuse,id);
+    //vec4 depth=texture(_depthTexture,vec2(0.5,0.5));
+    vec3 normal=imageLoad(voxelMap_normal,id).xyz;
+    normal=normalize(normal*2.0-1.0);
+    
+    vec4 shadowworldPos=voxelPosToWorldPos(vec3(id)+normal*0.5);
+    vec4 worldPos=voxelPosToWorldPos(vec3(id));
+    
+    float shadow=shadowCalc(shadowworldPos,normal);
+    vec4 dirlightColor=CalcDirLight(worldPos,normal,albedo,shadow);
+    if(albedo.a<EPSILON)
+      return;
+    
+    imageStore(voxelMap_radiance,id.xyz, vec4(dirlightColor.xyz,1.0));
+  
+    
+    
+  //
+  // interesting stuff happens here later
+  //
+  
+  // result to a specific pixel in the image
+}

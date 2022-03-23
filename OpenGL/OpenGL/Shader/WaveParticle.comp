@@ -1,0 +1,65 @@
+#version 450 core
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D height_out_tex;
+layout(rgba32f, binding = 1) uniform image2D height_in_tex;
+layout(rgba32f, binding = 2) uniform image2D speed_in_tex;
+#define PI 3.14159274f
+#define G 9.81f
+uniform int N=0;
+uniform int Input_N=0;
+uniform vec3 limit;
+uniform float Scale=0.0f;
+vec2 complexMultiply(vec2 c1, vec2 c2)
+{
+    return vec2(c1.x * c2.x - c1.y * c2.y,
+    c1.x * c2.y + c1.y * c2.x);
+}
+void main() {
+
+  // get index in global work group i.e x,y position
+  ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+   
+
+        float d = 0;
+      vec2 dxy=vec2(0,0);
+      for(int i=0;i<N;i++)
+      {
+        
+          vec4 particle =imageLoad(height_in_tex,ivec2(int(i%Input_N),i/float(Input_N))).xyzw;
+          vec2 pos=particle.xy;
+          float a0=particle.z;
+          float r=particle.w;
+          float temp = (sqrt((id.x - pos.x) * (id.x - pos.x) + (id.y - pos.y) * (id.y - pos.y))) / r;         
+          float c=0;
+          if (temp / 2.0f < 0.5) {
+					c = 1;
+				}
+        else if(temp / 2.0f == 0.5)
+         c=0.5f;
+         else
+         continue;
+        vec2 dir=normalize(imageLoad(speed_in_tex,ivec2(int(i%Input_N),i/float(Input_N))).xy);
+        float di= (a0 / 2.0f) * (cos((PI * temp)) + 1.0) * c * 1.0;
+          d +=di;
+          float u=dot(dir,  (id.xy-pos.xy)); 
+          float udividedr=u/r;
+          float c1=0;
+          if(abs(udividedr/2.0f)<0.5f)
+          c1=1;
+          else if(abs(udividedr/2.0f)==0.5f)
+          c1=0.5f;
+        
+          vec2 L=-Scale*sin(PI*udividedr)*c1*dir;
+          dxy=L*min(abs(udividedr)*di,1.0)+dxy;
+
+      }
+      
+    
+     imageStore(height_out_tex,id.xy,vec4(dxy.x,d,dxy.y,0.0));
+  //
+  // interesting stuff happens here later
+  //
+  
+  // result to a specific pixel in the image
+  
+}

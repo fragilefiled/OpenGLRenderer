@@ -1,0 +1,350 @@
+﻿  Camera.cpp
+  CubeMap.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+  Execute.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mymath.h(12,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.h(118,31): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(86,23): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(87,25): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(105,23): warning C4244: “-=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(143,24): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(294,47): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+  FBO.cpp
+  Light.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+  Mesh.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(5,46): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(50,40): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(61,74): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(62,81): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(69,65): warning C4267: “参数”: 从“size_t”转换到“GLsizei”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(74,3): warning C4267: “参数”: 从“size_t”转换到“GLsizei”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(137,83): warning C4312: “类型强制转换”: 从“GLsizei”转换到更大的“void *”
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(139,87): warning C4312: “类型强制转换”: 从“GLsizei”转换到更大的“void *”
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mesh.cpp(141,88): warning C4312: “类型强制转换”: 从“GLsizei”转换到更大的“void *”
+  Model.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Model.cpp(28,23): warning C4018: “<”: 有符号/无符号不匹配
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Model.cpp(104,23): warning C4018: “<”: 有符号/无符号不匹配
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Model.cpp(129,23): warning C4018: “<”: 有符号/无符号不匹配
+  PostEffect.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+  RenderPipeLine.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+  ShaderCompile.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+  Texture.cpp
+  TextureImage.cpp
+  UBO.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+  WaveProcess.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(256,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(273,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(237,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(305,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(307,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(313,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mymath.h(12,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.h(118,31): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(60,59): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(60,44): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(86,31): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(91,46): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(91,37): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(93,48): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(93,39): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(95,36): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(116,38): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(191,46): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(193,47): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(243,31): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(245,30): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(247,30): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(263,23): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(264,24): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(339,22): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(340,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(371,22): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(372,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(513,45): warning C4244: “参数”: 从“float”转换到“const unsigned __int64”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(515,46): warning C4244: “参数”: 从“float”转换到“const unsigned __int64”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(534,91): warning C4244: “=”: 从“double”转换到“_Ty”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(535,91): warning C4244: “=”: 从“double”转换到“_Ty”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(610,40): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(627,41): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(643,62): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(644,51): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+  Wave_Particle_Pool.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mymath.h(12,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Wave_Particle_Pool.cpp(73,17): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Wave_Particle_Pool.cpp(83,26): warning C4244: “=”: 从“int”转换到“T”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Wave_Particle_Pool.cpp(91,26): warning C4244: “=”: 从“int”转换到“T”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Wave_Particle_Pool.cpp(186,67): warning C4305: “初始化”: 从“double”到“float”截断
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Wave_Particle_Pool.cpp(218,37): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Wave_Particle_Pool.cpp(219,41): warning C4267: “参数”: 从“size_t”转换到“_Ty”，可能丢失数据
+          with
+          [
+              _Ty=int
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Wave_Particle_Pool.cpp(220,29): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
+LINK : warning LNK4098: 默认库“MSVCRTD”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+  正在生成代码
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Wave_Particle_Pool.cpp(231): warning C4715: “Wave_Particle_Pool::GetPosInParticles”: 不是所有的控件路径都返回值
+  991 of 2916 functions (34.0%) were compiled, the rest were copied from previous compilation.
+    72 functions were new in current compilation
+    91 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  OpenGL.vcxproj -> E:\AboutLearning\OpenGL\OpenGL\x64\Release\OpenGL.exe

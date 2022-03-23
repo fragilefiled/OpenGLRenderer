@@ -1,0 +1,25 @@
+#version 450 core
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D x_out_tex;
+layout(rgba32f, binding = 1) uniform image2D y_out_tex;
+layout(rgba32f, binding = 2) uniform image2D height_in_tex;
+#define PI 3.14159274f
+#define G 9.81f
+uniform int N=512;
+vec2 complexMultiply(vec2 c1, vec2 c2);
+void main() {
+    ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+    vec2 k = vec2(2.0f * PI * id.x / N - PI, 2.0f * PI * id.y / N - PI); //放缩到0-N上
+    k /= max(0.001f, length(k));
+    vec2 HTilde=imageLoad(height_in_tex,id).xy;
+    vec2 KxHTilde = complexMultiply(vec2(0, -k.x), HTilde);
+    vec2 KzHTilde = complexMultiply(vec2(0, -k.y), HTilde);
+    imageStore(x_out_tex,id.xy,vec4( KxHTilde,0.0,0.0));
+    imageStore(y_out_tex,id.xy,vec4( KzHTilde ,0.0,0.0));
+}
+
+vec2 complexMultiply(vec2 c1, vec2 c2)
+{
+    return vec2(c1.x * c2.x - c1.y * c2.y,
+    c1.x * c2.y + c1.y * c2.x);
+}

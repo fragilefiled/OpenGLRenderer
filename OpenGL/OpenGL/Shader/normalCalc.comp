@@ -1,0 +1,57 @@
+#version 450 core
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D normal_tex;
+layout(rgba32f, binding = 1) uniform image2D bubble_tex;
+layout(rgba32f, binding = 2) uniform image2D tangent_tex;
+layout(rgba32f, binding = 3) uniform image2D biotangent_tex;
+layout(rgba32f, binding = 4) uniform image2D bubble_tex1;
+layout(rgba32f, binding = 5) uniform image2D displace_in_tex;
+#define PI 3.14159274f
+#define G 9.81f
+uniform int N=512;
+uniform float BubblesThreshold;
+uniform float BubblesScale;
+uniform float jacobScale;
+uniform float jacobScaleEdge;
+uniform float resolutioninv;//网格密度
+vec2 complexMultiply(vec2 c1, vec2 c2);
+void main() {
+    ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+      vec2 x0 = imageLoad(displace_in_tex,id).xy;
+        vec3 x1 = imageLoad(displace_in_tex,id+ivec2(1,0)).xyz;
+          vec3 x2 = imageLoad(displace_in_tex,id+ivec2(-1,0)).xyz;
+            vec3 z1 = imageLoad(displace_in_tex,id+ivec2(0,1)).xyz;
+              vec3 z2 = imageLoad(displace_in_tex,id+ivec2(0,-1)).xyz;
+            vec3 x12=vec3(0,x1.y-x2.y,0)+vec3(resolutioninv*2+x1.x-x2.x,0,0);
+             vec3 z12=vec3(0,z1.y-z2.y,0)+vec3(0,0,resolutioninv*2+z1.z-z2.z);
+           
+      
+
+           vec3  normal=normalize((cross(z12,x12)));
+           vec3 ddx=(x1-x2)*jacobScale;
+           vec3 ddz=(z1-z2)*jacobScale;
+           float jacobian = (1.0f + ddx.x) * (1.0f + ddz.z) - ddx.z * ddz.x;
+           jacobian=clamp((max(0, BubblesThreshold - clamp((jacobian),0.0,1.0)) * BubblesScale),0.0,1.0);
+          imageStore(bubble_tex,id.xy, vec4(jacobian,jacobian,jacobian, 0));
+        imageStore(normal_tex,id.xy, vec4(2.0f*normal-vec3(1.0,1.0,1.0), 0));
+        imageStore(tangent_tex,id.xy, vec4(normalize(x12), 0));
+        imageStore(biotangent_tex,id.xy, vec4(normalize(z12), 0));
+
+            //   vec3 x3 = imageLoad(displace_in_tex,id+ivec2(2,0)).xyz;
+            //     vec3 x4 = imageLoad(displace_in_tex,id+ivec2(-2,0)).xyz;
+            //     vec3 z3 = imageLoad(displace_in_tex,id+ivec2(0,2)).xyz;
+            //     vec3 z4 = imageLoad(displace_in_tex,id+ivec2(0,-2)).xyz;
+            //  ddx=(x3-x4)*jacobScale;
+            //  ddz=(z3-z4)*jacobScale;
+            ddx=(x1-x2)*jacobScale*jacobScaleEdge;
+             ddz=(z1-z2)*jacobScale*jacobScaleEdge;
+           jacobian = (1.0f + ddx.x) * (1.0f + ddz.z) - ddx.z * ddz.x;
+           jacobian=clamp((max(0, BubblesThreshold - clamp((jacobian),0.0,1.0)) * BubblesScale),0.0,1.0);
+           imageStore(bubble_tex1,id.xy, vec4(jacobian,jacobian,jacobian, 0));
+}
+
+vec2 complexMultiply(vec2 c1, vec2 c2)
+{
+    return vec2(c1.x * c2.x - c1.y * c2.y,
+    c1.x * c2.y + c1.y * c2.x);
+}

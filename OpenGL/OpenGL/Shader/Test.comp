@@ -1,0 +1,60 @@
+#version 450 core
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D out_tex;
+layout(rgba32f, binding = 1) uniform image2D in_tex;
+#define PI 3.14159274f
+#define G 9.81f
+float test1;
+uint wangHash(uint seed);
+float rand();
+vec2 gaussian(vec2 id);
+uint rngState;           //随机
+uniform int N=0;
+void main() {
+
+  // get index in global work group i.e x,y position
+  ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+    vec2 g = gaussian(id.xy);
+
+  
+  //
+  // interesting stuff happens here later
+  //
+  
+  // output to a specific pixel in the image
+  imageStore(out_tex,id.xy, vec4(g, 0, 0));
+}
+vec2 gaussian(vec2 id)
+{
+    //均匀分布随机数
+    rngState = uint(wangHash(uint(id.y * N + id.x)));
+    float x1 = rand();
+    float x2 = rand();
+
+    x1 = max(1e-6f, x1);
+    x2 = max(1e-6f, x2);
+    //计算两个相互独立的高斯随机数
+    float g1 = sqrt(-2.0f * log(x1)) * cos(2.0f * PI * x2);
+    float g2 = sqrt(-2.0f * log(x1)) * sin(2.0f * PI * x2);
+
+    return vec2(g1, g2);
+}
+//随机种子
+uint wangHash(uint seed)
+{
+    seed = (seed ^ 61) ^(seed >> 16);
+    seed *= 9;
+    seed = seed ^(seed >> 4);
+    seed *= 0x27d4eb2d;
+    seed = seed ^(seed >> 15);
+    return seed;
+}
+//计算均匀分布随机数[0,1)
+float rand()
+{
+    // Xorshift算法
+    rngState ^= (rngState << 13);
+    rngState ^= (rngState >> 17);
+    rngState ^= (rngState << 5);
+    return rngState / 4294967296.0f;;
+}

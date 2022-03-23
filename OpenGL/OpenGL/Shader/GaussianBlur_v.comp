@@ -1,0 +1,19 @@
+#version 450 core
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D out_tex;
+layout(rgba32f, binding = 1) uniform image2D in_tex;
+
+void main() {
+
+  // get index in global work group i.e x,y position
+  ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+    float a[5]={0.0545,0.2442,0.4026,0.2442,0.0545};
+    
+    vec4 sum=a[2]*imageLoad(in_tex,id).xyzw+a[0]*imageLoad(in_tex,id+ivec2(0,-2)).xyzw+a[1]*imageLoad(in_tex,id+ivec2(0,-1)).xyzw+a[3]*imageLoad(in_tex,id+ivec2(0,1)).xyzw+a[4]*imageLoad(in_tex,id+ivec2(0,2)).xyzw;
+      imageStore(out_tex,id.xy, sum);
+  //
+  // interesting stuff happens here later
+  //
+  
+  // result to a specific pixel in the image
+}

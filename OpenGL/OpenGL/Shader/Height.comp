@@ -1,0 +1,95 @@
+#version 450 core
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D out_tex;
+layout(rgba32f, binding = 1) uniform image2D in_tex;
+#define PI 3.14159274f
+#define G 9.81f
+uniform int N=-100;
+uniform float A=10.0f;				//phillips谱参数，影响波浪高度
+uniform vec4 WindAndSeed=vec4(3.0f,3.0f,3.0f,3.0f);		//风和随机种子 xy为风, zw为两个随机种子
+uniform float Time=0.1f;				//时间
+float phillips(vec2 k);
+float DonelanBannerDirectionalSpreading(vec2 k);
+float dispersion(vec2 k);
+float atan2(in float y, in float x)
+{
+    bool s = (abs(x) > abs(y));
+    return mix(PI/2.0 - atan(x,y), atan(y,x), s);
+}
+vec2 complexMultiply(vec2 c1, vec2 c2);
+void main() {
+      // get index in global work group i.e x,y position
+  ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+    vec2 k = vec2(2.0f * PI * id.x / N - PI, 2.0f * PI * id.y / N - PI);
+    vec2 gaussian =imageLoad(in_tex,id).xy;
+  
+  //
+  // interesting stuff happens here later
+  //
+   vec2 hTilde0 = gaussian * sqrt(abs(phillips(k) * DonelanBannerDirectionalSpreading(k)) / 2.0f);
+    vec2 hTilde0Conj = gaussian * sqrt(abs(phillips(-k) * DonelanBannerDirectionalSpreading(-k)) / 2.0f);
+    hTilde0Conj.y *= -1.0f;
+
+    float omegat = dispersion(k) * Time;
+    float c = cos(omegat);
+    float s = sin(omegat);
+    //omega
+    vec2 h1 = complexMultiply(hTilde0, vec2(c, s));
+    vec2 h2 = complexMultiply(hTilde0Conj, vec2(c, -s));
+
+    vec2 HTilde = h1 + h2;
+
+  // output to a specific pixel in the image
+  imageStore(out_tex,id.xy,vec4( HTilde,0.0,0.0));
+}
+float phillips(vec2 k)
+{
+    float kLength = length(k);
+    kLength = max(0.001f, kLength);
+    float kLength2 = kLength * kLength;
+    float kLength4 = kLength2 * kLength2;
+
+    float windLength = length(WindAndSeed.xy);
+    float  l = windLength * windLength / G;
+    float l2 = l * l;
+
+    float damping = 0.001f;
+    float L2 = l2 * damping * damping;
+
+    //phillips谱
+    return  A * exp(-1.0f / (kLength2 * l2)) / kLength4 * exp(-kLength2 * L2);
+}
+
+//Donelan-Banner方向拓展
+float DonelanBannerDirectionalSpreading(vec2 k)
+{
+    float betaS;
+    float omegap = 0.855f * G / length(WindAndSeed.xy);
+    float ratio = dispersion(k) / omegap;
+
+    if (ratio < 0.95f)
+    {
+        betaS = 2.61f * pow(ratio, 1.3f);
+    }
+    if(ratio >= 0.95f && ratio < 1.6f)
+    {
+        betaS = 2.28f * pow(ratio, -1.3f);
+    }
+    if(ratio > 1.6f)
+    {
+        float epsilon = -0.4f + 0.8393f * exp(-0.567f * log(ratio * ratio));
+        betaS = pow(10, epsilon);
+    }
+    float theta = atan(k.y, k.x) - atan(WindAndSeed.y, WindAndSeed.x);
+
+    return betaS / max(1e-7f, 2.0f * tanh(betaS * PI) * pow(cosh(betaS * theta), 2));
+}
+float dispersion(vec2 k)
+{
+    return sqrt(G * length(k));
+}
+vec2 complexMultiply(vec2 c1, vec2 c2)
+{
+    return vec2(c1.x * c2.x - c1.y * c2.y,
+    c1.x * c2.y + c1.y * c2.x);
+}
