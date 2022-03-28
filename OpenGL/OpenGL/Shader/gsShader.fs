@@ -13,13 +13,14 @@ in GS_OUT{
 }fs_in;
 layout(r32ui, binding = 0)uniform volatile coherent uimage3D voxelMap_diffuse;
 layout(r32ui, binding = 1)uniform volatile coherent uimage3D voxelMap_normal;
+//layout(r8ui, binding = 2) uniform uimage3D voxelMap_staticMark;
 uniform sampler2D _depthTexture;
 uniform sampler2D texture_Diffuse_0;
 uniform sampler2D texture_Normal_0;
 uniform sampler2D texture_Specular_0;
 uniform float voxelResolution;
 uniform int VoxelNormalBlend;
-
+uniform int staticFlag;
 
 vec4 convRGBA8ToVec4(uint val)
 {
@@ -61,11 +62,13 @@ void imageAtomicRGBA8Avg(layout(r32ui) volatile coherent uimage3D grid, ivec3 co
         vec4 rval = convRGBA8ToVec4(curStoredVal);
         rval.rgb = (rval.rgb * rval.a); // Denormalize
         vec4 curValF = rval + value;    // Add
-        curValF.rgb /= curValF.a;       // Renormalize
+        curValF.rgb /= (curValF.a);       // Renormalize
         newVal = convVec4ToRGBA8(curValF);
 
         ++numIterations;
     }
+    // if(numIterations==255)
+    // imageStore(grid,coords,ivec4(255,255,255,255));
 }
 
 void imageAtomicRGBA8Avg_normal(layout(r32ui) volatile coherent uimage3D grid, ivec3 coords, vec4 value)
@@ -86,7 +89,7 @@ void imageAtomicRGBA8Avg_normal(layout(r32ui) volatile coherent uimage3D grid, i
         rval.rgb = (rval.rgb * rval.a); // Denormalize
         vec3 normal_r=DecodeNormal(rval.rgb/255.0);
         vec3 normal=DecodeNormal(value.rgb/255.0);
-        vec4 curValF = vec4(normalize(normal_r+normal),value.w+rval.w);    // Add
+        vec4 curValF = vec4(normal_r+normal,value.w+rval.w);    // Add
         curValF.rgb=EncodeNormal(curValF.rgb)*255.0;
         curValF.rgb /= curValF.a;       // Renormalize
         newVal = convVec4ToRGBA8(curValF);
@@ -128,12 +131,16 @@ uniform PointLight pointLights[4];
 
 void main(){
 //FragColor=vec4(ourColor,1.0f);
-float halfPixelSize=3.0/voxelResolution;
+
 vec3 projectxy=fs_in.projectPos.xyz;
 vec2 limitZ=fs_in.limitZ;
 vec4 AABB=fs_in.AABB;
 vec3 normal=normalize(fs_in.normal);
 normal=EncodeNormal(normal);
+ivec3 worldTexCoord=ivec3( (fs_in.worldTexCoord.x),(fs_in.worldTexCoord.y),(fs_in.worldTexCoord.z));
+// uint staticFlagRead=imageLoad(voxelMap_staticMark,worldTexCoord).x;
+// if(staticFlagRead==1)
+//     return ;
 //if enable conservative rasterization 
 // if(projectxy.x<=AABB.x||projectxy.y<=AABB.y||projectxy.x>=AABB.z||projectxy.y>=AABB.w||projectxy.z<=limitZ.x||projectxy.z>=limitZ.y)
 //     discard;
@@ -151,11 +158,11 @@ vec4 albedo=texture(texture_Diffuse_0,fs_in.texCoord);
 //imageStore(voxelMap_diffuse,ivec3( floor(fs_in.worldTexCoord.x),floor(fs_in.worldTexCoord.y),floor(fs_in.worldTexCoord.z)),ivec4(128,64,29,1.0));//记得他的normal还有平均的误差
 //imageStore(voxelMap_normal,ivec3(fs_in.worldTexCoord.x,fs_in.worldTexCoord.y,fs_in.worldTexCoord.z),ivec4(normal,1.0));
 }
-ivec3 worldTexCoord=ivec3( (fs_in.worldTexCoord.x),(fs_in.worldTexCoord.y),(fs_in.worldTexCoord.z));
 
 imageAtomicRGBA8Avg(voxelMap_diffuse,worldTexCoord,vec4(albedo.xyz,1.0));
+// imageAtomicRGBA8Avg(voxelMap_diffuse,worldTexCoord,vec4(vec3(fs_in.texCoord,0.0),1.0));
 imageAtomicRGBA8Avg(voxelMap_normal,worldTexCoord,vec4(normal,1.0));
-
+//imageStore(voxelMap_staticMark,worldTexCoord,ivec4(staticFlag,staticFlag,staticFlag,staticFlag));
 // else
 // {
     

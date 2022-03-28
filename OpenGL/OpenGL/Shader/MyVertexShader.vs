@@ -32,7 +32,8 @@ void main()
 	modelPos=lightMat*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
 	vs_out.worldPos =vec3(model * vec4(aPos, 1.0));
 	//vs_out.normal=normalize(mat3(transpose(inverse(model)))*aNormal);
-	vs_out.normal=normalize(mat3(model_inverse_t)*aNormal);
+	vec3 normal=normalize(aNormal);
+	vs_out.normal=normalize(mat4(model_inverse_t)*vec4(normal,0.0)).xyz;
 	lastnormal=projection*view*model*vec4(aPos.x+aNormal.x,aPos.y+aNormal.y,aPos.z+aNormal.z,1.0);
 	
 	vs_out.texCoord=aTexcoord;

@@ -115,8 +115,8 @@ void main(){
         float depthz=(modelPos/modelPos.w).z*0.5+0.5;
         float bias = max(0.05 * (1.0 - dot(-fs_in.normal, dirLight.lightDir)), 0.005);
         float shadow=depthz-bias<texture(_depthTexture,lightuv).r?1.0:0.0;
-        FragColor=vec4(FragColor*shadow);
-
+        FragColor=vec4(fs_in.texCoord,0.0,0.0);
+      //  FragColor=vec4(diffuse_helmet,0.0);
        // FragColor=vec4(pow(FragColor.xyz*shadow,vec3(1.0/2.2)),1.0);
        // FragColor=vec4(1.0,0.0,0.0,0.0);
      //   FragColor=vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z)/gl_FragCoord.w;

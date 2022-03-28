@@ -60,8 +60,9 @@ float shadowCalc(vec4 worldPos,vec3 normal)
 
 vec4 CalcBRDF(vec4 worldPos,vec3 normal,vec4 albedo){
 
- vec3 lightDir=-dirLight.lightDir;
+ vec3 lightDir=normalize(-dirLight.lightDir);
   vec3 W=normal*normal;
+
   float Dx=lightDir.x;
   float Dy=lightDir.y;
   float Dz=lightDir.z;
@@ -71,9 +72,9 @@ vec4 CalcBRDF(vec4 worldPos,vec3 normal,vec4 albedo){
 
   float brdf=Dx*W.x+Dy*W.y+Dz*W.z;
   if(openNormalBlend==0)
-  return dot(normal,lightDir)*albedo;
+  return max(dot(normal,lightDir)*albedo/PI,0.0);
   else
-    return brdf*albedo;
+    return brdf*albedo/PI;
 }
 vec4 CalcDirLight(vec4 worldPos,vec3 normal,vec4 albedo,float shadow){
 
@@ -94,7 +95,7 @@ void main()
     vec4 albedo=imageLoad(voxelMap_diffuse,id);
     //vec4 depth=texture(_depthTexture,vec2(0.5,0.5));
     vec3 normal=imageLoad(voxelMap_normal,id).xyz;
-    normal=normalize(normal*2.0-1.0);
+    normal=normalize(normal*2.0-vec3(1.0));
     
     vec4 shadowworldPos=voxelPosToWorldPos(vec3(id)+normal*0.5);
     vec4 worldPos=voxelPosToWorldPos(vec3(id));
@@ -103,7 +104,10 @@ void main()
     vec4 dirlightColor=CalcDirLight(worldPos,normal,albedo,shadow);
     if(albedo.a<EPSILON)
       return;
-    
+    // if(shadow>0.0)
+    // shadow=1.0;
+    // else
+    // shadow=0.5;
     imageStore(voxelMap_radiance,id.xyz, vec4(dirlightColor.xyz,1.0));
   
     

@@ -1,0 +1,59 @@
+#version 450 core
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
+
+
+layout(binding=6)uniform sampler3D voxelMap_radiance;
+
+layout(rgba8)uniform image3D voxelMipMap[6];
+
+ivec3 posoffset[8]={
+  ivec3(1,1,1),ivec3(1,0,1),ivec3(0,1,1),ivec3(0,0,1),ivec3(1,1,0),ivec3(1,0,0),ivec3(0,1,0),ivec3(0,0,0)
+};
+
+void getValue(ivec3 pos,inout vec4 value[8]){
+
+  
+  for(int i=0;i<8;i++){
+  value[i]= texelFetch(voxelMap_radiance, pos + posoffset[i], 0);
+  // if(value[i].w>0.5)
+  // value[i].w=1.0;
+  }
+  
+}
+
+# define CalcValue(i) (1.0-directValue[i].a)
+void main() 
+{
+
+  // get index in global work group i.e x,y position
+  ivec3 id = ivec3(gl_GlobalInvocationID.xyz);
+  
+
+ // uint staticFlag=imageLoad(voxelMap_staticMark,id).x;
+  vec4 directValue[8];
+  getValue(id*2,directValue);
+  vec4 temp=directValue[0]+CalcValue(0)*directValue[2]+directValue[1]+CalcValue(1)*directValue[3]+directValue[4]+CalcValue(4)*directValue[6]+directValue[5]+CalcValue(5)*directValue[7];
+  //x 1~0
+  imageStore(voxelMipMap[0],id,temp*0.25);
+  temp=directValue[2]+CalcValue(2)*directValue[0]+directValue[3]+CalcValue(3)*directValue[1]+directValue[6]+CalcValue(6)*directValue[4]+directValue[7]+CalcValue(7)*directValue[5];
+  //x 0~1
+  imageStore(voxelMipMap[1],id,temp*0.25);
+  temp=directValue[0]+CalcValue(0)*directValue[1]+directValue[2]+CalcValue(2)*directValue[3]+directValue[4]+CalcValue(4)*directValue[5]+directValue[6]+CalcValue(6)*directValue[7];
+  //y 1~0
+  imageStore(voxelMipMap[2],id,temp*0.25);
+  temp=directValue[1]+CalcValue(1)*directValue[0]+directValue[3]+CalcValue(3)*directValue[2]+directValue[5]+CalcValue(5)*directValue[4]+directValue[7]+CalcValue(7)*directValue[6];
+  //y 0~1
+  imageStore(voxelMipMap[3],id,temp*0.25);
+  temp=directValue[0]+CalcValue(0)*directValue[4]+directValue[1]+CalcValue(1)*directValue[5]+directValue[2]+CalcValue(2)*directValue[6]+directValue[3]+CalcValue(3)*directValue[7];
+  //z 1~0
+  imageStore(voxelMipMap[4],id,temp*0.25);
+  temp=directValue[4]+CalcValue(4)*directValue[0]+directValue[5]+CalcValue(5)*directValue[1]+directValue[6]+CalcValue(6)*directValue[2]+directValue[7]+CalcValue(7)*directValue[3];
+  //z 0~1
+  imageStore(voxelMipMap[5],id,temp*0.25);
+    
+  //
+  // interesting stuff happens here later
+  //
+  
+  // result to a specific pixel in the image
+}

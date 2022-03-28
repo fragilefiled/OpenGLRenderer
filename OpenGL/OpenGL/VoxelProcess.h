@@ -55,6 +55,8 @@ public:
     Shader* GaussianBlurShader_v = nullptr;
     ComputeShader* Calcradiance = nullptr;
     ComputeShader* ClearVoxelMap = nullptr;
+    ComputeShader* MipmapProduceFirst = nullptr;
+    ComputeShader* MipmapProduceSecond = nullptr;
     PostEffect* blit1 = nullptr;
     PostEffect* blit2= nullptr;
     PostEffect* blit = nullptr;
@@ -93,6 +95,9 @@ public:
     Texture3D* voxel_diffuse = nullptr;
     Texture3D* voxel_normal = nullptr;
     Texture3D* voxel_radiance = nullptr;
+    Texture3D* voxel_static_mark = nullptr;
+    Texture3D* voxel_anisotropicmipmap[6];;
+    Texture3D* voxel_anisotropicmipmap_l1[6];;
     bool showwindow;
     UBO* ubotest = nullptr;
 
@@ -101,7 +106,7 @@ public:
     int shadowwidth =  width;
     int shadowheight =  height;
     int voxel_resolution = 256;
-    int voxel_width_world = 16;
+    int voxel_width_world = 24;
     float RasterScale = 1.3f;
     float Xscale = 0.063f;
     int normalBlend = 0;
@@ -110,7 +115,7 @@ public:
     Wave_Particle_Pool* pool;
     int particle_num = 700;
     std::vector<Texture> rt = std::vector<Texture>(10);
-    std::vector<Texture3D> voxel_rt = std::vector<Texture3D>(3);
+    std::vector<Texture3D> voxel_rt = std::vector<Texture3D>(4);
     std::vector<glm::mat4> voxelViewProjction;
     std::vector<glm::mat4> voxelViewProjctionInverse;
    // std::vector<float> data;

@@ -22,6 +22,6 @@ void main()
 	gl_Position =vec4(pos,1.0);
 
 	vs_out.albedo=imageLoad(voxelMap_diffuse, pos);;
-	if(vs_out.albedo.x+vs_out.albedo.y+vs_out.albedo.z>0.0)//可能是msaa导致的w插值过后为0,但可以通过x,y,z来让w不为0,说实话不太明白
+	if(vs_out.albedo.x+vs_out.albedo.y+vs_out.albedo.z>0.0001)//可能是msaa导致的w插值过后为0,但可以通过x,y,z来让w不为0,说实话不太明白
 	vs_out.albedo=vec4(vs_out.albedo.xyz,1.0);
 }

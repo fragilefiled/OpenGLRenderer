@@ -300,32 +300,39 @@ public:
   /*      glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, tex_output_id);
         glBindImageTexture(0, tex_output_id, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);*/
+        int bindImageNum = 0;
         for (int i = 0; i < texes_output.size(); i++) {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, texes_output[i].id);
             glBindImageTexture(i , texes_output[i].id, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
           //  glGenerateMipmap(GL_TEXTURE_2D);
+            bindImageNum++;
         }
         for (int i = 0; i < texes_input.size(); i++) {
             glActiveTexture(GL_TEXTURE0+i+ texes_output.size());
             glBindTexture(GL_TEXTURE_2D, texes_input[i].id);
             glBindImageTexture(i+ texes_output.size(), texes_input[i].id, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
            // glGenerateMipmap(GL_TEXTURE_2D);
+            bindImageNum++;
         }
+        
         for (int i = 0; i < texes3d.size(); i++) 
         {
             glActiveTexture(GL_TEXTURE0 + i + texes_input.size() + texes_output.size());
             setInt(texes3d[i].nameInShader, i + texes_input.size() + texes_output.size());
             glBindTexture(GL_TEXTURE_3D, texes3d[i].id);
-            if(texes3d[i].rw==3)
-            glBindImageTexture(i + texes_output.size() + texes_input.size(), texes3d[i].id, 0, GL_FALSE, 0, GL_READ_WRITE, texes3d[i].format);
-            else if(texes3d[i].rw == 2)
-                glBindImageTexture(i + texes_output.size() + texes_input.size(), texes3d[i].id, 0, GL_FALSE, 0, GL_WRITE_ONLY, texes3d[i].format);
-            else
-                glBindImageTexture(i + texes_output.size() + texes_input.size(), texes3d[i].id, 0, GL_FALSE, 0, GL_READ_ONLY, texes3d[i].format);
-          /*  if (i == texes3d.size() - 1) {
-                glGenerateMipmap(GL_TEXTURE_3D);
-            }*/
+            if (texes3d[i].enableTextureImage) {
+                if (texes3d[i].rw == 3)
+                    glBindImageTexture(bindImageNum, texes3d[i].id, 0, GL_FALSE, 0, GL_READ_WRITE, texes3d[i].format);
+                else if (texes3d[i].rw == 2)
+                    glBindImageTexture(bindImageNum, texes3d[i].id, 0, GL_FALSE, 0, GL_WRITE_ONLY, texes3d[i].format);
+                else
+                    glBindImageTexture(bindImageNum, texes3d[i].id, 0, GL_FALSE, 0, GL_READ_ONLY, texes3d[i].format);
+                bindImageNum++;
+                /*  if (i == texes3d.size() - 1) {
+                      glGenerateMipmap(GL_TEXTURE_3D);
+                  }*/
+            }
         }
     }
     void dispatch() {

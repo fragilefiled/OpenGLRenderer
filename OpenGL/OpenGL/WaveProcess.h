@@ -48,7 +48,7 @@ public:
 	int wave_particle_resolution = 64;
 	int wave_particle_resolution_fliter =256;
 	float radius = 100*(wave_particle_resolution_fliter/1024.0f );
-    bool enableWaveParticle = true;
+    bool enableWaveParticle = false;
     bool enableWaveParticle_hvfliter = true;
 
     Shader* myshader = nullptr;

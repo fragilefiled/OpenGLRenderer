@@ -24,6 +24,7 @@ void VoxelProcess::Init()
     //  Shader OceanShader = Shader(".//Shader//oceanShader.vs", ".//Shader//oceanShader.fs");
     roomModel = new Model(".//Model//floor//floor1.obj");
   //ourModel = new Model(".//Model//nanosuit//nanosuit.obj");
+ // ourModel = new Model(".//Model//backpack//backpack.obj");
    //ourModel = new Model(".//Model//planet//planet.obj");
     //ourModel = new Model(".//Model//planet//planet.obj");
    // ourModel = new Model(".//Model//Suzanne//Suzanne.obj");
@@ -41,8 +42,10 @@ void VoxelProcess::Init()
     GaussianBlurShader_h = new Shader(".//Shader//PostEffect_gaussian_h.vs", ".//Shader//GaussionBlur_h.fs");
     GaussianBlurShader_v = new Shader(".//Shader//PostEffect_gaussian_v.vs", ".//Shader//GaussionBlur_h.fs");
     gammaCorrectionShader = new Shader(".//Shader//PostEffect.vs", ".//Shader//GammaCorrection.fs");
-    Calcradiance = new ComputeShader(".//Shader//CalaRadiance.comp",glm::vec3(voxel_resolution/8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), 0, 0, 3);
-    ClearVoxelMap = new ComputeShader(".//Shader//ClearVoxelMap.comp", glm::vec3(voxel_resolution / 8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), 0, 0, 3);
+    Calcradiance = new ComputeShader(".//Shader//CalaRadiance.comp",glm::vec3(voxel_resolution/8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), 0, 0, 4);
+    ClearVoxelMap = new ComputeShader(".//Shader//ClearVoxelMap.comp", glm::vec3(voxel_resolution / 8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), 0, 0, 4);
+    MipmapProduceFirst = new ComputeShader(".//Shader//MipmapProduceFirst.comp", glm::vec3(voxel_resolution / 16.0f, voxel_resolution / 16.0f, voxel_resolution / 16.0f), 0, 0, 7);
+    MipmapProduceSecond = new ComputeShader(".//Shader//MipmapProduceSecond.comp", glm::vec3(voxel_resolution / 32.0f, voxel_resolution / 32.0f, voxel_resolution / 32.0f), 0, 0, 12);
     blit2 = new PostEffect(*GaussianBlurShader_h, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     blit1 = new PostEffect(*GaussianBlurShader_v, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     blit = new PostEffect(*screenShader, CSwidth, CSheight, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
@@ -57,6 +60,7 @@ void VoxelProcess::Init()
     voxel_diffuse = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
     voxel_normal = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
     voxel_radiance = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, 2);
+    voxel_static_mark = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_R8UI, GL_RED, GL_UNSIGNED_BYTE);
     shadowwidth = 2 * width;
     shadowheight = 2 * height;
     depthMap = new  FBO(shadowwidth, shadowheight, "_depthTexture", FBO::Depth);
@@ -64,7 +68,7 @@ void VoxelProcess::Init()
     temp2 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     voxelRT = new FBO(voxel_resolution, voxel_resolution, "_voxelMap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT,true);
  
-
+    
 
 
 
@@ -108,6 +112,7 @@ void VoxelProcess::Init()
     //unsigned int pointVAO, pointVBO;
 
    // std::vector<float> data = std::vector<float>(voxel_resolution * voxel_resolution * voxel_resolution * 4, 0.0);
+    voxel_static_mark->Bind();
     voxel_radiance->Bind();
     voxel_diffuse->Bind();
     voxel_normal->Bind();
@@ -151,8 +156,28 @@ void VoxelProcess::Init()
     voxel_rt[1].nameInShader = "voxelMap_normal";
     voxel_rt[2] = *voxel_radiance;
     voxel_rt[2].nameInShader = "voxelMap_radiance";
+    voxel_rt[3] = *voxel_static_mark;
+    voxel_rt[3].nameInShader = "voxelMap_staticMark";
     voxelWorldMinPoint = camera.getVoxelMinPoint(glm::vec3(0, 0, 0), voxel_width_world);
     Calcradiance->texes3d = voxel_rt;
+    for (int i = 0; i < 6; i++) {
+
+        voxel_anisotropicmipmap_l1[i] = new Texture3D(voxel_resolution / 4.0, voxel_resolution / 4.0, voxel_resolution / 4.0, true, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
+        voxel_anisotropicmipmap_l1[i]->Bind();
+        voxel_anisotropicmipmap_l1[i]->nameInShader = "voxelMipMap_L1[" + to_string(i) + "]";
+        MipmapProduceSecond->texes3d[i] = *voxel_anisotropicmipmap_l1[i];
+
+    }
+    for (int i = 0; i < 6; i++) {
+        voxel_anisotropicmipmap[i] = new Texture3D(voxel_resolution/2.0, voxel_resolution / 2.0, voxel_resolution / 2.0, true, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
+        voxel_anisotropicmipmap[i]->Bind();
+        voxel_anisotropicmipmap[i]->nameInShader = "voxelMipMap[" + to_string(i) + "]";
+        MipmapProduceFirst->texes3d[i] = *voxel_anisotropicmipmap[i];
+        MipmapProduceSecond->texes3d[i+6] = *voxel_anisotropicmipmap[i];
+    }
+  
+    MipmapProduceFirst->texes3d[6] = *voxel_radiance;
+   
 }
 
 void VoxelProcess::Process()
@@ -181,9 +206,12 @@ void VoxelProcess::Process()
     glm::mat4 lightProjection = lights[3].camera.GetProjection();
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 modelVoxel = glm::mat4(1.0f);
+
     //  model = glm::rotate(model, glm::radians(70.f*(float)glfwGetTime()), glm::vec3(0.0f, 1.0f, 0.0f));
-   model = glm::scale(model, glm::vec3(0.004f));
-   // model = glm::scale(model, glm::vec3(0.3f));
+    //model = glm::translate(model, glm::vec3(-10, -10, 0));
+    model = glm::scale(model, glm::vec3(0.010f));
+   // model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+   // model = glm::scale(model, glm::vec3(4.0f));
     glm::mat4 model_inverse_t = glm::mat4(1.0f);
     model_inverse_t = glm::transpose(glm::inverse(model));
     
@@ -216,6 +244,7 @@ void VoxelProcess::Process()
     myshader_gs->setVec3("worldMinPoint", voxelWorldMinPoint);
     myshader_gs->setFloat("RasterScale", RasterScale);
     myshader_gs->setInt("VoxelNormalBlend", voxelnormalBlend);
+    myshader_gs->setInt("staticFlag", 1);
     for (unsigned int i = 0; i < 4; i++)
     {
         // calculate the model matrix for each object and pass it to shader before drawing
@@ -348,7 +377,7 @@ void VoxelProcess::Process()
         lights[i].SetLight(*myshader);
     }
     
-  // ourModel->Draw(*myshader, rt,nullptr,voxel_rt);
+   //ourModel->Draw(*myshader, rt,nullptr,voxel_rt);
     //myshader_gs->use();
     //myshader_gs->setMatrix("model", model);
     //myshader_gs->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
@@ -441,6 +470,20 @@ void VoxelProcess::Process()
  
     lightshader->setMatrix("model", modellight);
     lights[3].Draw();  //draw cube
+
+    MipmapProduceFirst->texes3d[6].enableTextureImage = false;
+    MipmapProduceFirst->use();
+    
+    MipmapProduceFirst->dispatch();
+    MipmapProduceFirst->wait();
+    MipmapProduceFirst->texes3d[6].enableTextureImage = true;
+
+   
+    MipmapProduceSecond->use();
+
+    MipmapProduceSecond->dispatch();
+    MipmapProduceSecond->wait();
+    
 
     posteffect->BindFrameBufferOver();
 
@@ -554,6 +597,8 @@ VoxelProcess::~VoxelProcess()
     delete  GaussianBlurShader_v;
     delete Calcradiance;
     delete ClearVoxelMap;
+    delete MipmapProduceFirst;
+    delete MipmapProduceSecond;
     delete blit2;
     delete blit1;
     delete blit;
@@ -576,6 +621,11 @@ VoxelProcess::~VoxelProcess()
     delete voxel_diffuse;
     delete voxel_normal;
     delete voxel_radiance;
+    delete voxel_static_mark;
+    for (int i = 0; i < 6; i++) {
+        delete voxel_anisotropicmipmap[i];
+        delete voxel_anisotropicmipmap_l1[i];
+    }
     auto temp = std::vector<glm::mat4>(0);
     voxelViewProjction.swap(temp);
     voxelViewProjctionInverse.swap(temp);
