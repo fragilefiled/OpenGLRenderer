@@ -15,8 +15,7 @@ void getValue(ivec3 pos,inout vec4 value[8]){
   
   for(int i=0;i<8;i++){
   value[i]= texelFetch(voxelMap_radiance, pos + posoffset[i], 0);
-  // if(value[i].w>0.5)
-  // value[i].w=1.0;
+ 
   }
   
 }

@@ -166,6 +166,7 @@
     <ClCompile Include="CubeMap.cpp" />
     <ClCompile Include="Execute.cpp" />
     <ClCompile Include="FBO.cpp" />
+    <ClCompile Include="Gbuffer.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="imgui_impl_glfw.cpp" />
     <ClCompile Include="imgui_impl_opengl3.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeMap.h" />
     <ClInclude Include="FBO.h" />
+    <ClInclude Include="Gbuffer.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
     <ClInclude Include="imgui_impl_opengl3.h" />
     <ClInclude Include="imgui_impl_opengl3_loader.h" />

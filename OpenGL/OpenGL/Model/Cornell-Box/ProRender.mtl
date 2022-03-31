@@ -20,7 +20,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-map_Kd arm_dif.png
+map_Kd Blue.png
 
 newmtl cbox_Material
 Ns 250.000000
@@ -31,7 +31,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-
+map_Kd Green.png
 
 newmtl cbox_green
 Ns 250.000000
@@ -42,7 +42,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-map_Kd arm_dif.png
+map_Kd Red.png
 
 newmtl cbox_red
 Ns 250.000000
@@ -53,4 +53,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-map_Kd arm_dif.png
+map_Kd Yellow.png

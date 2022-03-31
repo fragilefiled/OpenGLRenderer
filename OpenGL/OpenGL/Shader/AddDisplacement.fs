@@ -35,7 +35,8 @@ float y_gerstner=0.1*sin(f+2.0);
 float z_gerstner=dir.y*0.1*cos(f+2.0);
 
 
-FragColor=texture(waveMap, -fract(uv_now))*cos((uv.y-0.5)*PI)*Scale_control.x+texture(screen_RT,uv)*Scale_control.y+vec4(x_gerstner,y_gerstner,z_gerstner,0.0)*Scale_control.z;
+FragColor=(texture(waveMap, -fract(uv_now)))*cos((uv.y-0.5)*PI)*Scale_control.x+texture(screen_RT,uv)*Scale_control.y+vec4(x_gerstner,y_gerstner,z_gerstner,0.0)*Scale_control.z;
+//FragColor=(texture(waveMap, -fract(uv_now)))*cos((uv.y-0.5)*PI)*Scale_control.x;
 //FragColor=vec4(x_gerstner,y_gerstner,0,0.0);;
 //FragColor=texture(waveMap, -fract(uv_now))*cos((uv_now.y-0.5)*3.1415926)*0.2;;
 //FragColor=texture(screen_RT,uv)*0.7;

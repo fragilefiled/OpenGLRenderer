@@ -44,7 +44,7 @@ glm::mat4 Camera::GetProjection()
 	projection = glm::perspective(glm::radians(GetFov()), (float)width / (float)height, 0.1f, 100.0f);
 	else
 	{
-		projection = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 30.0f);;
+		projection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.0f, 40.0f);;
 	}
 	return projection;
 }

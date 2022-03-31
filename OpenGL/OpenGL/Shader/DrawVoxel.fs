@@ -7,6 +7,6 @@ in vec4 worldPos;
 void main()
 {
 
-	FragColor=voxelColor*4.0;
+	FragColor=voxelColor*1.0;
 
 }

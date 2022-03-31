@@ -20,6 +20,7 @@
 #include "imgui_impl_opengl3.h"
 #include"Texture3D.h"
 #include"VoxelModel.h"
+#include"Gbuffer.h"
 class VoxelProcess :public RenderProcess
 {
 public:
@@ -27,6 +28,9 @@ public:
     void SetCameraAndTime(Camera& camera, float time);
     void Init();
     void Process();
+    void GenerateMipmap();
+    
+    
     glm::mat4 view;
     glm::vec4 windspeed = glm::vec4(11.0f, 23.0f, 28.0f, 0.0f);
     glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
@@ -34,9 +38,10 @@ public:
     int height = 1024;
     int CSwidth = 256;
     int CSheight = 256;
-
+    Shader* Gemetory_Pass = nullptr;
     Shader* depthVoxelShader = nullptr;
     Shader* myshader = nullptr;
+    Shader* voxelShaderRender = nullptr;
     Shader* drawVoxel = nullptr;
     Shader* myshader_gs = nullptr;
     // Shader lightshader = Shader(".//Shader//MyVertexShader.vs", ".//Shader//LightShader.fs", ".//Shader//LightShader.gs");
@@ -53,10 +58,12 @@ public:
     Shader* skyBoxShader = nullptr;
     Shader* GaussianBlurShader_h = nullptr;
     Shader* GaussianBlurShader_v = nullptr;
+    Gbuffer* gBuffer = nullptr;
     ComputeShader* Calcradiance = nullptr;
     ComputeShader* ClearVoxelMap = nullptr;
     ComputeShader* MipmapProduceFirst = nullptr;
     ComputeShader* MipmapProduceSecond = nullptr;
+    ComputeShader* VoxelConeTracing = nullptr;
     PostEffect* blit1 = nullptr;
     PostEffect* blit2= nullptr;
     PostEffect* blit = nullptr;
@@ -68,7 +75,7 @@ public:
     FBO* voxelRT = nullptr;
 
     PostEffect* posteffect = nullptr;
-
+    
 
 
 
@@ -97,7 +104,6 @@ public:
     Texture3D* voxel_radiance = nullptr;
     Texture3D* voxel_static_mark = nullptr;
     Texture3D* voxel_anisotropicmipmap[6];;
-    Texture3D* voxel_anisotropicmipmap_l1[6];;
     bool showwindow;
     UBO* ubotest = nullptr;
 
@@ -111,6 +117,8 @@ public:
     float Xscale = 0.063f;
     int normalBlend = 0;
     int voxelnormalBlend = 0;
+    float IndirectLight = 3.0;
+    float directLight = 1.0;
     FBO* depthMap = nullptr;
     Wave_Particle_Pool* pool;
     int particle_num = 700;

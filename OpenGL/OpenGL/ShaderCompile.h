@@ -215,12 +215,14 @@ public:
     std::vector<TextureImage>texes_input= std::vector<TextureImage>(1);
     std::vector<TextureImage>texes_output = std::vector<TextureImage>(1);
     std::vector<Texture3D>texes3d = std::vector<Texture3D>(0);
+    std::vector<int>lods=std::vector<int>(0);
     int tex_output_num = 0;
     int tex_input_num = 0;
     int tex3d_num = 0;
-
+    bool enableMipmap = false;
     bool input_auto = false;
-    ComputeShader(const char* computePath, glm::vec3 work_size,unsigned int tex_output_num=1, unsigned int tex_input_num = 1,unsigned int tex3d_num=0, unsigned int TextureID = 0,bool input_auto=false) :work_size(work_size), TextureID(TextureID),input_auto(input_auto)
+    glm::vec3 work_size;
+    ComputeShader(const char* computePath, glm::vec3 work_size,unsigned int tex_output_num=1, unsigned int tex_input_num = 1,unsigned int tex3d_num=0,bool input_auto=false,bool enableMipmap=false,std::vector<int> lods=std::vector<int>(0)) :work_size(work_size),input_auto(input_auto),enableMipmap(enableMipmap)
     {
         
         // 1. retrieve the vertex/fragment source code from filePath
@@ -291,7 +293,10 @@ public:
         this->tex_output_num = tex_output_num;
         this->tex_input_num = tex_input_num;
         this->tex3d_num = tex3d_num;
-    
+        if (!enableMipmap)
+            this->lods = std::vector<int>(tex_output_num + tex_input_num + tex3d_num, 0);
+        else
+            this->lods = lods;
     }
     void use() {
         glUseProgram(ID);
@@ -321,13 +326,16 @@ public:
             glActiveTexture(GL_TEXTURE0 + i + texes_input.size() + texes_output.size());
             setInt(texes3d[i].nameInShader, i + texes_input.size() + texes_output.size());
             glBindTexture(GL_TEXTURE_3D, texes3d[i].id);
+            int level = 0;
+            if (enableMipmap)
+                level = lods[i];
             if (texes3d[i].enableTextureImage) {
                 if (texes3d[i].rw == 3)
-                    glBindImageTexture(bindImageNum, texes3d[i].id, 0, GL_FALSE, 0, GL_READ_WRITE, texes3d[i].format);
+                    glBindImageTexture(bindImageNum, texes3d[i].id, level, GL_FALSE, 0, GL_READ_WRITE, texes3d[i].format);
                 else if (texes3d[i].rw == 2)
-                    glBindImageTexture(bindImageNum, texes3d[i].id, 0, GL_FALSE, 0, GL_WRITE_ONLY, texes3d[i].format);
+                    glBindImageTexture(bindImageNum, texes3d[i].id, level, GL_FALSE, 0, GL_WRITE_ONLY, texes3d[i].format);
                 else
-                    glBindImageTexture(bindImageNum, texes3d[i].id, 0, GL_FALSE, 0, GL_READ_ONLY, texes3d[i].format);
+                    glBindImageTexture(bindImageNum, texes3d[i].id, level, GL_FALSE, 0, GL_READ_ONLY, texes3d[i].format);
                 bindImageNum++;
                 /*  if (i == texes3d.size() - 1) {
                       glGenerateMipmap(GL_TEXTURE_3D);
@@ -350,7 +358,7 @@ public:
         
     }
 private:
-    glm::vec3 work_size;
+   
 
 
 

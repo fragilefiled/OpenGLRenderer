@@ -1,0 +1,185 @@
+#version 450 core
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
+
+
+layout(binding = 0,rgba8) uniform image3D voxelMap_radiance;
+layout(binding = 1) uniform sampler3D voxelMap_diffuse;
+layout(binding = 2) uniform sampler3D voxelMap_normal;
+layout(binding = 3)uniform sampler3D voxelMipMap[6];
+
+
+
+const float EPSILON = 1e-30;
+#define PI 3.14159274f
+uniform int voxelResolution;
+uniform float IndirectLight;
+uniform float directLight;
+// four cones
+// const vec3 propagationDirections[] =
+// {
+//   vec3(0.0f, 1.0f, 0.0f),
+//     vec3(0.0f, 0.5f, 0.866025f),
+//     vec3(0.823639f, 0.5f, 0.267617f),
+//     vec3(0.509037f, 0.5f, -0.7006629f),
+//     vec3(-0.50937f, 0.5f, -0.7006629f),
+//     vec3(-0.823639f, 0.5f, 0.267617f)
+// };
+// const vec3 propagationDirections[] =
+// {
+//   vec3(0.0f, 1.0f, 0.0f),
+//     vec3(0.0f, 0.5f, 0.866025f),
+//     vec3(0.0, 0.5f, -0.866025f),
+//     vec3(0.866025f, 0.5f, 0.0f),
+//     vec3(-0.866025f, 0.5f, 0.0f),
+//     vec3(0.61237243569579, 0.5f, 0.61237243569579),
+//     vec3(-0.61237243569579, 0.5f, 0.61237243569579),
+//     vec3(0.61237243569579, 0.5f, -0.61237243569579),
+//     vec3(-0.61237243569579, 0.5f, -0.61237243569579)
+// };
+
+// const float diffuseConeWeights[] =
+// {
+//     PI / 4.0f,
+//     3.0f * PI / 20.0f,
+//     3.0f * PI / 20.0f,
+//     3.0f * PI / 20.0f,
+//     3.0f * PI / 20.0f,
+//     3.0f * PI / 20.0f,
+// };
+// const float diffuseConeWeights[] =
+// {
+//         PI / 4.0f,
+//     3.0f * PI / 32.0f,
+//     3.0f * PI / 32.0f,
+//     3.0f * PI / 32.0f,
+//     3.0f * PI / 32.0f,
+//     3.0f * PI / 32.0f,
+//     3.0f * PI / 32.0f,
+//     3.0f * PI / 32.0f,
+//     3.0f * PI / 32.0f,
+// };
+// const float diffuseConeWeights[] =
+// {
+//     1.0f/9.0,
+//     1.0f/9.0,
+//     1.0f/9.0,
+//     1.0f/9.0,
+//     1.0f/9.0,
+//     1.0f/9.0,
+//     1.0f/9.0,
+//     1.0f/9.0,
+//     1.0f/9.0,
+// };
+// four cones
+const vec3 propagationDirections[] =
+{
+    vec3(0.0f, 1.0f, 0.0f),
+    vec3(0.0f, 0.5f, 0.866025f),
+    vec3(0.754996f, 0.5f, -0.4330128f),
+    vec3(-0.754996f, 0.5f, -0.4330128f)
+};
+
+const float diffuseConeWeights[] =
+{
+    PI / 3.0f,
+    2.0f * PI / 9.0f,
+    2.0f * PI / 9.0f,
+    2.0f * PI / 9.0f,
+};
+
+
+
+vec3 EncodeNormal(vec3 normal)
+{
+    return normal * 0.5f + vec3(0.5f);
+}
+
+vec3 DecodeNormal(vec3 normal)
+{
+    return normal * 2.0f - vec3(1.0f);
+}
+vec4 ConeTracing(vec3 pos,vec3 dir)
+{
+  vec3 weight=dir*dir;
+  int x_select=dir.x>0?1:0;
+  int y_select=dir.y>0?3:2;
+  int z_select=dir.z>0?5:4;
+
+ 
+  vec4 result=vec4(0.0);
+  vec3 samplePos=pos;
+    float voxelSize=(2.0/float(voxelResolution));
+  float stepCount=voxelSize;
+
+  while(result.a<1.0&&samplePos.x>0&&samplePos.x<1&&samplePos.y>0&&samplePos.y<1&&samplePos.z>0&&samplePos.z<1&&stepCount<=1.0f)
+  {
+   
+    samplePos=pos+dir*stepCount;
+    float mipmaplevel=log2(stepCount*0.5*float(voxelResolution));
+    mipmaplevel = min(max(mipmaplevel - 1.0f, 0.0f),8);
+      
+    vec4 sampleColor=textureLod(voxelMipMap[x_select],samplePos,mipmaplevel)*weight.x
+    +textureLod(voxelMipMap[y_select],samplePos,mipmaplevel)*weight.y
+    +textureLod(voxelMipMap[z_select],samplePos,mipmaplevel)*weight.z;
+    //vec4 sampleColor=vec4(1.0);
+    // if(mipmaplevel < 1.0f)
+    // {
+    //     vec4 baseColor = imageLoad(voxelMap_radiance,ivec3(samplePos*voxelResolution));
+    //     sampleColor = mix(baseColor, sampleColor, clamp(mipmaplevel, 0.0f, 1.0f));
+    // }
+   
+    result+=(1-result.a)*sampleColor;
+    stepCount+=max(stepCount,voxelSize);
+  // stepCount+=voxelSize;
+  }
+
+ // result=textureLod(voxelMipMap[x_select],pos,3.0);
+  return result;
+
+
+}
+vec4 CalcIndirectLighting(vec3 pos,vec3 normal)
+{
+
+    vec3 updir=vec3(0,1,0);
+    vec3 origin=pos+normal*2.0/float(voxelResolution);
+    if(abs(dot(updir,normal))==1)
+      updir=vec3(0,0,1);
+      vec3 z_axis=-normalize(cross(updir,normal));
+     vec3 x_axis=normalize(cross(z_axis,normal));
+
+      // vec3 x_axis=normalize(updir - dot(normal,updir) * normal);
+      // vec3 z_axis=cross(x_axis,normal);
+      vec4 result=vec4(0.0);
+      for(int i=0;i<4;i++)
+      {
+        vec3 coneDir=propagationDirections[i].x*x_axis+normal+propagationDirections[i].z*z_axis;
+        coneDir=normalize(coneDir);
+        result+=ConeTracing(origin,coneDir)*diffuseConeWeights[i];
+
+
+      }
+    return clamp(result,0.0f,1.0f);
+}
+
+
+void main() 
+{
+
+  // get index in global work group i.e x,y position
+  ivec3 id = ivec3(gl_GlobalInvocationID.xyz);
+  
+  vec4 albedo=texelFetch(voxelMap_diffuse,id,0);;
+  if(albedo.a<=EPSILON)
+  return;
+  vec3 normal=texelFetch(voxelMap_normal,id,0).xyz;
+  // imageStore(voxelMap_radiance,id,vec4(2255.0,0.0,0.0,1.0));
+  vec4 directLighting=imageLoad(voxelMap_radiance,id);
+  normal=normalize(DecodeNormal(normal));
+  vec4 indirectradiance=CalcIndirectLighting(vec3(id)/voxelResolution,normal)*albedo;
+  //memoryBarrier();
+  
+  imageStore(voxelMap_radiance,id,vec4((indirectradiance*IndirectLight+directLighting*directLight).xyz,1.0));
+ //imageStore(voxelMap_radiance,id,vec4(normal,1.0));
+
+}

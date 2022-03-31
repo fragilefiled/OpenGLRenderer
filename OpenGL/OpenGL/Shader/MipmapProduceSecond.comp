@@ -6,7 +6,7 @@ layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 layout(binding=0,rgba8)uniform image3D voxelMipMap_L1[6];
 layout(binding=6)uniform sampler3D voxelMipMap[6];
 
-
+uniform int mipmaplevel;
 ivec3 posoffset[8]={
   ivec3(1,1,1),ivec3(1,0,1),ivec3(0,1,1),ivec3(0,0,1),ivec3(1,1,0),ivec3(1,0,0),ivec3(0,1,0),ivec3(0,0,0)
 };
@@ -15,7 +15,7 @@ void getValue(ivec3 pos,inout vec4 value[8],int id){
 
   
   for(int i=0;i<8;i++)
-   value[i]= texelFetch(voxelMipMap[id], pos + posoffset[i], 0);
+   value[i]= texelFetch(voxelMipMap[id], pos + posoffset[i], mipmaplevel);
   
 }
 
