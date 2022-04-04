@@ -49,6 +49,7 @@ public:
 		 glm::mat4 GetView();
 		 glm::mat4 GetProjection();
 		 glm::vec3& getVoxelMinPoint(glm::vec3 cameraPos, int voxelSize);
+		 glm::vec3& getVoxelMaxPoint(glm::vec3 cameraPos, int voxelSize);
 		 std::vector<glm::mat4> GetVoxelViewProjection(glm::vec3 cameraPos, int voxelsize);
 		 std::vector<glm::mat4> GetVoxelViewProjectionInverse(glm::vec3 cameraPos, int voxelsize);
 		 void Move(Direction direction, float deltaTime);

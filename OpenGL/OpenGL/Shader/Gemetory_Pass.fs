@@ -20,6 +20,9 @@ void main(){
       vec3 diffuse=texture(texture_Diffuse_0,fs_in.texCoord).rgb;
       vec3 spec=texture(texture_Specular_0,fs_in.texCoord).rgb;
       gWorldPos=fs_in.worldPos;
+       if( !gl_FrontFacing )
+       gNomral=-fs_in.normal;
+       else
       gNomral=fs_in.normal;
       gAlbedoSpec=vec4(diffuse,spec.x);
       gDepth=0.1;

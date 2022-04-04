@@ -14,7 +14,8 @@ void main(){
  float a[5]={0.0545,0.2442,0.4026,0.2442,0.0545};
   //float a[5]={0.00,0.0,0.0,0.0,0.01};
     vec4 sum=a[2]*texture(screen_RT, uv2)+a[0]*texture(screen_RT, uv0).xyzw+a[1]*texture(screen_RT, uv1).xyzw+a[3]*texture(screen_RT, uv3).xyzw+a[4]*texture(screen_RT, uv4);
-
+ //vec4 sum=0.2*texture(screen_RT, uv2)+0.2*texture(screen_RT, uv0).xyzw+0.2*texture(screen_RT, uv1).xyzw+0.2*texture(screen_RT, uv3).xyzw+0.2*texture(screen_RT, uv4);
+FragColor=max(sum,vec4(0.0001));
 FragColor=sum;
 //FragColor=vec4(1.0);
 //FragColor=vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z)/gl_FragCoord.w;

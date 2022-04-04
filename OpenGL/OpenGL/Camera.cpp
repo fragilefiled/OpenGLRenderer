@@ -44,7 +44,8 @@ glm::mat4 Camera::GetProjection()
 	projection = glm::perspective(glm::radians(GetFov()), (float)width / (float)height, 0.1f, 100.0f);
 	else
 	{
-		projection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.0f, 40.0f);;
+		float temp = 25.0f;
+		projection = glm::ortho(-temp, temp, -temp, temp, 0.0f, 2*temp);;
 	}
 	return projection;
 }
@@ -58,6 +59,15 @@ glm::vec3 & Camera::getVoxelMinPoint(glm::vec3 cameraPos,int voxelSize) {
 	return aabb;
 }
 
+glm::vec3& Camera::getVoxelMaxPoint(glm::vec3 cameraPos, int voxelSize) {
+
+	glm::vec3 aabb = glm::vec3(0, 0, 0);
+	float halfSize = voxelSize / 2.0f;
+	aabb.x = cameraPos.x + halfSize;
+	aabb.y = cameraPos.y + halfSize;
+	aabb.z = cameraPos.z + halfSize + 0.0f;
+	return aabb;
+}
 
 std::vector<glm::mat4> Camera::GetVoxelViewProjection(glm::vec3 cameraPos, int voxelSize)
 {

@@ -1,0 +1,54 @@
+#version 450 core
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
+
+
+
+layout(rgba8)uniform image3D voxelMipMap[6];
+layout(binding=6)uniform sampler3D voxelMipMap_1[6];
+ivec3 posoffset[27]={
+  ivec3(0,0,0),
+  ivec3(0,1,0),ivec3(1,0,0),ivec3(0,0,1),
+  ivec3(0,-1,0),ivec3(-1,0,0),ivec3(0,0,-1),
+  ivec3(1,1,0),ivec3(1,-1,0),ivec3(-1,-1,0),ivec3(-1,1,0),
+  ivec3(0,1,1),ivec3(0,-1,1),ivec3(0,-1,-1),ivec3(0,1,-1),
+  ivec3(1,0,1),ivec3(1,0,-1),ivec3(-1,0,-1),ivec3(-1,0,1),
+   ivec3(1,1,1),ivec3(-1,1,1),ivec3(1,-1,1),
+   ivec3(1,1,-1),ivec3(-1,-1,1),ivec3(-1,1,-1),
+   ivec3(1,-1,-1),ivec3(-1,-1,-1)
+};
+
+float weight[27]={
+1.0/3.0,
+1.0/18.0,1.0/18.0,1.0/18.0,
+1.0/18.0,1.0/18.0,1.0/18.0,
+1.0/60.0,1.0/60.0,1.0/60.0,1.0/60.0,
+1.0/60.0,1.0/60.0,1.0/60.0,1.0/60.0,
+1.0/60.0,1.0/60.0,1.0/60.0,1.0/60.0,
+1.0/60.0,1.0/60.0,1.0/60.0,1.0/60.0,
+1.0/60.0,1.0/60.0,1.0/60.0,1.0/60.0,
+
+
+};
+
+
+uniform int mipmaplevel;
+# define CalcValue(i) (1.0-directValue[i].a)
+void main() 
+{
+
+  // get index in global work group i.e x,y position
+  ivec3 id = ivec3(gl_GlobalInvocationID.xyz);
+  vec4 result=vec4(0.0);
+    for(int j=0;j<6;j++)
+  {
+    for(int i=0;i<27;i++)
+    {
+
+      result+=texelFetch(voxelMipMap[j],id+posoffset[i],mipmaplevel)*weight[i];
+
+
+
+    }
+    imageStore(voxelMipMap[j],id,result);
+  }
+}

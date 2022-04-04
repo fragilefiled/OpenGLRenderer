@@ -31,7 +31,7 @@ void main()
 	vs_out.worldPos =vec3(model * vec4(aPos, 1.0));
 	//vs_out.normal=normalize(mat3(transpose(inverse(model)))*aNormal);
 	vec3 normal=normalize(aNormal);
-	vs_out.normal=normalize(mat4(model_inverse_t)*vec4(normal,0.0)).xyz;
+	vs_out.normal=normal;//normalize(mat4(model_inverse_t)*vec4(normal,0.0)).xyz;
 	
 	vs_out.texCoord=aTexcoord;
 }

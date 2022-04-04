@@ -39,12 +39,18 @@ uniform  mat4 model_inverse_t;
 #define NR_POINT_LIGHTS 4
 #define PI 3.14159274f
 const float EPSILON = 1e-30;
+uniform float voxelWidthWorld;
+uniform float voxelResolution;
+uniform vec3 worldMinPoint;
+vec2 posoffset[9]={vec2(1,1),vec2(-1,-1),vec2(-1,1),vec2(1,-1),
+  vec2(1,0),vec2(0,1),vec2(-1,0),vec2(0,-1),vec2(0,0)
+  };
 vec4 voxelPosToWorldPos(vec3 voxelPos)
 {
-  
-   vec4 worldPos=model*vec4(voxelPos,1.0);
-    worldPos/=worldPos.w;
-    return worldPos;
+  vec4 worldPos=vec4(voxelPos/voxelResolution*voxelWidthWorld+worldMinPoint,1.0);
+  //  vec4 worldPos=model*vec4(voxelPos,1.0);
+  //   worldPos/=worldPos.w;
+     return worldPos;
 }
 float shadowCalc(vec4 worldPos,vec3 normal)
 {
@@ -53,9 +59,30 @@ float shadowCalc(vec4 worldPos,vec3 normal)
   float depthz=(projpos/projpos.w).z*0.5+0.5;
   float bias = max(0.05 * (1.0 - dot(-normal, dirLight.lightDir)), 0.001);
   //bias=0.05;
-  float depthSample=texture(_depthTexture,lightuv).r;
-  float shadow=depthz-bias<depthSample?1.0:0.0;
-  return shadow;
+  float texoffset=(1.0/1024.0);
+  float shadow=0.0;
+  // float depthSample=texture(_depthTexture,lightuv).r;
+  // float depthSample1=texture(_depthTexture,lightuv+vec2(texoffset,0)).r;
+  // float depthSample2=texture(_depthTexture,lightuv+vec2(-texoffset,0)).r;
+  // float depthSample3=texture(_depthTexture,lightuv+vec2(0,texoffset)).r;
+  // float depthSample4=texture(_depthTexture,lightuv+vec2(0,-texoffset)).r;
+  //  float shadow=depthz-bias<depthSample?1.0:0.0;
+  // float shadow1=depthz-bias<depthSample1?1.0:0.0;
+  // float shadow2=depthz-bias<depthSample2?1.0:0.0;
+  // float shadow3=depthz-bias<depthSample3?1.0:0.0;
+  // float shadow4=depthz-bias<depthSample4?1.0:0.0;
+
+  for(int i=0;i<9;i++)
+  {
+    vec2 tempuv=lightuv+texoffset*posoffset[i];
+    float depthSample=texture(_depthTexture,tempuv).r;
+     shadow+=depthz-bias<depthSample?1.0:0.0;
+
+  }
+  shadow/=9.0;
+  // return 1.0;
+   return shadow;
+ // return 1.0;
 }
 
 vec4 CalcBRDF(vec4 worldPos,vec3 normal,vec4 albedo){
@@ -95,6 +122,7 @@ void main()
     vec4 albedo=imageLoad(voxelMap_diffuse,id);
     //vec4 depth=texture(_depthTexture,vec2(0.5,0.5));
     vec3 normal=imageLoad(voxelMap_normal,id).xyz;
+    vec3 initnormal=normal;
     normal=normal*2.0-vec3(1.0);
     normal=normalize(normal);
     vec4 shadowworldPos=voxelPosToWorldPos(vec3(id)+normal*0.5);
@@ -108,8 +136,9 @@ void main()
     // shadow=1.0;
     // else
     // shadow=0.5;
+    imageStore(voxelMap_normal,id.xyz,vec4(initnormal,shadow));
     imageStore(voxelMap_radiance,id.xyz, vec4(dirlightColor.xyz,1.0));
-   // imageStore(voxelMap_radiance,id.xyz, vec4(normal.xyz,1.0));
+    //imageStore(voxelMap_radiance,id.xyz, vec4(normal.xyz,1.0));
     
     
   //

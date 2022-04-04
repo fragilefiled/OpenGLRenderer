@@ -427,7 +427,7 @@ void WaveProcess::Process()
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit1->UseShader();
-                blit1->shader.setFloat("texelsize_v", 1.0f / (float)height);
+                blit1->shader.setFloat("texelsize_v", 2.0f / (float)height);
                 blit1->DrawQuad(normalShader->texes_output[1].id, false);
                 blit1->Blit(*temp1);
                 blit1->BindFrameBufferOver();
@@ -441,7 +441,7 @@ void WaveProcess::Process()
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit1->UseShader();
-                blit1->shader.setFloat("texelsize_v", 1.0f / (float)height);
+                blit1->shader.setFloat("texelsize_v", 2.0f / (float)height);
                 blit1->DrawQuad(temp2->texture.id, false);
                 blit1->Blit(*temp1);
                 blit1->BindFrameBufferOver();
@@ -567,7 +567,7 @@ void WaveProcess::Process()
             copy->Blit(*temp6);
             copy->BindFrameBufferOver();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 3; i++)
             {
 
 
@@ -579,7 +579,7 @@ void WaveProcess::Process()
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                     glDepthFunc(GL_LEQUAL);
                     blit1->UseShader();
-                    blit1->shader.setFloat("texelsize_v", 1.0f / (float)height);
+                    blit1->shader.setFloat("texelsize_v", (3-i)*1.0f / (float)height);
                     blit1->DrawQuad(temp6->texture.id, false);
                     blit1->Blit(*temp5);
                     blit1->BindFrameBufferOver();
@@ -592,7 +592,7 @@ void WaveProcess::Process()
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit2->UseShader();
-                blit2->shader.setFloat("texelsize_h", 1.0f / (float)width);
+                blit2->shader.setFloat("texelsize_h", (3 - i) * 1.0f / (float)width);
                 blit2->DrawQuad(temp5->texture.id, false);
                 blit2->Blit(*temp6);
                 blit2->BindFrameBufferOver();

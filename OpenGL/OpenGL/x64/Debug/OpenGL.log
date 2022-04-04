@@ -1,4 +1,4 @@
-﻿  VoxelProcess.cpp
+﻿  Execute.cpp
 E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
 E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(270,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
           with
@@ -32,29 +32,75 @@ E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(348,36): warning C4244: �
               T=float
           ]
 E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mymath.h(12,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(91,38): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(174,117): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(174,93): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(174,69): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(204,23): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(205,24): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(286,46): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(287,46): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(334,51): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(336,51): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(540,44): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(542,44): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(601,60): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(601,55): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(602,70): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(602,65): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(661,20): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(671,17): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(672,18): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(678,26): warning C4244: “/=”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(681,65): warning C4244: “参数”: 从“int”转换到“T”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.h(116,31): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(88,23): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(89,25): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(107,23): warning C4244: “-=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(145,24): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Execute.cpp(309,48): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+  VoxelProcess.cpp
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(62,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(270,19): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
           with
           [
               T=float
           ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(270,40): warning C4244: “初始化”: 从“T”转换到“int”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(288,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(251,40): warning C4101: “e”: 未引用的局部变量
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(317,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(319,1): warning C4267: “参数”: 从“size_t”转换到“GLuint”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(326,1): warning C4267: “参数”: 从“size_t”转换到“GLenum”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(327,1): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(348,62): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(348,49): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(348,36): warning C4244: “参数”: 从“T”转换到“GLuint”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mymath.h(12,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(101,38): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(187,117): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(187,93): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(187,69): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(217,23): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(218,24): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(299,46): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(300,46): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(509,47): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(511,47): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(532,44): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(534,44): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(575,44): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(577,44): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(653,59): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(695,59): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(791,60): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(791,55): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(792,70): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(792,65): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(799,63): warning C4305: “参数”: 从“double”到“float”截断
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(856,20): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(872,17): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(873,18): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(879,26): warning C4244: “/=”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\VoxelProcess.cpp(882,65): warning C4244: “参数”: 从“int”转换到“T”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+  正在生成代码...
   OpenGL.vcxproj -> E:\AboutLearning\OpenGL\OpenGL\x64\Debug\OpenGL.exe

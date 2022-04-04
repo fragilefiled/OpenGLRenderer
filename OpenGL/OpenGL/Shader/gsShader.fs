@@ -136,6 +136,10 @@ vec3 projectxy=fs_in.projectPos.xyz;
 vec2 limitZ=fs_in.limitZ;
 vec4 AABB=fs_in.AABB;
 vec3 normal=normalize(fs_in.normal);
+//  if( !gl_FrontFacing )
+//        normal=-normal;
+//        else
+//       normal=normal;
 normal=EncodeNormal(normal);
 ivec3 worldTexCoord=ivec3( (fs_in.worldTexCoord.x),(fs_in.worldTexCoord.y),(fs_in.worldTexCoord.z));
 // uint staticFlagRead=imageLoad(voxelMap_staticMark,worldTexCoord).x;
@@ -144,41 +148,15 @@ ivec3 worldTexCoord=ivec3( (fs_in.worldTexCoord.x),(fs_in.worldTexCoord.y),(fs_i
 //if enable conservative rasterization 
 // if(projectxy.x<=AABB.x||projectxy.y<=AABB.y||projectxy.x>=AABB.z||projectxy.y>=AABB.w||projectxy.z<=limitZ.x||projectxy.z>=limitZ.y)
 //     discard;
-
+   
 vec4 albedo=texture(texture_Diffuse_0,fs_in.texCoord);
-// vec4 prevalbedo=imageLoad(voxelMap_diffuse,ivec3( floor(fs_in.worldTexCoord.x),floor(fs_in.worldTexCoord.y),floor(fs_in.worldTexCoord.z)));
-// vec4 prevnormal=imageLoad(voxelMap_normal,ivec3( floor(fs_in.worldTexCoord.x),floor(fs_in.worldTexCoord.y),floor(fs_in.worldTexCoord.z)));
-// prevnormal.xyz=normalize(EncodeNormal(prevnormal.xyz));
 
- //if(prevalbedo==vec4(0.0))//one voxel can only be written once
-{
-// albedo=(albedo+prevalbedo)*0.5;
-// normal=normalize((normal+prevnormal)*0.5);
-// normal=DecodeNormal(normal);
-//imageStore(voxelMap_diffuse,ivec3( floor(fs_in.worldTexCoord.x),floor(fs_in.worldTexCoord.y),floor(fs_in.worldTexCoord.z)),ivec4(128,64,29,1.0));//记得他的normal还有平均的误差
-//imageStore(voxelMap_normal,ivec3(fs_in.worldTexCoord.x,fs_in.worldTexCoord.y,fs_in.worldTexCoord.z),ivec4(normal,1.0));
-}
 
 imageAtomicRGBA8Avg(voxelMap_diffuse,worldTexCoord,vec4(albedo.xyz,1.0));
 // imageAtomicRGBA8Avg(voxelMap_diffuse,worldTexCoord,vec4(vec3(fs_in.texCoord,0.0),1.0));
 imageAtomicRGBA8Avg(voxelMap_normal,worldTexCoord,vec4(normal,1.0));
 //imageStore(voxelMap_staticMark,worldTexCoord,ivec4(staticFlag,staticFlag,staticFlag,staticFlag));
-// else
-// {
-    
-//     // albedo.xyz=albedo.xyz+prevalbedo.xyz*prevalbedo.w;
-//     // albedo.w=prevalbedo.w+1.0;
-//     // albedo.xyz/=albedo.w;
-//     albedo=albedo+prevalbedo;
-//     normal.xyz=normal.xyz+prevnormal.xyz*prevnormal.w;
-//     normal.xyz/=(prevnormal.w+1.0);
-//     normal=normalize(normal);
-//     normal=DecodeNormal(normal);
-   
-//     imageStore(voxelMap_diffuse,ivec3( floor(fs_in.worldTexCoord.x),floor(fs_in.worldTexCoord.y),floor(fs_in.worldTexCoord.z)),vec4(albedo));//记得他的normal还有平均的误差
-   
-//     imageStore(voxelMap_normal,ivec3(fs_in.worldTexCoord.x,fs_in.worldTexCoord.y,fs_in.worldTexCoord.z),vec4(normal,prevnormal.w+1.0));
-// }
+
 
     FragColor=albedo;
 }

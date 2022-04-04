@@ -24,19 +24,6 @@ uniform float directLight;
 //     vec3(-0.50937f, 0.5f, -0.7006629f),
 //     vec3(-0.823639f, 0.5f, 0.267617f)
 // };
-// const vec3 propagationDirections[] =
-// {
-//   vec3(0.0f, 1.0f, 0.0f),
-//     vec3(0.0f, 0.5f, 0.866025f),
-//     vec3(0.0, 0.5f, -0.866025f),
-//     vec3(0.866025f, 0.5f, 0.0f),
-//     vec3(-0.866025f, 0.5f, 0.0f),
-//     vec3(0.61237243569579, 0.5f, 0.61237243569579),
-//     vec3(-0.61237243569579, 0.5f, 0.61237243569579),
-//     vec3(0.61237243569579, 0.5f, -0.61237243569579),
-//     vec3(-0.61237243569579, 0.5f, -0.61237243569579)
-// };
-
 // const float diffuseConeWeights[] =
 // {
 //     PI / 4.0f,
@@ -46,18 +33,32 @@ uniform float directLight;
 //     3.0f * PI / 20.0f,
 //     3.0f * PI / 20.0f,
 // };
-// const float diffuseConeWeights[] =
-// {
-//         PI / 4.0f,
-//     3.0f * PI / 32.0f,
-//     3.0f * PI / 32.0f,
-//     3.0f * PI / 32.0f,
-//     3.0f * PI / 32.0f,
-//     3.0f * PI / 32.0f,
-//     3.0f * PI / 32.0f,
-//     3.0f * PI / 32.0f,
-//     3.0f * PI / 32.0f,
-// };
+const vec3 propagationDirections[] =
+{
+  vec3(0.0f, 1.0f, 0.0f),
+    vec3(0.0f, 0.5f, 0.866025f),
+    vec3(0.0, 0.5f, -0.866025f),
+    vec3(0.866025f, 0.5f, 0.0f),
+    vec3(-0.866025f, 0.5f, 0.0f),
+    vec3(0.61237243569579, 0.5f, 0.61237243569579),
+    vec3(-0.61237243569579, 0.5f, 0.61237243569579),
+    vec3(0.61237243569579, 0.5f, -0.61237243569579),
+    vec3(-0.61237243569579, 0.5f, -0.61237243569579)
+};
+
+
+const float diffuseConeWeights[] =
+{
+        PI / 4.0f,
+    3.0f * PI / 32.0f,
+    3.0f * PI / 32.0f,
+    3.0f * PI / 32.0f,
+    3.0f * PI / 32.0f,
+    3.0f * PI / 32.0f,
+    3.0f * PI / 32.0f,
+    3.0f * PI / 32.0f,
+    3.0f * PI / 32.0f,
+};
 // const float diffuseConeWeights[] =
 // {
 //     1.0f/9.0,
@@ -71,21 +72,21 @@ uniform float directLight;
 //     1.0f/9.0,
 // };
 // four cones
-const vec3 propagationDirections[] =
-{
-    vec3(0.0f, 1.0f, 0.0f),
-    vec3(0.0f, 0.5f, 0.866025f),
-    vec3(0.754996f, 0.5f, -0.4330128f),
-    vec3(-0.754996f, 0.5f, -0.4330128f)
-};
+// const vec3 propagationDirections[] =
+// {
+//     vec3(0.0f, 1.0f, 0.0f),
+//     vec3(0.0f, 0.5f, 0.866025f),
+//     vec3(0.754996f, 0.5f, -0.4330128f),
+//     vec3(-0.754996f, 0.5f, -0.4330128f)
+// };
 
-const float diffuseConeWeights[] =
-{
-    PI / 3.0f,
-    2.0f * PI / 9.0f,
-    2.0f * PI / 9.0f,
-    2.0f * PI / 9.0f,
-};
+// const float diffuseConeWeights[] =
+// {
+//     PI / 3.0f,
+//     2.0f * PI / 9.0f,
+//     2.0f * PI / 9.0f,
+//     2.0f * PI / 9.0f,
+// };
 
 
 
@@ -129,7 +130,7 @@ vec4 ConeTracing(vec3 pos,vec3 dir)
     // }
    
     result+=(1-result.a)*sampleColor;
-    stepCount+=max(stepCount,voxelSize);
+    stepCount+=max(stepCount,voxelSize)*0.5;
   // stepCount+=voxelSize;
   }
 
@@ -151,7 +152,7 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal)
       // vec3 x_axis=normalize(updir - dot(normal,updir) * normal);
       // vec3 z_axis=cross(x_axis,normal);
       vec4 result=vec4(0.0);
-      for(int i=0;i<4;i++)
+      for(int i=0;i<9;i++)
       {
         vec3 coneDir=propagationDirections[i].x*x_axis+normal+propagationDirections[i].z*z_axis;
         coneDir=normalize(coneDir);
