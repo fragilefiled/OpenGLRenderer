@@ -49,7 +49,7 @@ public:
 	int wave_particle_resolution_fliter =256;
 	float radius = 100*(wave_particle_resolution_fliter/1024.0f );
     bool enableWaveParticle = false;
-    bool enableWaveParticle_hvfliter = true;
+    bool enableWaveParticle_hvfliter = false;
 
     Shader* myshader = nullptr;
     // Shader lightshader = Shader(".//Shader//MyVertexShader.vs", ".//Shader//LightShader.fs", ".//Shader//LightShader.gs");

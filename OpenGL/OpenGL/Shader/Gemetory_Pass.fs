@@ -1,5 +1,5 @@
 #version 450 core
-
+layout(early_fragment_tests) in;
 in VS_OUT
 {
  vec3 worldPos;

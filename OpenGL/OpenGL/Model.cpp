@@ -1,15 +1,34 @@
 #include"Model.h"
 
-void Model::Draw(Shader &shader, vector<Texture> textures_RT,CubeMap* cubemap, vector<Texture3D> voxel_RT)
+
+void Model::Draw(Shader &shader, vector<Texture> textures_RT,CubeMap* cubemap, vector<Texture3D> voxel_RT,Camera*camera)
 {
-	for (int i = 0; i < meshes.size(); i++)
-		meshes[i].Draw(shader, textures_RT,cubemap,voxel_RT);
+  /*  float a=glfwGetTime();*/
+    for (int i = 0; i < meshes.size(); i++) {
+        if (camera != nullptr) {
+            if (!meshes[i].InFrustum(camera->FrustumPlane)) {
+             
+                continue;
+            }                         
+        }
+        
+        meshes[i].Draw(shader, textures_RT, cubemap, voxel_RT);
+    }
+    //float b= glfwGetTime();
+    //cout <<  to_string((b - a) * 1000 )+ "draw"<<endl;
+    
+}
+
+void Model::UpdateBoundingBox(glm::mat3x3 rotation, glm::vec3 translate, glm::vec3 scale, bool enableRotate)
+{
+    for (int i = 0; i < meshes.size(); i++)
+        meshes[i].TransformBoundingBox(rotation, translate, scale,enableRotate);
 }
 
 void Model::loadModel(string path)
 {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs| aiProcess_CalcTangentSpace);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs| aiProcess_CalcTangentSpace| aiProcess_OptimizeMeshes| aiProcess_OptimizeGraph);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {

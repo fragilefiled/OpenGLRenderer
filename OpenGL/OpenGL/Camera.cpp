@@ -44,7 +44,7 @@ glm::mat4 Camera::GetProjection()
 	projection = glm::perspective(glm::radians(GetFov()), (float)width / (float)height, 0.1f, 100.0f);
 	else
 	{
-		float temp = 25.0f;
+		float temp = 15.0f;
 		projection = glm::ortho(-temp, temp, -temp, temp, 0.0f, 2*temp);;
 	}
 	return projection;
@@ -93,6 +93,22 @@ std::vector<glm::mat4> Camera::GetVoxelViewProjectionInverse(glm::vec3 cameraPos
 	}
 	
 	return ViewProjectionInverseArray;
+}
+
+void Camera::GenerateFrustum(glm::mat4 viewProjection)
+{
+	glm::vec4 rows[4];
+	for (int i = 0; i < 4; i++)
+		rows[i] = glm::vec4(viewProjection[0][i], viewProjection[1][i], viewProjection[2][i], viewProjection[3][i]);
+	FrustumPlane[0] = rows[3] + rows[0];//Left
+	FrustumPlane[1] = rows[3] - rows[0];//Right
+	FrustumPlane[2] = rows[3] - rows[1];//Top
+	FrustumPlane[3] = rows[3] + rows[1];//Bottom
+	FrustumPlane[4] = rows[3] + rows[2];//Near
+	FrustumPlane[5] = rows[3] - rows[2];//Far
+
+	for (int i = 0; i < 6; i++)
+		FrustumPlane[i] /=glm::length(FrustumPlane[i]);
 }
 
 void Camera::Move(Direction direction,float deltaTime)

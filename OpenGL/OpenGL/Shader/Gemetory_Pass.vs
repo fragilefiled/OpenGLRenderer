@@ -21,11 +21,11 @@ out VS_OUT{
 
 }vs_out;
 
-
+uniform mat4 mvp;
 uniform mat4 model_inverse_t;
 void main()
 {
-	
+	//gl_Position = mvp*vec4(aPos.x, aPos.y, aPos.z, 1.0);
 	gl_Position = projection*view*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
 	//ourColor = aColor;
 	vs_out.worldPos =vec3(model * vec4(aPos, 1.0));

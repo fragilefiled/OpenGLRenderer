@@ -50,9 +50,13 @@ uniform vec3 worldMaxPoint;
 uniform mat4 inverseProjectionView;
 uniform float maxDistance;
 uniform float stepLength;
+uniform float Aperture;
+uniform float occ_falloff;
+uniform bool enableAmbientOcc;
 const vec3 diffuseConeDirections[] =
 {
     vec3(0.0f, 1.0f, 0.0f),
+    vec3(0.0f, 0.5f, 0.866025f),
     vec3(0.823639f, 0.5f, 0.267617f),
     vec3(0.509037f, 0.5f, -0.7006629f),
     vec3(-0.50937f, 0.5f, -0.7006629f),
@@ -62,10 +66,11 @@ const vec3 diffuseConeDirections[] =
 const float diffuseConeWeights[] =
 {
     PI / 4.0f,
-    3.0f * PI / 16.0f,
-    3.0f * PI / 16.0f,
-    3.0f * PI / 16.0f,
-    3.0f * PI / 16.0f,
+    3.0f * PI / 20.0f,
+    3.0f * PI / 20.0f,
+    3.0f * PI / 20.0f,
+    3.0f * PI / 20.0f,
+    3.0f * PI / 20.0f,
 };
 
 // const vec3 diffuseConeDirections[] =
@@ -155,7 +160,7 @@ vec4 ConeTracing(vec3 pos,vec3 dir,vec3 worldPos,vec3 normal)
 
  float dst=0;
   vec4 result=vec4(0.0);
-
+  float occlusion=0;
     float voxelSize=(2.0/float(voxelResolutionI)*voxelWidthWorld);
       worldPos=worldPos+normal*voxelSize;
   vec3 samplePos=worldPos ;
@@ -163,6 +168,7 @@ vec4 ConeTracing(vec3 pos,vec3 dir,vec3 worldPos,vec3 normal)
 float mipMaxLevel = log2(float(voxelResolutionI)) - 1.0f;
  float count=0;
  ivec3 samplePosVoxel=ivec3(0);
+  float falloff = 0.5f * occ_falloff / voxelWidthWorld;
   while(result.a<1.0&&samplePos.x>worldMinPoint.x&&samplePos.x<worldMaxPoint.x&&samplePos.y>worldMinPoint.y&&samplePos.y<worldMaxPoint.y&&samplePos.z>worldMinPoint.z&&samplePos.z<worldMaxPoint.z&&stepCount<=voxelWidthWorld*maxDistance)
   {
    //  stepCount=voxelSize* 0.5f+stepCount;
@@ -171,18 +177,19 @@ float mipMaxLevel = log2(float(voxelResolutionI)) - 1.0f;
     // mipmaplevel = min(max(mipmaplevel - 1.0f, 0.0f),mipMaxLevel);
      vec3 samplePosVoxel=worldToVoxel(samplePos)/float(voxelResolutionI);
      float aperture=0.577355f;
-        float diameter = 2.0f *1.0f * stepCount;
+        float diameter = 2.0f *Aperture * stepCount;
         float mipmaplevel=log2(diameter/voxelSize);
         mipmaplevel = min(max(mipmaplevel - 1.0f, 0.0f),mipMaxLevel);
     vec4 sampleColor=textureLod(voxelMipMap[x_select],samplePosVoxel,mipmaplevel)*weight.x
     +textureLod(voxelMipMap[y_select],samplePosVoxel,mipmaplevel)*weight.y
     +textureLod(voxelMipMap[z_select],samplePosVoxel,mipmaplevel)*weight.z;
-  
+    
       if(mipmaplevel < 1.0f)
     {
         vec4 baseColor = texture(voxelMap_radiance, samplePosVoxel);
         sampleColor = mix(baseColor, sampleColor, clamp(mipmaplevel, 0.0f, 1.0f));
     }
+    occlusion=occlusion+(1-occlusion)*sampleColor.a/(1+diameter*falloff);
     result+=(1-result.a)*sampleColor;
    
     //stepCount+=max(stepCount,voxelSize);
@@ -193,8 +200,8 @@ float mipMaxLevel = log2(float(voxelResolutionI)) - 1.0f;
 
  // result=textureLod(voxelMipMap[x_select],pos,3.0);
   //return vec4(worldPos,1.0);
-
-  return result;
+  
+  return vec4(result.rgb,occlusion);
 
 }
 
@@ -206,7 +213,7 @@ float CalcShadow(vec4 worldPos,vec3 normal){
     vec4 lightSpacePos=lightMat*worldPos;
     vec2 lightuv=(lightSpacePos/lightSpacePos.w).xy*0.5+0.5;
         float depthz=(lightSpacePos/lightSpacePos.w).z*0.5+0.5;
-        float bias = max(0.05 * (1.0 - dot(-normal, dirLight.lightDir)), 0.005);
+        float bias = max(0.05 * (1.0 - dot(-normal, dirLight.lightDir)), 0.0001);
         float shadow=depthz-bias<texture(shadowMap,lightuv).r?1.0:0.0;
         return shadow;
 
@@ -228,7 +235,7 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal,vec4 albedo)
       // vec3 x_axis=normalize(updir - dot(normal,updir) * normal);
       // vec3 z_axis=cross(x_axis,normal);
       vec4 result=vec4(0.0);
-      for(int i=0;i<5;i++)
+      for(int i=0;i<6;i++)
       {
         vec3 coneDir=diffuseConeDirections[i].x*x_axis+normal+diffuseConeDirections[i].z*z_axis;
         coneDir=normalize(coneDir);
@@ -236,7 +243,10 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal,vec4 albedo)
 
 
       }
-    return clamp(result*albedo,0.0f,1.0f);
+      if(enableAmbientOcc)
+    return vec4((result*albedo).rgb,clamp(1.0f - result.a , 0.0f, 1.0f) );
+    else
+      return vec4((result*albedo).rgb,1.0f );
 }
 vec4 brdf(vec3 pos,vec3 normal,vec4 albedo)
 {
@@ -281,7 +291,8 @@ vec4 albedo=texture(gAlbedoSpec,uv);
     vec4 indirectLighting=CalcIndirectLighting(worldPos.xyz,normal,albedo);
     vec4 directLighting=CalcdirectLighting(worldPos.xyz,normal,albedo);
 
-FragColor=directLighting*deferDirLight+indirectLighting*deferInDirLight;
+FragColor=(directLighting*deferDirLight+indirectLighting*deferInDirLight)*indirectLighting.a;
+//FragColor=vec4(indirectLighting.a);
 //FragColor=vec4(normal,1.0);
 //FragColor=texture(voxelMap_radiance,worldToVoxel(worldPos.xyz)/float(voxelResolutionI));
 //FragColor=textureLod(voxelMipMap[0],worldToVoxel(worldPos.xyz)/float(voxelResolutionI),0);

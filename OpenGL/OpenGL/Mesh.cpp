@@ -3,7 +3,11 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 {
 	if (instanceAmount == 0)
 		this->instanceAmount = modelMatrices.size();
+	AABB.pMin = glm::vec3(1e10);
+	AABB.pMax = glm::vec3(-1e10);
+	GenerateBoundingBox();
 	setupMesh();
+	
 }
 
 
@@ -13,7 +17,7 @@ Mesh::~Mesh()
 	   
 }
 
-void Mesh::Draw(Shader& shader,vector<Texture>textures_RT, CubeMap* cubemap, vector<Texture3D> voxel_RT)
+void Mesh::Draw(Shader& shader,vector<Texture>&textures_RT, CubeMap* cubemap, vector<Texture3D> &voxel_RT)
 { 
 	int diffuseIndex = 0;
 	int specIndex = 0;
@@ -94,6 +98,7 @@ void Mesh::Draw(Shader& shader,vector<Texture>textures_RT, CubeMap* cubemap, vec
 
 void Mesh::setupMesh()
 {
+	
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -134,6 +139,24 @@ void Mesh::setupMesh()
 
     glBindVertexArray(0);
 }
+bool Mesh::InFrustum(const glm::vec4 Plane[])
+{
+	glm::vec3 center = (AABB_Transform.pMax + AABB_Transform.pMin)/glm::vec3(2.0);
+	glm::vec3 extent = (AABB_Transform.pMax - AABB_Transform.pMin) / glm::vec3(2.0);
+	
+	for (int i = 0; i < 6; i++) {
+		glm::vec3 normal = Plane[i];
+		float radius = glm::dot(extent, abs(normal));
+		float distance= glm::dot(center, normal)+Plane[i].w;
+
+		
+		if (distance + radius <= 0.0f)//-distance>=radius
+		{
+			return false;
+		}
+	}
+	return true;
+}
 void Mesh::LoadInstance(){
 	if (drawinstance)
 	{
@@ -160,6 +183,64 @@ void Mesh::LoadInstance(){
 
 
 	}
+
+
+}
+
+void Mesh::GenerateBoundingBox()
+{
+	
+	for (int i = 0; i < vertices.size(); i++) 
+	{
+
+		AABB.pMax.x = max(vertices[i].Position.x, AABB.pMax.x);
+		AABB.pMax.y = max(vertices[i].Position.y, AABB.pMax.y);
+		AABB.pMax.z = max(vertices[i].Position.z, AABB.pMax.z);
+		AABB.pMin.x = min(vertices[i].Position.x, AABB.pMin.x);
+		AABB.pMin.y = min(vertices[i].Position.y, AABB.pMin.y);
+		AABB.pMin.z = min(vertices[i].Position.z, AABB.pMin.z);
+
+	}
+}
+
+void Mesh::TransformBoundingBox(glm::mat3x3 rotation, glm::vec3 translate, glm::vec3 scale,bool enableRotate)
+{
+	float  a, b;
+
+
+	int    i, j;
+
+	/*Copy box A into a min array and a max array for easy reference.*/
+	
+	glm::vec3 Amax = scale*AABB.pMax;
+	glm::vec3 Amin = scale * AABB.pMin;
+	AABB_Transform.pMax = translate;
+	AABB_Transform.pMin = translate;
+	if (enableRotate) {
+		for (i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				a = rotation[j][i] * Amin[j];
+				b = rotation[j][i] * Amax[j];
+				if (a < b) {
+					AABB_Transform.pMin[i] += a;
+					AABB_Transform.pMax[i] += b;
+				}
+				else {
+					AABB_Transform.pMin[i] += b;
+					AABB_Transform.pMax[i] += a;
+				}
+
+
+
+			}
+		}
+	}
+	else {
+		AABB_Transform.pMax += Amax;
+		AABB_Transform.pMin += Amin;
+
+	}
+
 
 
 }

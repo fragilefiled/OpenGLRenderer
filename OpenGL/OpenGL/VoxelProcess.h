@@ -21,6 +21,7 @@
 #include"Texture3D.h"
 #include"VoxelModel.h"
 #include"Gbuffer.h"
+#include <GLFW\glfw3.h>
 class VoxelProcess :public RenderProcess
 {
 public:
@@ -30,18 +31,24 @@ public:
     void Process();
     void GenerateMipmap();
     
-    
+    float deltaTime = 0.0f; // 当前帧与上一帧的时间差
+    float lastFrame = 0.0f;
     glm::mat4 view;
     glm::vec4 windspeed = glm::vec4(11.0f, 23.0f, 28.0f, 0.0f);
     glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
+    //glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
     glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
     float maxdistance=0.5f;
     float stepLength = 0.5;
+    float aperture = 1.0f;
+    float occ_falloff = 800.0f;
     int width = 1024;
     int height = 1024;
     int CSwidth = 256;
     int CSheight = 256;
     bool InjectFirstBounce = false;
+    bool EnableAmbientOcc = false;
+    bool EnableVoxelization = true;
     Shader* deferVoxelConeTracing = nullptr;
     Shader* Gemetory_Pass = nullptr;
     Shader* depthVoxelShader = nullptr;
@@ -83,10 +90,10 @@ public:
     FBO* temp1 = nullptr;
     FBO* temp2 = nullptr;
     FBO* voxelRT = nullptr;
-
+    
     PostEffect* posteffect = nullptr;
     
-
+    Camera VoxelCullCamera;
 
 
 
@@ -122,7 +129,7 @@ public:
     int shadowwidth = width;
     int shadowheight =  height;
     int voxel_resolution = 256;
-    int voxel_width_world = 18;
+    int voxel_width_world = 24;
     float RasterScale = 1.3f;
     float Xscale = voxel_width_world/(float)voxel_resolution;
     int normalBlend = 0;
@@ -142,6 +149,7 @@ public:
    // std::vector<float> data;
     glm::vec3  voxelWorldMinPoint;
     glm::vec3  voxelWorldMaxPoint;
+    void CalculateDeltaTime();
     ~VoxelProcess();
 
 

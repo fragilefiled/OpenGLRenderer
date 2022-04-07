@@ -18,6 +18,7 @@ enum  Direction
 	  glm::vec3 frontDir;
 	  glm::mat4 view;
 	  glm::mat4 projection;
+	  
 	  float fov;
 	  float cameraSpeed;
 	  
@@ -42,6 +43,7 @@ public:
 		 float nearPlane;
 		 float farPlane;
 		 bool isPerspective;
+		 glm::vec4  FrustumPlane[6];
 		 glm::mat4 SetPos(glm::vec3 pos);
 		 glm::vec3 GetPos();
 		 glm::mat4 SetFrontDir(glm::vec3 frontDir);
@@ -52,6 +54,7 @@ public:
 		 glm::vec3& getVoxelMaxPoint(glm::vec3 cameraPos, int voxelSize);
 		 std::vector<glm::mat4> GetVoxelViewProjection(glm::vec3 cameraPos, int voxelsize);
 		 std::vector<glm::mat4> GetVoxelViewProjectionInverse(glm::vec3 cameraPos, int voxelsize);
+		 void GenerateFrustum(glm::mat4 viewProjection);
 		 void Move(Direction direction, float deltaTime);
 		 float GetFov();
 		 void SetFov(float fov);

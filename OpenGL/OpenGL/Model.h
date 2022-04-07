@@ -4,7 +4,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
+#include "Camera.h"
+#include <GLFW\glfw3.h>
 class Model
 {
 public:
@@ -15,8 +16,8 @@ public:
     }
     
     
-    void Draw(Shader& shader, vector<Texture> textures_RT = vector<Texture>(),CubeMap* cubemap=nullptr,vector<Texture3D> voxel_RT=vector<Texture3D>());
-   
+    void Draw(Shader& shader, vector<Texture> textures_RT = vector<Texture>(),CubeMap* cubemap=nullptr,vector<Texture3D> voxel_RT=vector<Texture3D>(),Camera*camera=nullptr);
+    void UpdateBoundingBox(glm::mat3x3 rotation, glm::vec3 translate, glm::vec3 scale,bool enableRotate);
     vector<Mesh> meshes;
     ~Model();
 private:

@@ -284,7 +284,7 @@ int main(int, char**)
 
 
  //   std::vector<Texture> rt = std::vector<Texture>(7);
-    //WaveProcess* process = new WaveProcess(camera);
+   // WaveProcess* process = new WaveProcess(camera);
     //process->Init();
        VoxelProcess* process = new VoxelProcess(camera);
        process->Init();
@@ -294,7 +294,7 @@ int main(int, char**)
        auto  renderer = glGetString(GL_RENDERER);
     while (!glfwWindowShouldClose(window))
     {
-      
+       
         /*timeFrame++;
         timeFrame += deltaTime;
         if (timeFrame > 1.0f) {
@@ -303,22 +303,24 @@ int main(int, char**)
             timeFrame = 0.0f;
 
         }*/
-       
+   /*     CalculateDeltaTime();*/
         Time += deltaTime;
        // process1->SetCameraAndTime(camera, Time*1.00);
-        process->SetCameraAndTime(camera, Time * 1.00);
+        process->SetCameraAndTime(camera, Time);
         // Start the Dear ImGui frame
+        
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
         //glEnable(GL_MULTISAMPLE);
 
-        CalculateDeltaTime();
+      
         //输入
         processInput(window);
-        cout << 1000 * deltaTime << endl;
+       
       //  process1->Process();
+        
         process->Process();
         
             
@@ -326,15 +328,18 @@ int main(int, char**)
         
           
         
-
+        CalculateDeltaTime();
         ImGui::Render();
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
+        
         glViewport(0, 0, display_w, display_h);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwPollEvents();
         glfwSwapBuffers(window);
-
+        CalculateDeltaTime();
+        cout << 1000 * deltaTime << endl;
+        
     }
    
     ImGui_ImplOpenGL3_Shutdown();
