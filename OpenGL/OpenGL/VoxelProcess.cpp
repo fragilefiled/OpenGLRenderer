@@ -618,7 +618,9 @@ void VoxelProcess::Process()
     {
        /* posteffect->DebugDraw(depthMap->texture.id);*/
         
+       
         {
+            CalculateDeltaTime();
             blit1->BindFrameBufferInit();
             glViewport(0, 0, width, height);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -658,52 +660,10 @@ void VoxelProcess::Process()
             lightPass->shader.setInt("voxelResolutionI", voxel_resolution);
             lightPass->shader.setFloat("voxelWidthWorld", voxel_width_world);
             lightPass->shader.setVec3("worldMinPoint", voxelWorldMinPoint);
-            lightPass->shader.setVec3("cameraPos", camera.GetPos());
-            lightPass->shader.setFloat("deferDirLight", 0);
-            lightPass->shader.setFloat("deferInDirLight", deferInDirLight);
-            lightPass->DrawQuad(0, false);
-            blit1->Blit(*temp1);
-            blit1->BindFrameBufferOver();
-        }//get Indir Light
-        {
-            blit1->BindFrameBufferInit();
-            glViewport(0, 0, width, height);
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-            lightPass->UseShader();
-            for (int i = 0; i < 4; i++) {
-                glActiveTexture(GL_TEXTURE0 + i + 1);
-                lightPass->shader.setInt(gBuffer->gBufferTex[i].nameInShader, i + 1);
-                glBindTexture(GL_TEXTURE_2D, gBuffer->gBufferTex[i].id);
-            }
-            for (unsigned int i = 0; i < 4; i++)
-            {
-                // calculate the model matrix for each object and pass it to shader before drawing
-                lights[i].SetLight(lightPass->shader);
-            }
-            glActiveTexture(GL_TEXTURE0 + 5);
-            voxel_radiance->nameInShader = "voxelMap_radiance";
-            lightPass->shader.setInt(voxel_radiance->nameInShader, 5);
-            glBindTexture(GL_TEXTURE_3D, voxel_radiance->id);
-
-            glActiveTexture(GL_TEXTURE0 + 6);
-            depthMapDefer->texture.nameInShader = "shadowMap";
-            lightPass->shader.setInt(depthMapDefer->texture.nameInShader, 6);
-            glBindTexture(GL_TEXTURE_2D, depthMapDefer->texture.id);
-            for (int i = 0; i < 6; i++) {
-                glActiveTexture(GL_TEXTURE0 + 7 + i);
-                lightPass->shader.setInt(voxel_anisotropicmipmap[i]->nameInShader, 7 + i);
-                glBindTexture(GL_TEXTURE_3D, voxel_anisotropicmipmap[i]->id);
-            }
-            lightPass->shader.setMatrix("lightMat", (lightProjection * lightView));
-            lightPass->shader.setInt("voxelResolutionI", voxel_resolution);
-            lightPass->shader.setFloat("voxelWidthWorld", voxel_width_world);
-            lightPass->shader.setVec3("worldMinPoint", voxelWorldMinPoint);
             lightPass->shader.setVec3("worldMaxPoint", voxelWorldMaxPoint);
             lightPass->shader.setVec3("cameraPos", camera.GetPos());
             lightPass->shader.setFloat("deferDirLight", deferDirLight);
-            lightPass->shader.setFloat("deferInDirLight", 0);
+            lightPass->shader.setFloat("deferInDirLight", deferInDirLight);
             lightPass->shader.setMatrix("inverseProjectionView", glm::inverse(projection * view));
             lightPass->shader.setFloat("maxDistance", maxdistance);
             lightPass->shader.setFloat("stepLength", stepLength);
@@ -711,58 +671,111 @@ void VoxelProcess::Process()
             lightPass->shader.setFloat("occ_falloff", occ_falloff);
             lightPass->shader.setBool("enableAmbientOcc", EnableAmbientOcc);
             lightPass->DrawQuad(0, false);
-            blit1->Blit(*temp2);
+            blit1->Blit(*temp1);
             blit1->BindFrameBufferOver();
-          
-        } //get Dir Light
-        if (limit.x > 0.2) 
-        {
-            for (int i = 0; i < 0; i++)
-            {
-                blit1->BindFrameBufferInit();
-                glViewport(0, 0, width, height);
-                glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-               // glClear(GL_COLOR_BUFFER_BIT);
-                glDepthFunc(GL_ALWAYS);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-                //glDepthFunc(GL_LEQUAL);
-                blit1->UseShader();
-                blit1->shader.setFloat("texelsize_v", (float)1 / (float)height);
-                blit1->DrawQuad(temp1->texture.id, false);
-                blit1->Blit(*temp1);
-                blit1->BindFrameBufferOver();
+        }//get Indir Light
+       
+        //{
+        //    blit1->BindFrameBufferInit();
+        //    glViewport(0, 0, width, height);
+        //    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        //    glClear(GL_COLOR_BUFFER_BIT);
+        //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        //    lightPass->UseShader();
+        //    for (int i = 0; i < 4; i++) {
+        //        glActiveTexture(GL_TEXTURE0 + i + 1);
+        //        lightPass->shader.setInt(gBuffer->gBufferTex[i].nameInShader, i + 1);
+        //        glBindTexture(GL_TEXTURE_2D, gBuffer->gBufferTex[i].id);
+        //    }
+        //    for (unsigned int i = 0; i < 4; i++)
+        //    {
+        //        // calculate the model matrix for each object and pass it to shader before drawing
+        //        lights[i].SetLight(lightPass->shader);
+        //    }
+        //    glActiveTexture(GL_TEXTURE0 + 5);
+        //    voxel_radiance->nameInShader = "voxelMap_radiance";
+        //    lightPass->shader.setInt(voxel_radiance->nameInShader, 5);
+        //    glBindTexture(GL_TEXTURE_3D, voxel_radiance->id);
 
-                blit2->BindFrameBufferInit();
-                glViewport(0, 0, width, height);
-                glClearColor(0.0f, 0.0f, 0.0, 0.0f);
-                glDepthFunc(GL_ALWAYS);
-              //  glClear(GL_COLOR_BUFFER_BIT);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-                //glDepthFunc(GL_LEQUAL);
-                blit2->UseShader();
-                blit2->shader.setFloat("texelsize_h", (float)1 / (float)width);
-                blit2->DrawQuad(temp1->texture.id, false);
-                blit2->Blit(*temp1);
-                blit2->BindFrameBufferOver();
-                glMemoryBarrier(GL_ALL_BARRIER_BITS);
-            }
-            AddInDirLight->BindFrameBufferInit();
-            glViewport(0, 0, width, height);
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            // glClear(GL_COLOR_BUFFER_BIT);
-            glDepthFunc(GL_ALWAYS);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-            AddInDirLight->UseShader();
-            glActiveTexture(GL_TEXTURE0 + 1);
-            temp1->texture.nameInShader = "IndirLightTexture";
-            AddInDirLight->shader.setInt(temp1->texture.nameInShader, 1);
-            glBindTexture(GL_TEXTURE_2D, temp1->texture.id);
-            AddInDirLight->DrawQuad(temp2->texture.id, false);
-            AddInDirLight->Blit(*temp1);
-            blit1->BindFrameBufferOver();
-          
-        }
+        //    glActiveTexture(GL_TEXTURE0 + 6);
+        //    depthMapDefer->texture.nameInShader = "shadowMap";
+        //    lightPass->shader.setInt(depthMapDefer->texture.nameInShader, 6);
+        //    glBindTexture(GL_TEXTURE_2D, depthMapDefer->texture.id);
+        //    for (int i = 0; i < 6; i++) {
+        //        glActiveTexture(GL_TEXTURE0 + 7 + i);
+        //        lightPass->shader.setInt(voxel_anisotropicmipmap[i]->nameInShader, 7 + i);
+        //        glBindTexture(GL_TEXTURE_3D, voxel_anisotropicmipmap[i]->id);
+        //    }
+        //    lightPass->shader.setMatrix("lightMat", (lightProjection * lightView));
+        //    lightPass->shader.setInt("voxelResolutionI", voxel_resolution);
+        //    lightPass->shader.setFloat("voxelWidthWorld", voxel_width_world);
+        //    lightPass->shader.setVec3("worldMinPoint", voxelWorldMinPoint);
+        //    lightPass->shader.setVec3("worldMaxPoint", voxelWorldMaxPoint);
+        //    lightPass->shader.setVec3("cameraPos", camera.GetPos());
+        //    lightPass->shader.setFloat("deferDirLight", deferDirLight);
+        //    lightPass->shader.setFloat("deferInDirLight", 0);
+        //    lightPass->shader.setMatrix("inverseProjectionView", glm::inverse(projection * view));
+        //    lightPass->shader.setFloat("maxDistance", maxdistance);
+        //    lightPass->shader.setFloat("stepLength", stepLength);
+        //    lightPass->shader.setFloat("Aperture", aperture);
+        //    lightPass->shader.setFloat("occ_falloff", occ_falloff);
+        //    lightPass->shader.setBool("enableAmbientOcc", EnableAmbientOcc);
+        //    lightPass->DrawQuad(0, false);
+        //    blit1->Blit(*temp2);
+        //    blit1->BindFrameBufferOver();
+        //  
+        //} //get Dir Light
+        //
+        //if (limit.x > 0.2) 
+        //{
+        //    for (int i = 0; i < 0; i++)
+        //    {
+        //        blit1->BindFrameBufferInit();
+        //        glViewport(0, 0, width, height);
+        //        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        //       // glClear(GL_COLOR_BUFFER_BIT);
+        //        glDepthFunc(GL_ALWAYS);
+        //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        //        //glDepthFunc(GL_LEQUAL);
+        //        blit1->UseShader();
+        //        blit1->shader.setFloat("texelsize_v", (float)1 / (float)height);
+        //        blit1->DrawQuad(temp1->texture.id, false);
+        //        blit1->Blit(*temp1);
+        //        blit1->BindFrameBufferOver();
 
+        //        blit2->BindFrameBufferInit();
+        //        glViewport(0, 0, width, height);
+        //        glClearColor(0.0f, 0.0f, 0.0, 0.0f);
+        //        glDepthFunc(GL_ALWAYS);
+        //      //  glClear(GL_COLOR_BUFFER_BIT);
+        //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        //        //glDepthFunc(GL_LEQUAL);
+        //        blit2->UseShader();
+        //        blit2->shader.setFloat("texelsize_h", (float)1 / (float)width);
+        //        blit2->DrawQuad(temp1->texture.id, false);
+        //        blit2->Blit(*temp1);
+        //        blit2->BindFrameBufferOver();
+        //        glMemoryBarrier(GL_ALL_BARRIER_BITS);
+        //    }
+        //    AddInDirLight->BindFrameBufferInit();
+        //    glViewport(0, 0, width, height);
+        //    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        //    // glClear(GL_COLOR_BUFFER_BIT);
+        //    glDepthFunc(GL_ALWAYS);
+        //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        //    AddInDirLight->UseShader();
+        //    glActiveTexture(GL_TEXTURE0 + 1);
+        //    temp1->texture.nameInShader = "IndirLightTexture";
+        //    AddInDirLight->shader.setInt(temp1->texture.nameInShader, 1);
+        //    glBindTexture(GL_TEXTURE_2D, temp1->texture.id);
+        //    AddInDirLight->DrawQuad(temp2->texture.id, false);
+        //    AddInDirLight->Blit(*temp1);
+        //    blit1->BindFrameBufferOver();
+        //  
+        //}
+     /*
+        CalculateDeltaTime();
+        cout << to_string(1000 * deltaTime) + "LightPass" << endl;*/
       posteffect->DebugDraw(temp1->texture.id);
       if(limit.x>0.25)
           posteffect->DebugDraw(depthMapDefer->texture.id);

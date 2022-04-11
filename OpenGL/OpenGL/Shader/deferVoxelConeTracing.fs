@@ -43,6 +43,7 @@ uniform sampler3D voxelMipMap[6];
 uniform mat4 lightMat;
 uniform vec3 cameraPos;
 #define PI 3.14159274f
+const float HALF_PI = 1.57079f;
 uniform float deferInDirLight;
 uniform float deferDirLight;
 uniform vec3 worldMinPoint;
@@ -151,7 +152,7 @@ const float diffuseConeWeights[] =
 ivec3 worldToVoxel(vec3 worldPos){
 return ivec3((worldPos-worldMinPoint)/voxelWidthWorld*float(voxelResolutionI));
 }
-vec4 ConeTracing(vec3 pos,vec3 dir,vec3 worldPos,vec3 normal)
+vec4 ConeTracing(vec3 pos,vec3 dir,vec3 worldPos,vec3 normal,float aperture)
 {
   vec3 weight=dir*dir;
   int x_select=dir.x>0?1:0;
@@ -176,8 +177,9 @@ float mipMaxLevel = log2(float(voxelResolutionI)) - 1.0f;
     // float mipmaplevel=log2(stepCount*float(voxelResolutionI));
     // mipmaplevel = min(max(mipmaplevel - 1.0f, 0.0f),mipMaxLevel);
      vec3 samplePosVoxel=worldToVoxel(samplePos)/float(voxelResolutionI);
-     float aperture=0.577355f;
-        float diameter = 2.0f *Aperture * stepCount;
+     //float aperture=0.577355f;
+       // float diameter = 2.0f *Aperture * stepCount;
+       float diameter = 2.0f *aperture * stepCount;
         float mipmaplevel=log2(diameter/voxelSize);
         mipmaplevel = min(max(mipmaplevel - 1.0f, 0.0f),mipMaxLevel);
     vec4 sampleColor=textureLod(voxelMipMap[x_select],samplePosVoxel,mipmaplevel)*weight.x
@@ -223,9 +225,15 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal,vec4 albedo)
 {
 
     vec3 updir=vec3(0,1,0);
-   // vec3 viewDir=normalize(pos-cameraPos);
-    //vec3 dir=normalize(reflect(viewDir,normal));
-    vec3 origin=worldToVoxel(pos);
+    vec3 viewDir=normalize(pos-cameraPos);
+    vec3 dir=normalize(reflect(viewDir,normal));
+    vec4 result=vec4(0.0);
+     vec3 origin=worldToVoxel(pos);
+     float aperture = clamp(tan(HALF_PI * (1.0f - albedo.a)), 0.0174533f, PI);
+    result+=ConeTracing(origin/float(voxelResolutionI),dir,pos,normal,aperture);
+    
+
+   
   
     if(abs(dot(updir,normal))==1)
       updir=vec3(0,0,1);
@@ -234,12 +242,12 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal,vec4 albedo)
 
       // vec3 x_axis=normalize(updir - dot(normal,updir) * normal);
       // vec3 z_axis=cross(x_axis,normal);
-      vec4 result=vec4(0.0);
+      
       for(int i=0;i<6;i++)
       {
         vec3 coneDir=diffuseConeDirections[i].x*x_axis+normal+diffuseConeDirections[i].z*z_axis;
         coneDir=normalize(coneDir);
-        result+=ConeTracing(origin/float(voxelResolutionI),coneDir,pos,normal)*diffuseConeWeights[i];
+        result+=ConeTracing(origin/float(voxelResolutionI),coneDir,pos,normal,Aperture)*diffuseConeWeights[i];
 
 
       }
