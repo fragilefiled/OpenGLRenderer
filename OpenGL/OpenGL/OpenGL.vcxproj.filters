@@ -105,6 +105,9 @@
     <ClCompile Include="Gbuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadPool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderCompile.h">
@@ -207,6 +210,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Gbuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

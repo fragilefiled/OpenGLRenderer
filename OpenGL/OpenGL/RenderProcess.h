@@ -9,4 +9,5 @@ public:
 	Camera camera;
 	float Time = 0.0f;
 	virtual void SetCameraAndTime(Camera& camera, float time) =0;
+	virtual void CalculateDeltaTime() = 0;
 };

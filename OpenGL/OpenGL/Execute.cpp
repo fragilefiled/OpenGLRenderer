@@ -284,14 +284,17 @@ int main(int, char**)
 
 
  //   std::vector<Texture> rt = std::vector<Texture>(7);
-   // WaveProcess* process = new WaveProcess(camera);
-    //process->Init();
-       VoxelProcess* process = new VoxelProcess(camera);
-       process->Init();
+    WaveProcess* process = new WaveProcess(camera);
+    process->Init();
+   /*    VoxelProcess* process = new VoxelProcess(camera);
+       process->Init();*/
     //int coutFrame = 0;
-   // float timeFrame = 0;
+    
        auto  vendor = glGetString(GL_VENDOR);
        auto  renderer = glGetString(GL_RENDERER);
+       int countFrame = 0;
+       float timeFrame = 0;
+       float avgfps = 0;
     while (!glfwWindowShouldClose(window))
     {
        
@@ -303,7 +306,7 @@ int main(int, char**)
             timeFrame = 0.0f;
 
         }*/
-   /*     CalculateDeltaTime();*/
+        CalculateDeltaTime();
         Time += deltaTime;
        // process1->SetCameraAndTime(camera, Time*1.00);
         process->SetCameraAndTime(camera, Time);
@@ -320,15 +323,15 @@ int main(int, char**)
         processInput(window);
        
       //  process1->Process();
-        
+         CalculateDeltaTime();
         process->Process();
-        
-            
+        CalculateDeltaTime();
+        Time += deltaTime;
         
         
           
         
-        CalculateDeltaTime();
+       
         ImGui::Render();
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -337,8 +340,18 @@ int main(int, char**)
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwPollEvents();
         glfwSwapBuffers(window);
-        CalculateDeltaTime();
-        cout << 1000 * deltaTime << endl;
+      
+        timeFrame += deltaTime;
+        countFrame++;
+        if (countFrame == 60) {
+            timeFrame /= 60.0;
+             avgfps = 1 / timeFrame;
+             timeFrame = 0.0;
+             countFrame = 0;
+             
+             cout << avgfps<<"avg" << endl;
+        }
+      
         
     }
    

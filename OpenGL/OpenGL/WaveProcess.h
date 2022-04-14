@@ -24,6 +24,7 @@ public:
     void SetCameraAndTime(Camera&camera,float time);
 	void Init();
 	void Process();
+    void CalculateDeltaTime();
 	glm::mat4 view;
 	glm::vec4 windspeed = glm::vec4(11.0f, 23.0f, 28.0f, 0.0f);
 	glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
@@ -43,14 +44,17 @@ public:
     float glossiness = 0.987f;
     float metallic = 0.987f;
     float jacobScaleEdge = 2.0f;
+    float deltaTime;
+    float lastFrame;
 	glm::vec4 scale_Control_WaveParicle = glm::vec4(0.3f, 1.0f, 0.8, 0.0f);
 	//glm::vec4 scale_Control_WaveParicle = glm::vec4(0.0f, 1.0f, 0.0, 0.0f);
 	int wave_particle_resolution = 64;
 	int wave_particle_resolution_fliter =256;
 	float radius = 100*(wave_particle_resolution_fliter/1024.0f );
-    bool enableWaveParticle = false;
-    bool enableWaveParticle_hvfliter = false;
-
+    bool enableWaveParticle = true;
+    bool enableWaveParticle_hvfliter = true;
+    int particleBlurPassNum = 3;
+    int displacementBlurPassNum = 3;
     Shader* myshader = nullptr;
     // Shader lightshader = Shader(".//Shader//MyVertexShader.vs", ".//Shader//LightShader.fs", ".//Shader//LightShader.gs");
     Shader* lightshader = nullptr;
@@ -154,7 +158,7 @@ public:
     int shadowheight = 2 * height;
     FBO *depthMap = nullptr;
     Wave_Particle_Pool* pool;
-    int particle_num = 700;
+    int particle_num = 800;
     std::vector<Texture> rt = std::vector<Texture>(10);
     ~WaveProcess();
        

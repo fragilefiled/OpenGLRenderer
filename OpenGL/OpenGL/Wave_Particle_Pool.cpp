@@ -3,14 +3,18 @@
 #include <iostream>
 #include <glad\glad.h>
 
+
 extern glm::vec2 rotate(glm::vec2 prev, float angle);
-Wave_Particle_Pool::Wave_Particle_Pool(int count,int bound, bool enablehvfliter ):count(count),bound(bound),enablehvfliter(enablehvfliter)
+Wave_Particle_Pool::Wave_Particle_Pool(int count,int bound,bool enablehvfliter ):count(count),bound(bound),enablehvfliter(enablehvfliter)
 {
 	InitPointDraw();
 
 	particles = std::vector<Wave_Particle>(count);
 	enableArray= std::vector<bool>(count,false);
-	
+	threadPool = new ThreadPool(8);
+	updatePool= std::function([this](int a, int b) { SinglePointUpdate(a, b); });
+
+	//updatePool = std::bind([this](int a, int b) { SinglePointUpdate(a, b); }, 2, 2); 两种写法一样
 }
 
 void Wave_Particle_Pool::PushToNewParticles(glm::vec2 birthPos, glm::vec2 pos, glm::vec2 wave_speed, float amplitude, float radius, float degree, float time)
@@ -34,6 +38,95 @@ void Wave_Particle_Pool::Merge()
 		particles[index].SetProperty(new_particles[i]);
 	}
 	new_particle_size = 0;
+}
+
+void Wave_Particle_Pool::SinglePointUpdate(int a,int b) 
+{
+
+
+	
+	for (int j = a; j < b; j++) {
+		int i = indexArray[j];
+		float radians = particles[i].degree / 2.0f / 180.0f * PI;
+		float distance = 0;
+		if (particles[i].degree == 360)
+			distance = 2 * glm::length(particles[i].pos - particles[i].birthPos);
+		else
+			distance = glm::length(particles[i].pos - particles[i].birthPos) * sin(radians) * 2;
+		
+		if (!enablehvfliter)
+		{
+			if (particles[i].pos.x >= bound) {
+				particles[i].wave_speed.x *= -1;
+				particles[i].pos.x = bound;
+			}
+			if (particles[i].pos.x <= 0) {
+				particles[i].wave_speed.x *= -1;
+				particles[i].pos.x = 0;
+			}
+			if (particles[i].pos.y >= bound) {
+				particles[i].wave_speed.y *= -1;
+				particles[i].pos.y = bound;
+			}
+			if (particles[i].pos.y <= 0) {
+				particles[i].wave_speed.y *= -1;
+				particles[i].pos.y = 0;
+			}
+		}
+		else {
+
+			if (particles[i].pos.x >= bound - 2 * particles[i].radius) {
+				particles[i].wave_speed.x *= -1;
+				particles[i].pos.x = bound - 2 * particles[i].radius;
+			}
+			if (particles[i].pos.x <= 2 * particles[i].radius) {
+				particles[i].wave_speed.x *= -1;
+				particles[i].pos.x = 2 * particles[i].radius;
+			}
+			if (particles[i].pos.y >= bound - 2 * particles[i].radius) {
+				particles[i].wave_speed.y *= -1;
+				particles[i].pos.y = bound - 2 * particles[i].radius;
+			}
+			if (particles[i].pos.y <= 2 * particles[i].radius) {
+				particles[i].wave_speed.y *= -1;
+				particles[i].pos.y = 2 * particles[i].radius;
+			}
+		}
+
+		//if (distance>particles[i].radius/2.0f&&indexArray.size()<2047)
+		//{
+		//	glm::vec2 dir = glm::normalize(particles[i].wave_speed);
+		//	glm::vec2 wavespeed1 = rotate(glm::normalize(dir), -particles[i].degree / 2.0f) * glm::length(particles[i].wave_speed);
+		//	glm::vec2 wavespeed2 = rotate(glm::normalize(dir), particles[i].degree / 2.0f) * glm::length(particles[i].wave_speed);
+		//	PushToparticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
+		//	PushToparticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
+		//	/*PushToNewparticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
+		//	PushToNewparticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);*/
+		//	particles[i].count = 0;
+		//	particles[i].amplitude /= 3.0f;
+		//	particles[i].degree /= 3.0f;
+		//}
+		if (particles[i].time > 400.0f) {
+			particles[i].enable = false;
+			enableArray[i] = false;
+		}
+		else {
+			//indexArray_end[i]=i;
+		
+		}
+		particles[i].time += 0.1f * 0.3333f;
+		particles[i].pos += 0.1f * 0.3333f * particles[i].wave_speed;
+
+		particles[i].count++;
+		
+	
+			
+
+	}
+	
+
+	
+
 }
 void Wave_Particle_Pool::ExPand() {
 
@@ -64,87 +157,111 @@ void Wave_Particle_Pool::ExPand() {
 	//	particles[i].count++;
 	//}
 
-
-	for (int j = 0; j <indexArray.size(); j++)
+//	{
+//		omp_set_num_threads(4);
+//#pragma omp parallel
+//		{
+//#pragma omp for
+//			for (int j = 0; j < indexArray.size(); j++)
+//			{
+//
+//				/*if (enableArray[i] == false)
+//					continue;*/
+//				int i = indexArray[j];
+//				float radians = particles[i].degree / 2.0f / 180.0f * PI;
+//				float distance = 0;
+//				if (particles[i].degree == 360)
+//					distance = 2 * glm::length(particles[i].pos - particles[i].birthPos);
+//				else
+//					distance = glm::length(particles[i].pos - particles[i].birthPos) * sin(radians) * 2;
+//				if (!enablehvfliter)
+//				{
+//					if (particles[i].pos.x >= bound) {
+//						particles[i].wave_speed.x *= -1;
+//						particles[i].pos.x = bound;
+//					}
+//					if (particles[i].pos.x <= 0) {
+//						particles[i].wave_speed.x *= -1;
+//						particles[i].pos.x = 0;
+//					}
+//					if (particles[i].pos.y >= bound) {
+//						particles[i].wave_speed.y *= -1;
+//						particles[i].pos.y = bound;
+//					}
+//					if (particles[i].pos.y <= 0) {
+//						particles[i].wave_speed.y *= -1;
+//						particles[i].pos.y = 0;
+//					}
+//				}
+//				else {
+//
+//					if (particles[i].pos.x >= bound - 2 * particles[i].radius) {
+//						particles[i].wave_speed.x *= -1;
+//						particles[i].pos.x = bound - 2 * particles[i].radius;
+//					}
+//					if (particles[i].pos.x <= 2 * particles[i].radius) {
+//						particles[i].wave_speed.x *= -1;
+//						particles[i].pos.x = 2 * particles[i].radius;
+//					}
+//					if (particles[i].pos.y >= bound - 2 * particles[i].radius) {
+//						particles[i].wave_speed.y *= -1;
+//						particles[i].pos.y = bound - 2 * particles[i].radius;
+//					}
+//					if (particles[i].pos.y <= 2 * particles[i].radius) {
+//						particles[i].wave_speed.y *= -1;
+//						particles[i].pos.y = 2 * particles[i].radius;
+//					}
+//				}
+//
+//				//if (distance>particles[i].radius/2.0f&&indexArray.size()<2047)
+//				//{
+//				//	glm::vec2 dir = glm::normalize(particles[i].wave_speed);
+//				//	glm::vec2 wavespeed1 = rotate(glm::normalize(dir), -particles[i].degree / 2.0f) * glm::length(particles[i].wave_speed);
+//				//	glm::vec2 wavespeed2 = rotate(glm::normalize(dir), particles[i].degree / 2.0f) * glm::length(particles[i].wave_speed);
+//				//	PushToParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
+//				//	PushToParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
+//				//	/*PushToNewParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
+//				//	PushToNewParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);*/
+//				//	particles[i].count = 0;
+//				//	particles[i].amplitude /= 3.0f;
+//				//	particles[i].degree /= 3.0f;
+//				//}
+//				if (particles[i].time > 400.0f) {
+//					particles[i].enable = false;
+//					enableArray[i] = false;
+//				}
+//				else
+//					;// indexArray_end.push_back(i);//非常耗费资源
+//				particles[i].time += 0.1f * 0.3333f;
+//				particles[i].pos += 0.1f * 0.3333f * particles[i].wave_speed;
+//
+//				particles[i].count++;
+//
+//			}
+//		}
+//	}
+	if (init == false) 
 	{
-		/*if (enableArray[i] == false)
-			continue;*/
-		int i= indexArray[j];
-		float radians = particles[i].degree / 2.0f / 180.0f * PI;
-		float distance = 0;
-		if (particles[i].degree==360)
-			distance = 2 * glm::length(particles[i].pos - particles[i].birthPos);
-		else
-		 distance =glm::length(particles[i].pos-particles[i].birthPos)*sin(radians)*2;
-		if (!enablehvfliter) 
-		{
-			if (particles[i].pos.x >= bound) {
-				particles[i].wave_speed.x *= -1;
-				particles[i].pos.x = bound;
-			}
-			if (particles[i].pos.x <= 0) {
-				particles[i].wave_speed.x *= -1;
-				particles[i].pos.x = 0;
-			}
-			if (particles[i].pos.y >= bound) {
-				particles[i].wave_speed.y *= -1;
-				particles[i].pos.y = bound;
-			}
-			if (particles[i].pos.y <= 0) {
-				particles[i].wave_speed.y *= -1;
-				particles[i].pos.y = 0;
-			}
-		}
-		else {
-
-			if (particles[i].pos.x >= bound-2*particles[i].radius) {
-				particles[i].wave_speed.x *= -1;
-				particles[i].pos.x = bound - 2 * particles[i].radius;
-			}
-			if (particles[i].pos.x <= 2 * particles[i].radius) {
-				particles[i].wave_speed.x *= -1;
-				particles[i].pos.x = 2 * particles[i].radius;
-			}
-			if (particles[i].pos.y >= bound - 2 * particles[i].radius) {
-				particles[i].wave_speed.y *= -1;
-				particles[i].pos.y = bound - 2 * particles[i].radius;
-			}
-			if (particles[i].pos.y <= 2 * particles[i].radius) {
-				particles[i].wave_speed.y *= -1;
-				particles[i].pos.y = 2 * particles[i].radius;
-			}
-		}
-
-		//if (distance>particles[i].radius/2.0f&&indexArray.size()<2047)
-		//{
-		//	glm::vec2 dir = glm::normalize(particles[i].wave_speed);
-		//	glm::vec2 wavespeed1 = rotate(glm::normalize(dir), -particles[i].degree / 2.0f) * glm::length(particles[i].wave_speed);
-		//	glm::vec2 wavespeed2 = rotate(glm::normalize(dir), particles[i].degree / 2.0f) * glm::length(particles[i].wave_speed);
-		//	PushToParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
-		//	PushToParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
-		//	/*PushToNewParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
-		//	PushToNewParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);*/
-		//	particles[i].count = 0;
-		//	particles[i].amplitude /= 3.0f;
-		//	particles[i].degree /= 3.0f;
-		//}
-		if (particles[i].time > 400.0f) {
-			particles[i].enable = false;
-			enableArray[i] = false;
-		}
-		else
-			indexArray_end.push_back(i);
-		particles[i].time += 0.1f*0.3333f;
-		particles[i].pos += 0.1f * 0.3333f* particles[i].wave_speed;
-
-		particles[i].count++;
 		
+		
+		for (int i = 0; i < indexArray.size(); i+=(indexArray.size())/4) {
+			
+	
+			threadPool->enqueue(updatePool,i,i+ (indexArray.size()) / 4);
+			
+			
+			
+		}//Update Pool
+		
+
+
 	}
+  
 	indexArray_out.clear();
 	indexArray_out = indexArray;
-	indexArray.clear();
-	indexArray = indexArray_end;
-	indexArray_end.clear();
+	//indexArray.clear();
+	//indexArray = indexArray_end;
+	//indexArray_end.clear();
 	//for (int a = 0; a < 32; a++)
 	//	for (int b = 0; b < 32; b++) 
 	//	{
@@ -173,6 +290,9 @@ void Wave_Particle_Pool::ExPand() {
 
 
 }
+
+
+
 void Wave_Particle_Pool::InitPointDraw()
 {
 	
@@ -228,4 +348,9 @@ int Wave_Particle_Pool::GetPosInParticles()
 				return i;
 			}
 	}
+}
+
+Wave_Particle_Pool::~Wave_Particle_Pool()
+{
+	delete threadPool;
 }

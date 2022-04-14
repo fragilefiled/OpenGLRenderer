@@ -21,7 +21,7 @@ void WaveProcess::Init()
     InstanceShader = new Shader(".//Shader//InstanceShader.vs", ".//Shader//LightingCubeShader.fs");
     FloorShader =new Shader(".//Shader//floorShader.vs", ".//Shader//floorShader.fs");
     //  Shader OceanShader = Shader(".//Shader//oceanShader.vs", ".//Shader//oceanShader.fs");
-    roomModel = new Model(".//Model//floor//floor3.obj");
+    roomModel = new Model(".//Model//floor//floor2.obj");
    ourModel=new Model(".//Model//nanosuit//nanosuit.obj");
 
     //delete roomModel;
@@ -194,7 +194,7 @@ void WaveProcess::Init()
     pointVAO = pool->pointVAO;
     pointVBO = pool->pointVBO;
     srand((int)time(0));
-     particle_num = 700;
+    
     if (!enableWaveParticle_hvfliter)
     {
 
@@ -245,7 +245,8 @@ void WaveProcess::Init()
                 height = 4.0 * height;
             else if(wave_particle_resolution_fliter == 1024)
                 height = 1.0 * height;
-           
+            else if (wave_particle_resolution_fliter == 128)
+                height = 24.0 * height;
             pool->PushToParticles(glm::vec2(randomNum, randomNum3), glm::vec2(randomNum, randomNum3), 100.0f * glm::vec2(a * randomNum1, b * randomNum2)*(float)((wave_particle_resolution_fliter)/1024.0), height, 5.0f, 60, 0.0);
 
         }
@@ -509,11 +510,21 @@ void WaveProcess::Process()
     }
     else
     {
+       
+
         pool->ExPand();
-        vector<float> all(Input_N * Input_N * 4, 0);
-        vector<float> all3(wave_particle_resolution * wave_particle_resolution * 6, 0);
-        vector<float> all1(Input_N * Input_N * 4, 0);
+      //  CalculateDeltaTime();
+        //vector<float> all(Input_N * Input_N * 4, 0);
+       // vector<float> all3(wave_particle_resolution * wave_particle_resolution * 6, 0);
+        //vector<float> all1(Input_N * Input_N * 4, 0);
+        vector<float> all(Input_N* Input_N * 4, 0);
+        vector<float> all3(particle_num * 6, 0);
+        vector<float> all1(Input_N* Input_N * 4, 0);
         vector<int> indexArray = pool->indexArray_out;//输入的indexArray
+   
+        omp_set_num_threads(4);
+        #pragma omp parallel
+        #pragma omp for
         for (int j = 0; j < indexArray.size(); j++)
         {
             int i = indexArray[j];
@@ -521,35 +532,51 @@ void WaveProcess::Process()
             float a0 = pool->particles[i].amplitude;
             float r = pool->particles[i].radius;
             glm::vec2 dir = glm::normalize(pool->particles[i].wave_speed);
-            int x = std::max(std::min((int)pos.x, wave_particle_resolution - 1), 0);
-            int y = std::max(std::min((int)pos.y, wave_particle_resolution - 1), 0);
-            all[j * 4 + 0] = pos.x;
-            all[j * 4 + 1] = pos.y;
-            all[j * 4 + 2] = a0;
-            all[j * 4 + 3] = r;
-            all1[j * 4 + 0] = dir.x;
-            all1[j * 4 + 1] = dir.y;
-            all1[j * 4 + 2] = 0;
-            all1[j * 4 + 3] = 0;
-            all3[j * 4 + 0] = (float)pos.x / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
-            all3[j * 4 + 1] = (float)pos.y / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
-            all3[j * 4 + 2] = a0;
-            all3[j * 4 + 3] = r;
-            all3[j * 4 + 4] = dir.x;
-            all3[j * 4 + 5] = dir.y;
+
+            if (!enableWaveParticle_hvfliter)
+            {
+                all[j * 4 + 0] = pos.x;
+                all[j * 4 + 1] = pos.y;
+                all[j * 4 + 2] = a0;
+                all[j * 4 + 3] = r;
+                all1[j * 4 + 0] = dir.x;
+                all1[j * 4 + 1] = dir.y;
+                all1[j * 4 + 2] = 0;
+                all1[j * 4 + 3] = 0;
+            }
+            if (enableWaveParticle_hvfliter) 
+            {
+                all3[j * 4 + 0] = (float)pos.x / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
+                all3[j * 4 + 1] = (float)pos.y / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
+                all3[j * 4 + 2] = a0;
+                all3[j * 4 + 3] = r;
+                all3[j * 4 + 4] = dir.x;
+                all3[j * 4 + 5] = dir.y;
+            }
         }
         //cout << indexArray.size() << " ";
+        //CalculateDeltaTime();
+      // cout << 1000 * deltaTime << "Expand" << endl;
+        
+         if (!enableWaveParticle_hvfliter) 
+         {
+             WaveParticleShader->texes_input[0] = *particleImage;
+             WaveParticleShader->texes_input[0].setData(all);
+             WaveParticleShader->texes_input[1] = *particleImage1;
+             WaveParticleShader->texes_input[1].setData(all1);
+         }
+       
 
-        WaveParticleShader->texes_input[0] = *particleImage;
-        WaveParticleShader->texes_input[0].setData(all);
-        WaveParticleShader->texes_input[1] = *particleImage1;
-        WaveParticleShader->texes_input[1].setData(all1);
         if (enableWaveParticle_hvfliter)
             pool->UpdatePoints(all3);
-
-
+       
+      /*  CalculateDeltaTime();
+        cout << 1000 * deltaTime << "SetData" << endl;*/
+      
         if (enableWaveParticle_hvfliter)
         {
+            
+          
             //将Wavemap拉伸到1024*1024
             copy->BindFrameBufferInit();
             glViewport(0, 0, copy->width, copy->height);
@@ -567,7 +594,7 @@ void WaveProcess::Process()
             copy->Blit(*temp6);
             copy->BindFrameBufferOver();
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < particleBlurPassNum; i++)
             {
 
 
@@ -599,7 +626,7 @@ void WaveProcess::Process()
 
             }
 
-
+            
             blit5->BindFrameBufferInit();
             glViewport(0, 0, blit5->width, blit5->height);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -633,8 +660,8 @@ void WaveProcess::Process()
             WaveParticleShader->texes_output[0].id = temp5->texture.id;
             // over
             // over
-
-
+           
+            
         }
         else
         {
@@ -646,6 +673,7 @@ void WaveProcess::Process()
             WaveParticleShader->dispatch();
             WaveParticleShader->wait();
         }
+        
         {
             //将Wavemap拉伸到1024*1024
             blit->BindFrameBufferInit();
@@ -687,8 +715,8 @@ void WaveProcess::Process()
             blit3->DrawQuad(wavemap->texture.id, false);
             blit3->Blit(*temp2);
             blit3->BindFrameBufferOver();
-
-            for (int i = 0; i < 9; i++)
+           
+            for (int i = 0; i < displacementBlurPassNum; i++)
             {
 
 
@@ -700,7 +728,7 @@ void WaveProcess::Process()
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                     glDepthFunc(GL_LEQUAL);
                     blit1->UseShader();
-                    blit1->shader.setFloat("texelsize_v", 2.0f / (float)height);
+                    blit1->shader.setFloat("texelsize_v", 3.0f / (float)height);
                     blit1->DrawQuad(temp2->texture.id, false);
                     blit1->Blit(*temp1);
                     blit1->BindFrameBufferOver();
@@ -718,18 +746,18 @@ void WaveProcess::Process()
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit2->UseShader();
-                blit2->shader.setFloat("texelsize_h", 2.0f / (float)width);
+                blit2->shader.setFloat("texelsize_h", 3.0f / (float)width);
                 blit2->DrawQuad(temp1->texture.id, false);
                 blit2->Blit(*temp2);
                 blit2->BindFrameBufferOver();
 
             }
-
+           
             WaveParticleShader->texes_output[0].id = temp2->texture.id;
 
 
         }
-
+        
 
 
 
@@ -743,7 +771,7 @@ void WaveProcess::Process()
         normalShader1->setFloat("resolutioninv", 2.0f * scale_Ocean / (float)width);
         normalShader1->dispatch();
         normalShader1->wait();
-
+      
 
     }
 
@@ -790,6 +818,9 @@ void WaveProcess::Process()
     ubotest->ClearSizeNow();
 
     rt[0] = depthMap->texture;
+
+  
+    // cout << 1000 * deltaTime << "Expand" << endl;
     {
 
         //将Wavemap拉伸到1024*1024
@@ -820,12 +851,12 @@ void WaveProcess::Process()
             // calculate the model matrix for each object and pass it to shader before drawing
             lights[i].SetLight(*myshader);
         }
-        ourModel->Draw(*myshader, rt);
+        ourModel->Draw(*myshader,rt);
         copy->Blit(*temp6);
         copy->BindFrameBufferOver();
         ubotest->ClearSizeNow();
     }//draw reflect
-
+    CalculateDeltaTime();
     glViewport(0, 0, width, height);
     posteffect->BindFrameBufferInit();
 
@@ -889,6 +920,8 @@ void WaveProcess::Process()
        // }
        // for(int i=0;i<1;i++)
        //ourModel1.Draw(InstanceShader);
+    CalculateDeltaTime();
+    cout << 1000 * deltaTime << "Expand" << endl;
     FloorShader->use();
     for (unsigned int i = 0; i < 4; i++)
     {
@@ -956,6 +989,7 @@ void WaveProcess::Process()
     posteffect->BindFrameBufferOver();
 
     posteffect->Draw();
+ 
     //posteffect->DebugDraw(normalShader->texes_output[3].id);
   ///posteffect->DebugDraw(normalShader->texes_output[4].id);
     //posteffect->DebugDraw(DisplacementShader->texes_output[3].id);
@@ -989,6 +1023,8 @@ void WaveProcess::Process()
         ImGui::SliderFloat("Scale_subsurface", (float*)&(scale_subsurface), 0.0f, 1.0f);
         ImGui::SliderFloat("Glossness", (float*)&(glossiness), 0.0f, 1.0f);
         ImGui::SliderFloat("Metallic", (float*)&(metallic), 0.0f, 1.0f);
+        ImGui::SliderInt("BlurPassParticleNum", &particleBlurPassNum, 1, 10);
+        ImGui::SliderInt("BlurPassDisplacementNum", &displacementBlurPassNum, 1, 10);
         for (unsigned int i = 0; i < 4; i++)
         {
             // calculate the model matrix for each object and pass it to shader before drawing
@@ -1036,6 +1072,13 @@ void WaveProcess::Process()
         }
         ImGui::End();
     }
+
+}
+void WaveProcess::CalculateDeltaTime() {
+
+    float currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
 
 }
 

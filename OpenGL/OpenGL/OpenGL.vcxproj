@@ -97,8 +97,10 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>E:\AboutLearning\OpenGL\OpenGL\OpenGL\include\glm;E:\AboutLearning\OpenGL\OpenGL\OpenGL\include\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,8 +116,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>E:\AboutLearning\OpenGL\OpenGL\OpenGL\include\glm;E:\AboutLearning\OpenGL\OpenGL\OpenGL\include\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,8 +135,10 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>E:\AboutLearning\OpenGL\OpenGL\OpenGL\include\glm;E:\AboutLearning\OpenGL\OpenGL\OpenGL\include\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,8 +154,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>E:\AboutLearning\OpenGL\OpenGL\OpenGL\include\glm;E:\AboutLearning\OpenGL\OpenGL\OpenGL\include\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -185,6 +193,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Texture3D.cpp" />
     <ClCompile Include="TextureImage.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="UBO.cpp" />
     <ClCompile Include="VoxelModel.cpp" />
     <ClCompile Include="VoxelProcess.cpp" />
@@ -221,6 +230,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Texture3D.h" />
     <ClInclude Include="TextureImage.h" />
+    <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="UBO.h" />
     <ClInclude Include="VoxelModel.h" />
     <ClInclude Include="VoxelProcess.h" />
