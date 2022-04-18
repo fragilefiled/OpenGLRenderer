@@ -33,7 +33,7 @@ void main() {
            float jacobian = (1.0f + ddx.x) * (1.0f + ddz.z) - ddx.z * ddz.x;
            jacobian=clamp((max(0, BubblesThreshold - clamp((jacobian),0.0,1.0)) * BubblesScale),0.0,1.0);
           imageStore(bubble_tex,id.xy, vec4(jacobian,jacobian,jacobian, 0));
-        imageStore(normal_tex,id.xy, vec4(2.0f*normal-vec3(1.0,1.0,1.0), 0));
+        imageStore(normal_tex,id.xy, vec4((normal+vec3(1.0,1.0,1.0))/2.0, 0));
         imageStore(tangent_tex,id.xy, vec4(normalize(x12), 0));
         imageStore(biotangent_tex,id.xy, vec4(normalize(z12), 0));
 

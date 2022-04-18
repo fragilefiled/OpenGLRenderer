@@ -119,7 +119,7 @@ void main(){
         
         FragColor=vec4(shadow,0,0,0);
         vec4 ambient=vec4(0.1,0.1,0.1,0.1)*0.5;
-        vec4 normal= model_inverse_t*vec4(((texture(_normalMap,fs_in.texCoord).xyz+vec3(1.0,1.0,1.0))/2.0),0.0);
+        vec4 normal= model_inverse_t*vec4(((texture(_normalMap,fs_in.texCoord).xyz*2.0-vec3(1.0,1.0,1.0))),0.0);
         vec3 real_normal=normalize(normal.xyz);
         // vec3 t0=vec3(tangent.x,biotangent.x,real_normal.x);
         // vec3 t1=vec3(tangent.y,biotangent.y,real_normal.y);
@@ -193,7 +193,7 @@ void main(){
       //FragColor=texture(_bubbleDiffuseMap,fs_in.texCoord);
        // FragColor=sss*Scale_subsurface+bubblecolor+diffuse+spec+ambient+reflectcol*0.1;
       //FragColor=diffuse*5;
-     
+    // FragColor=vec4(real_normal,0.0);
      
     
 }

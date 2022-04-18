@@ -55,7 +55,7 @@ public:
 		 std::vector<glm::mat4> GetVoxelViewProjection(glm::vec3 cameraPos, int voxelsize);
 		 std::vector<glm::mat4> GetVoxelViewProjectionInverse(glm::vec3 cameraPos, int voxelsize);
 		 void GenerateFrustum(glm::mat4 viewProjection);
-		 void Move(Direction direction, float deltaTime);
+		 void Move(Direction direction, float deltaTime,float speed);
 		 float GetFov();
 		 void SetFov(float fov);
 

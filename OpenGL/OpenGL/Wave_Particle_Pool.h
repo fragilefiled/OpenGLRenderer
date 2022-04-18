@@ -23,7 +23,7 @@ public:
 	int min_enable_pos = 0;
 	int count = 0;
 	int bound = 0;
-
+	int nowUse = 0;
 	
 	unsigned int pointVAO, pointVBO;
 	bool enablehvfliter;

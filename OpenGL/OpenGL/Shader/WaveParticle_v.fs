@@ -33,8 +33,14 @@ vec2 dxy=vec2(0);
 
 dxy.x=particle.x;
 di=particle.y;
+
+
+
 for(float y=1.0/lengtnum;y<1;y+=1.0/lengtnum)
 {
+
+    // if(real_uv.y+yoffset>1.0||real_uv.y+yoffset<0.0)
+    //  continue;
     yoffset=r*y;
     vec2 uv1=real_uv+vec2(0,yoffset);
     vec2 uv2=real_uv-vec2(0,yoffset);
@@ -42,10 +48,10 @@ for(float y=1.0/lengtnum;y<1;y+=1.0/lengtnum)
     
     vec4 velAmpB=texture(particle_map,uv1);
     vec4 velAmpT=texture(particle_map,uv2);
-    if(uv1.y>1.0||uv1.y<0.0)
-    velAmpB=vec4(0.0);
-    if(uv2.y>1.0||uv2.y<0.0)
-    velAmpT=vec4(0.0);
+    // if(uv1.y>1.0||uv1.y<0.0)
+    // velAmpB=vec4(0.0);
+    // if(uv2.y>1.0||uv2.y<0.0)
+    // velAmpT=vec4(0.0);
     vec4 ampSum=velAmpB+velAmpT;
     vec4 ampDif=velAmpB-velAmpT;
     vec3 f = GetFilter(y);

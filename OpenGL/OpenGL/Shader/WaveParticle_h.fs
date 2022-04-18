@@ -31,17 +31,23 @@ vec2 real_uv=(uv);
 vec2 dxy=vec2(0);
 
 
+
 dxy.y=particle.x;
 di=particle.x;
 for(float x=1.0/lengtnum;x<1;x+=1.0/lengtnum)
 {
     xoffset=r*x;
+    // if(real_uv.x+xoffset>1.0||real_uv.x-xoffset<0.0)
+    //  continue;
     vec2 uv1=real_uv+vec2(xoffset,0);
     vec2 uv2=real_uv-vec2(xoffset,0);
    
     vec4 velAmpL=texture(screen_RT,uv1);
     vec4 velAmpR=texture(screen_RT,uv2);
-
+    // if(uv1.y>1.0||uv1.y<0.0)
+    // velAmpL=vec4(0.0);
+    // if(uv2.y>1.0||uv2.y<0.0)
+    // velAmpR=vec4(0.0);
     float ampSum=velAmpL.x+velAmpR.x;
     float ampDif=velAmpL.x-velAmpR.x;
     vec3 f = GetFilter(x);

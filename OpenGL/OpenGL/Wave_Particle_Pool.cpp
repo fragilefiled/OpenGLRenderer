@@ -13,7 +13,6 @@ Wave_Particle_Pool::Wave_Particle_Pool(int count,int bound,bool enablehvfliter )
 	enableArray= std::vector<bool>(count,false);
 	threadPool = new ThreadPool(8);
 	updatePool= std::function([this](int a, int b) { SinglePointUpdate(a, b); });
-
 	//updatePool = std::bind([this](int a, int b) { SinglePointUpdate(a, b); }, 2, 2); 两种写法一样
 }
 
@@ -26,8 +25,9 @@ void Wave_Particle_Pool::PushToNewParticles(glm::vec2 birthPos, glm::vec2 pos, g
 
 void Wave_Particle_Pool::PushToParticles(glm::vec2 birthPos, glm::vec2 pos, glm::vec2 wave_speed, float amplitude, float radius, float degree, float time)
 {
-	int index = GetPosInParticles();
-
+	//int index = GetPosInParticles();
+	int index = nowUse;
+	nowUse++;
 	particles[index].SetProperty( birthPos,  pos, wave_speed, amplitude,  radius,  degree,  time);
 }
 
@@ -46,7 +46,8 @@ void Wave_Particle_Pool::SinglePointUpdate(int a,int b)
 
 	
 	for (int j = a; j < b; j++) {
-		int i = indexArray[j];
+		//int i = indexArray[j];
+		int i = j;
 		float radians = particles[i].degree / 2.0f / 180.0f * PI;
 		float distance = 0;
 		if (particles[i].degree == 360)
@@ -93,13 +94,13 @@ void Wave_Particle_Pool::SinglePointUpdate(int a,int b)
 			}
 		}
 
-		//if (distance>particles[i].radius/2.0f&&indexArray.size()<2047)
+		//if (distance>particles[i].radius/2.0f&&nowUse<2047)
 		//{
 		//	glm::vec2 dir = glm::normalize(particles[i].wave_speed);
 		//	glm::vec2 wavespeed1 = rotate(glm::normalize(dir), -particles[i].degree / 2.0f) * glm::length(particles[i].wave_speed);
 		//	glm::vec2 wavespeed2 = rotate(glm::normalize(dir), particles[i].degree / 2.0f) * glm::length(particles[i].wave_speed);
-		//	PushToparticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
-		//	PushToparticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
+		//	PushToParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
+		//	PushToParticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
 		//	/*PushToNewparticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed1, wavespeed1, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);
 		//	PushToNewparticles(particles[i].birthPos, particles[i].birthPos + particles[i].time * wavespeed2, wavespeed2, particles[i].amplitude / 3.0f, particles[i].radius, particles[i].degree / 3.0f, particles[i].time);*/
 		//	particles[i].count = 0;
@@ -111,7 +112,8 @@ void Wave_Particle_Pool::SinglePointUpdate(int a,int b)
 			enableArray[i] = false;
 		}
 		else {
-			//indexArray_end[i]=i;
+		
+			//indexArray_end.push_back(i);
 		
 		}
 		particles[i].time += 0.1f * 0.3333f;
@@ -244,17 +246,23 @@ void Wave_Particle_Pool::ExPand() {
 	{
 		
 		
-		for (int i = 0; i < indexArray.size(); i+=(indexArray.size())/4) {
-			
+		//for (int i = 0; i < indexArray.size(); i+=(indexArray.size())/4) {
+		//	
 	
-			threadPool->enqueue(updatePool,i,i+ (indexArray.size()) / 4);
-			
-			
-			
+		//	threadPool->enqueue(updatePool,i,i+ (indexArray.size()) / 4);
+		//	
+		//	
+		//	
+		//}//Update Pool
+		for (int i = 0; i < nowUse; i += (nowUse) / 4) {
+
+
+			threadPool->enqueue(updatePool, i, i + (nowUse) / 4);
+
+
+
 		}//Update Pool
-		
-
-
+	
 	}
   
 	indexArray_out.clear();

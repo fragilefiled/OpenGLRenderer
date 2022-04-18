@@ -32,43 +32,47 @@ E:\AboutLearning\OpenGL\OpenGL\OpenGL\ShaderCompile.h(348,36): warning C4244: �
               T=float
           ]
 E:\AboutLearning\OpenGL\OpenGL\OpenGL\Mymath.h(12,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.h(120,31): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.h(124,31): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
 E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(60,59): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
 E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(60,44): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(86,31): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(91,46): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(91,37): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(93,48): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(93,39): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(95,36): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(116,38): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(191,46): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(193,47): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(243,31): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(245,30): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(247,30): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(90,31): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(95,46): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(95,37): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(97,48): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(97,39): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(99,36): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(120,38): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(195,46): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(197,47): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
 E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(249,31): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(264,23): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(265,24): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(340,22): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(341,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(372,22): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(373,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(520,44): warning C4244: “参数”: 从“float”转换到“const unsigned __int64”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(522,45): warning C4244: “参数”: 从“float”转换到“const unsigned __int64”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(549,95): warning C4244: “=”: 从“double”转换到“_Ty”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(251,30): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(253,30): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(255,31): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(280,23): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(281,24): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(298,44): warning C4244: “参数”: 从“double”转换到“T”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(356,22): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(357,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(388,22): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(389,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(537,44): warning C4244: “参数”: 从“float”转换到“const unsigned __int64”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(539,45): warning C4244: “参数”: 从“float”转换到“const unsigned __int64”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(566,95): warning C4244: “=”: 从“double”转换到“_Ty”，可能丢失数据
           with
           [
               _Ty=float
           ]
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(550,95): warning C4244: “=”: 从“double”转换到“_Ty”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(567,95): warning C4244: “=”: 从“double”转换到“_Ty”，可能丢失数据
           with
           [
               _Ty=float
           ]
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(637,40): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(654,41): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(670,62): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(671,51): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(1079,24): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(654,40): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(671,41): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(689,51): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+E:\AboutLearning\OpenGL\OpenGL\OpenGL\WaveProcess.cpp(1124,24): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
   OpenGL.vcxproj -> E:\AboutLearning\OpenGL\OpenGL\x64\Debug\OpenGL.exe

@@ -31,7 +31,7 @@ public:
     void Process();
     void GenerateMipmap();
     
-    float deltaTime = 0.0f; // 当前帧与上一帧的时间差
+   // float deltaTime = 0.0f; // 当前帧与上一帧的时间差
     float lastFrame = 0.0f;
     glm::mat4 view;
     glm::vec4 windspeed = glm::vec4(11.0f, 23.0f, 28.0f, 0.0f);

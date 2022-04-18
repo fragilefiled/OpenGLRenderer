@@ -111,26 +111,26 @@ void Camera::GenerateFrustum(glm::mat4 viewProjection)
 		FrustumPlane[i] /=glm::length(FrustumPlane[i]);
 }
 
-void Camera::Move(Direction direction,float deltaTime)
+void Camera::Move(Direction direction,float deltaTime,float speed)
 {
 	switch (direction)
 	{
 	case FORWARD:
-		pos += cameraSpeed * frontDir * deltaTime;
+		pos += cameraSpeed * frontDir * deltaTime*speed;
 
 		SetPos(pos);
 			break;
 	case BACK:
-		pos -= cameraSpeed * frontDir * deltaTime;
+		pos -= cameraSpeed * frontDir * deltaTime * speed;
 		SetPos(pos);
 		break;
 	case LEFT:
-		pos -= cameraSpeed * glm::normalize(glm::cross(frontDir, upDir)) * deltaTime;
+		pos -= cameraSpeed * glm::normalize(glm::cross(frontDir, upDir)) * deltaTime * speed;
 
 		SetPos(pos);
 		break;
 	case RIGHT:
-		pos += cameraSpeed * glm::normalize(glm::cross(frontDir, upDir)) * deltaTime;
+		pos += cameraSpeed * glm::normalize(glm::cross(frontDir, upDir)) * deltaTime * speed;
 
 		SetPos(pos);
 		break;

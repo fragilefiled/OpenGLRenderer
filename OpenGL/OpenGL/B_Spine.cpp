@@ -89,8 +89,12 @@ std::vector<glm::vec2> B_Spine::produce_height_array()
 
 	for (int i = 0; i < y_array.size(); i+=4) {
 		y_array[i + 1] = std::max(min_y, (double)y_array[i + 1]);
-		y_array[i+1] =(y_array[i+1]-min_y)/ (max_y - min_y);
-		y_array[i]= (y_array[i] - min_x) / (max_x - min_x)-(float)i/4.0/(height_array.size()-1);
+		//y_array[i+1] =(y_array[i+1]-min_y)/ (max_y - min_y);
+		//y_array[i]= (y_array[i] - min_x) / (max_x - min_x)-(float)i/4.0/(height_array.size()-1);
+		y_array[i + 1] = (y_array[i + 1] - min_y) / (max_y - min_y) / (max_x - min_x);
+		y_array[i] = (y_array[i] - min_x) / (max_x - min_x) / (max_y - min_y) - (float)i / 4.0 / (height_array.size() - 1) / (max_y - min_y);
+		if (y_array[i + 1] == 0.0)
+			y_array[i] = 0.0;
 		
 	}
 	return height_array;

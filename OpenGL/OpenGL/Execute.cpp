@@ -32,7 +32,7 @@ Camera camera = Camera(pos, frontDir, upDir);
 glm::mat4 view;
 glm::vec4 windspeed = glm::vec4(11.0f, 23.0f, 28.0f, 0.0f);
 glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
-float cameraSpeed = 2.0f;
+float cameraSpeed = 15.0f;
 float deltaTime = 0.0f; // 当前帧与上一帧的时间差
 float lastFrame = 0.0f; // 上一帧的时间
 int width = 1024;
@@ -118,23 +118,23 @@ void processInput(GLFWwindow* window)
     frontDir = camera.GetFrontDir();
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 
-        camera.Move(LEFT, deltaTime);
+        camera.Move(LEFT, deltaTime,cameraSpeed);
 
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 
-        camera.Move(RIGHT, deltaTime);
+        camera.Move(RIGHT, deltaTime, cameraSpeed);
 
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 
 
-        camera.Move(FORWARD, deltaTime);
+        camera.Move(FORWARD, deltaTime, cameraSpeed);
 
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 
-        camera.Move(BACK, deltaTime);
+        camera.Move(BACK, deltaTime, cameraSpeed);
 
     }
 
@@ -346,11 +346,12 @@ int main(int, char**)
         if (countFrame == 60) {
             timeFrame /= 60.0;
              avgfps = 1 / timeFrame;
+             cout <<  1000*timeFrame << endl;
              timeFrame = 0.0;
              countFrame = 0;
              
-             cout << avgfps<<"avg" << endl;
-        }
+           
+        }//need to Calc UI
       
         
     }
