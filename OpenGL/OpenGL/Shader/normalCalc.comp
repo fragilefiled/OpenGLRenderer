@@ -1,5 +1,5 @@
 #version 450 core
-layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 layout(rgba32f, binding = 0) uniform image2D normal_tex;
 layout(rgba32f, binding = 1) uniform image2D bubble_tex;
 layout(rgba32f, binding = 2) uniform image2D tangent_tex;
@@ -14,6 +14,7 @@ uniform float BubblesScale;
 uniform float jacobScale;
 uniform float jacobScaleEdge;
 uniform float resolutioninv;//网格密度
+uniform vec2 Hmaxmin;
 vec2 complexMultiply(vec2 c1, vec2 c2);
 void main() {
     ivec2 id = ivec2(gl_GlobalInvocationID.xy);
@@ -22,16 +23,19 @@ void main() {
           vec3 x2 = imageLoad(displace_in_tex,id+ivec2(-1,0)).xyz;
             vec3 z1 = imageLoad(displace_in_tex,id+ivec2(0,1)).xyz;
               vec3 z2 = imageLoad(displace_in_tex,id+ivec2(0,-1)).xyz;
-            vec3 x12=vec3(0,x1.y-x2.y,0)+vec3(resolutioninv*2+x1.x-x2.x,0,0);
-             vec3 z12=vec3(0,z1.y-z2.y,0)+vec3(0,0,resolutioninv*2+z1.z-z2.z);
+            vec3 x12=vec3(0,x1.y-x2.y,x1.z-x2.z)+vec3(resolutioninv*2+x1.x-x2.x,0,0);//修改x1.z-x2.z
+             vec3 z12=vec3(z1.x-z2.x,z1.y-z2.y,0)+vec3(0,0,resolutioninv*2+z1.z-z2.z);//修改z1.x-z2.x
            
       
 
-           vec3  normal=normalize((cross(z12,x12)));
-           vec3 ddx=(x1-x2)*jacobScale;
-           vec3 ddz=(z1-z2)*jacobScale;
-           float jacobian = (1.0f + ddx.x) * (1.0f + ddz.z) - ddx.z * ddz.x;
-           jacobian=clamp((max(0, BubblesThreshold - clamp((jacobian),0.0,1.0)) * BubblesScale),0.0,1.0);
+          vec3  normal=normalize((cross(z12,x12)));
+          vec3 ddx=(x1-x2)*jacobScale;
+          vec3 ddz=(z1-z2)*jacobScale;
+          float jacobian = (1.0f + ddx.x) * (1.0f + ddz.z) - ddx.z * ddz.x;
+          jacobian=clamp((max(0, BubblesThreshold - clamp((jacobian),0.0,1.0)) * BubblesScale),0.0,1.0);
+         // float temp=(x0-x1.xy).y+(x0-x2.xy).y+(x0-z1.xy).y+(x0-z2.xy).y;
+        //  float temp=clamp(x0.y-Hmaxmin.y,0.0,1.0)/(Hmaxmin.x-Hmaxmin.y);
+        //  jacobian=max(temp,jacobian);
           imageStore(bubble_tex,id.xy, vec4(jacobian,jacobian,jacobian, 0));
         imageStore(normal_tex,id.xy, vec4((normal+vec3(1.0,1.0,1.0))/2.0, 0));
         imageStore(tangent_tex,id.xy, vec4(normalize(x12), 0));
@@ -47,6 +51,9 @@ void main() {
              ddz=(z1-z2)*jacobScale*jacobScaleEdge;
            jacobian = (1.0f + ddx.x) * (1.0f + ddz.z) - ddx.z * ddz.x;
            jacobian=clamp((max(0, BubblesThreshold - clamp((jacobian),0.0,1.0)) * BubblesScale),0.0,1.0);
+          //  jacobian=0.0;
+          //  temp=clamp(x0.y-Hmaxmin.y+0.1,0.0,1.0)/(Hmaxmin.x-Hmaxmin.y+0.1);
+          // jacobian=max(temp,jacobian);
            imageStore(bubble_tex1,id.xy, vec4(jacobian,jacobian,jacobian, 0));
 }
 

@@ -222,7 +222,7 @@ public:
     bool enableMipmap = false;
     bool input_auto = false;
     glm::vec3 work_size;
-    ComputeShader(const char* computePath, glm::vec3 work_size,unsigned int tex_output_num=1, unsigned int tex_input_num = 1,unsigned int tex3d_num=0,bool input_auto=false,bool enableMipmap=false,std::vector<int> lods=std::vector<int>(0)) :work_size(work_size),input_auto(input_auto),enableMipmap(enableMipmap)
+    ComputeShader(const char* computePath, glm::vec3 work_size, glm::vec2 tex_size,unsigned int tex_output_num=1, unsigned int tex_input_num = 1,unsigned int tex3d_num=0,bool input_auto=false,bool enableMipmap=false,std::vector<int> lods=std::vector<int>(0)) :work_size(work_size),input_auto(input_auto),enableMipmap(enableMipmap)
     {
         
         // 1. retrieve the vertex/fragment source code from filePath
@@ -267,7 +267,7 @@ public:
         glDeleteShader(compute);
 
  
-        int tex_w = work_size.x, tex_h = work_size.y;
+        int tex_w = tex_size.x, tex_h = tex_size.y;
        // TextureImage output=ne TextureImage()
        // tex_output=
         texes_output = std::vector<TextureImage>(tex_output_num);

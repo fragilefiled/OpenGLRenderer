@@ -300,6 +300,8 @@ vec4 albedo=texture(gAlbedoSpec,uv);
     vec4 directLighting=CalcdirectLighting(worldPos.xyz,normal,albedo);
 
 FragColor=(directLighting*deferDirLight+indirectLighting*deferInDirLight)*indirectLighting.a;
+
+
 //FragColor=vec4(indirectLighting.a);
 //FragColor=vec4(normal,1.0);
 //FragColor=texture(voxelMap_radiance,worldToVoxel(worldPos.xyz)/float(voxelResolutionI));

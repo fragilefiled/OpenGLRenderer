@@ -169,7 +169,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="B_Spine.cpp" />
+    <ClCompile Include="B_Spline.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CubeMap.cpp" />
     <ClCompile Include="Execute.cpp" />
@@ -202,7 +202,7 @@
     <ClCompile Include="Wave_Particle_Pool.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="B_Spine.h" />
+    <ClInclude Include="B_Spline.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeMap.h" />
     <ClInclude Include="FBO.h" />

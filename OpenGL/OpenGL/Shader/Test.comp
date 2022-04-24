@@ -1,11 +1,12 @@
 #version 450 core
-layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 layout(rgba32f, binding = 0) uniform image2D out_tex;
 layout(rgba32f, binding = 1) uniform image2D in_tex;
 #define PI 3.14159274f
 #define G 9.81f
 float test1;
 uint wangHash(uint seed);
+uint pcghash(uint seed);
 float rand();
 vec2 gaussian(vec2 id);
 uint rngState;           //随机
@@ -39,6 +40,7 @@ vec2 gaussian(vec2 id)
 
     return vec2(g1, g2);
 }
+
 //随机种子
 uint wangHash(uint seed)
 {
@@ -49,6 +51,12 @@ uint wangHash(uint seed)
     seed = seed ^(seed >> 15);
     return seed;
 }
+uint pcghash(uint seed)
+{
+    uint state = seed * 747796405 + 2891336453;
+    uint word = ((state >> ((state >> 28) + 4)) ^ state) * 277803737;
+    return (word >> 22) ^ word;
+};
 //计算均匀分布随机数[0,1)
 float rand()
 {
@@ -58,3 +66,5 @@ float rand()
     rngState ^= (rngState << 5);
     return rngState / 4294967296.0f;;
 }
+
+

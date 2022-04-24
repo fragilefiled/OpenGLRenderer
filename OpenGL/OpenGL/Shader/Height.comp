@@ -1,5 +1,5 @@
 #version 450 core
-layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 layout(rgba32f, binding = 0) uniform image2D out_tex;
 layout(rgba32f, binding = 1) uniform image2D in_tex;
 #define PI 3.14159274f
@@ -58,7 +58,7 @@ float phillips(vec2 k)
 
     //phillips谱
     return  A * exp(-1.0f / (kLength2 * l2)) / kLength4 * exp(-kLength2 * L2);
-}
+}//这里是为了windLength的一个Trick可以再来康康这边
 
 //Donelan-Banner方向拓展
 float DonelanBannerDirectionalSpreading(vec2 k)
@@ -83,7 +83,7 @@ float DonelanBannerDirectionalSpreading(vec2 k)
     float theta = atan(k.y, k.x) - atan(WindAndSeed.y, WindAndSeed.x);
 
     return betaS / max(1e-7f, 2.0f * tanh(betaS * PI) * pow(cosh(betaS * theta), 2));
-}
+} //用来替换 |K*Omege|
 float dispersion(vec2 k)
 {
     return sqrt(G * length(k));

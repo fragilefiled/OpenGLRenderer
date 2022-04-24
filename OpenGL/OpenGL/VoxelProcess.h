@@ -14,7 +14,7 @@
 #include "FBO.h"
 #include"Mymath.h"
 #include"Wave_Particle_Pool.h"
-#include "B_Spine.h"
+#include "B_Spline.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -37,7 +37,8 @@ public:
     glm::vec4 windspeed = glm::vec4(11.0f, 23.0f, 28.0f, 0.0f);
     glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
     //glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
-    glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
+   // glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
+    glm::vec3 ScaleUse = glm::vec3(11.0f, 11.0f, 11.0f);
     float maxdistance=0.5f;
     float stepLength = 0.5;
     float aperture = 1.0f;
@@ -46,6 +47,8 @@ public:
     int height = 1024;
     int CSwidth = 256;
     int CSheight = 256;
+    int updateRadianceNow = 0;
+    int updateRadianceCount = 4;
     bool InjectFirstBounce = false;
     bool EnableAmbientOcc = false;
     bool EnableVoxelization = true;

@@ -84,7 +84,7 @@
     <ClCompile Include="Wave_Particle_Pool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="B_Spine.cpp">
+    <ClCompile Include="B_Spline.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WaveProcess.cpp">
@@ -191,7 +191,7 @@
     <ClInclude Include="Wave_Particle_Pool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="B_Spine.h">
+    <ClInclude Include="B_Spline.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="RenderProcess.h">

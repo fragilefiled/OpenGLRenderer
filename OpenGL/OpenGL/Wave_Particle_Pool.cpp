@@ -107,15 +107,15 @@ void Wave_Particle_Pool::SinglePointUpdate(int a,int b)
 		//	particles[i].amplitude /= 3.0f;
 		//	particles[i].degree /= 3.0f;
 		//}
-		if (particles[i].time > 400.0f) {
-			particles[i].enable = false;
-			enableArray[i] = false;
-		}
-		else {
-		
-			//indexArray_end.push_back(i);
-		
-		}
+		//if (particles[i].time > 400.0f) {
+		//	particles[i].enable = false;
+		//	enableArray[i] = false;
+		//} //will slow down cpu
+		//else {
+		//
+		//	//indexArray_end.push_back(i);
+		//
+		//}
 		particles[i].time += 0.1f * 0.3333f;
 		particles[i].pos += 0.1f * 0.3333f * particles[i].wave_speed;
 

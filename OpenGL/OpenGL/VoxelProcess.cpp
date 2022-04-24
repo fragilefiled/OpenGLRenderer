@@ -31,7 +31,7 @@ void VoxelProcess::Init()
     //ourModel = new Model(".//Model//planet//planet.obj");
    // ourModel = new Model(".//Model//Suzanne//Suzanne.obj");
 //ourModel = new Model(".//Model//Cornell-Box//ProRender.obj");
-//    ourModel = new Model(".//Model//Cornell-Box//cornell_box.obj");
+//   ourModel = new Model(".//Model//Cornell-Box//cornell_box.obj");
  ourModel= new Model(".//Model//sponza//sponza.obj");
     voxelModel = new VoxelModel(voxel_resolution * voxel_resolution * voxel_resolution);
     //delete roomModel;
@@ -50,11 +50,11 @@ void VoxelProcess::Init()
     BilateralFilterShader_h= new Shader(".//Shader//BilateralFilter_h.vs", ".//Shader//BilateralFilter.fs");
     BilateralFilterShader_v = new Shader(".//Shader//BilateralFilter_v.vs", ".//Shader//BilateralFilter.fs");
     gammaCorrectionShader = new Shader(".//Shader//PostEffect.vs", ".//Shader//GammaCorrection.fs");
-    Calcradiance = new ComputeShader(".//Shader//CalaRadiance.comp",glm::vec3(voxel_resolution/8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), 0, 0, 4);
-    ClearVoxelMap = new ComputeShader(".//Shader//ClearVoxelMap.comp", glm::vec3(voxel_resolution / 8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), 0, 0, 4);
-    MipmapProduceFirst = new ComputeShader(".//Shader//MipmapProduceFirst.comp", glm::vec3(voxel_resolution / 16.0f, voxel_resolution / 16.0f, voxel_resolution / 16.0f), 0, 0, 7);
-    MipmapProduceSecond = new ComputeShader(".//Shader//MipmapProduceSecond.comp", glm::vec3(voxel_resolution / 32.0f, voxel_resolution / 32.0f, voxel_resolution / 32.0f), 0, 0, 12,false,true,std::vector<int>(12,0));
-    VoxelConeTracing=new ComputeShader(".//Shader//ConeTracing.comp", glm::vec3(voxel_resolution / 8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), 0, 0, 9);
+    Calcradiance = new ComputeShader(".//Shader//CalaRadiance.comp",glm::vec3(voxel_resolution/8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f),glm::vec2(0,0), 0, 0, 4);
+    ClearVoxelMap = new ComputeShader(".//Shader//ClearVoxelMap.comp", glm::vec3(voxel_resolution / 8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), glm::vec2(0, 0), 0, 0, 4);
+    MipmapProduceFirst = new ComputeShader(".//Shader//MipmapProduceFirst.comp", glm::vec3(voxel_resolution / 16.0f, voxel_resolution / 16.0f, voxel_resolution / 16.0f), glm::vec2(0, 0), 0, 0, 7);
+    MipmapProduceSecond = new ComputeShader(".//Shader//MipmapProduceSecond.comp", glm::vec3(voxel_resolution / 32.0f, voxel_resolution / 32.0f, voxel_resolution / 32.0f), glm::vec2(0, 0), 0, 0, 12,false,true,std::vector<int>(12,0));
+    VoxelConeTracing=new ComputeShader(".//Shader//ConeTracing.comp", glm::vec3(voxel_resolution / 8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), glm::vec2(0, 0), 0, 0, 9);
     
    blit2 = new PostEffect(*BilateralFilterShader_h, width, height , false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     blit1 = new PostEffect(*BilateralFilterShader_v, width , height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
@@ -64,7 +64,7 @@ void VoxelProcess::Init()
     copy = new PostEffect(*screenShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     voxelization = new PostEffect(*screenShader, voxel_resolution, voxel_resolution, true, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     rasterization = new PostEffect(*rasterizationShader, voxel_resolution, voxel_resolution, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-    posteffect = new PostEffect(*gammaCorrectionShader, width, height, true, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    posteffect = new PostEffect(*gammaCorrectionShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     lightPass = new PostEffect(*deferVoxelConeTracing,width,height,false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     AddInDirLight = new PostEffect(*AddShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     //voxel_diffuse = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution,true,GL_RGBA32F,GL_RGBA,GL_FLOAT);
@@ -247,6 +247,7 @@ void VoxelProcess::Process()
   ;
    // model = glm::scale(model, glm::vec3(0.8f));
   float tempScale = 0.008f;
+  //tempScale = 0.04f;
     model = glm::scale(model, glm::vec3(tempScale));
    // model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
    // model = glm::scale(model, glm::vec3(4.0f));
@@ -307,61 +308,62 @@ void VoxelProcess::Process()
      
     
    // CalculateDeltaTime();
-    glViewport(0, 0, voxel_resolution, voxel_resolution);
-    voxelization->BindFrameBufferInit();
-    ubotest->SetMatrix(projection);
-    ubotest->SetMatrix(view);//* camera.CaculateReflectMatrix(glm::vec3(0,1,0),glm::vec3(0,0,0))
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    glDepthFunc(GL_LESS);
-
-    glDisable(GL_CULL_FACE);
-    glEnable(GL_MULTISAMPLE);
-    //glDisable(GL_MULTISAMPLE);
-  
-    myshader_gs->use();
-    myshader_gs->setMatrix("model", model);
-    myshader_gs->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
-    myshader_gs->setVec3("cameraPos", camera.GetPos());
-    myshader_gs->setMatrix("lightMat", (lightProjection * lightView));
-    myshader_gs->setMatrix("model_inverse_t", (model_inverse_t));
-    myshader_gs->setMatrixArray("voxelViewProjection", voxelViewProjction);
-    myshader_gs->setFloat("voxelResolution", voxel_resolution);
-    myshader_gs->setFloat("voxelWidthWorld", voxel_width_world);
-    myshader_gs->setMatrixArray("voxelViewProjectionInverse", voxelViewProjctionInverse);
-    myshader_gs->setVec3("worldMinPoint", voxelWorldMinPoint);
-    myshader_gs->setFloat("RasterScale", RasterScale);
-    myshader_gs->setInt("VoxelNormalBlend", voxelnormalBlend);
-    myshader_gs->setInt("staticFlag", 1);
-    for (unsigned int i = 0; i < 4; i++)
+    if (EnableVoxelization) 
     {
-        // calculate the model matrix for each object and pass it to shader before drawing
-        lights[i].SetLight(*myshader_gs);
-    }
-   //if(Time<2.0f)
-    voxel_rt[0].format = GL_R32UI;
-    voxel_rt[1].format = GL_R32UI;
-    if (EnableVoxelization) {
-        ourModel->Draw(*myshader_gs, rt, nullptr, voxel_rt, &VoxelCullCamera);
-        EnableVoxelization = false;
-    }
-    voxel_rt[0].format = GL_RGBA8;
-    voxel_rt[1].format = GL_RGBA8;
-    //myshader_gs->setMatrix("model", floormodel);
-    //roomModel->Draw(*myshader_gs, rt, nullptr, voxel_rt);
-    ubotest->ClearSizeNow();
-    voxelization->BindFrameBufferOver();//1.8ms
-  
-    /*CalculateDeltaTime();
-    std::cout << to_string(1000 * deltaTime) + "voxelization" << endl;*/
+        glViewport(0, 0, voxel_resolution, voxel_resolution);
+        voxelization->BindFrameBufferInit();
+        ubotest->SetMatrix(projection);
+        ubotest->SetMatrix(view);//* camera.CaculateReflectMatrix(glm::vec3(0,1,0),glm::vec3(0,0,0))
+        glEnable(GL_DEPTH_TEST);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glDepthFunc(GL_LESS);
 
+        glDisable(GL_CULL_FACE);
+        glEnable(GL_MULTISAMPLE);
+        //glDisable(GL_MULTISAMPLE);
+  
+        myshader_gs->use();
+        myshader_gs->setMatrix("model", model);
+        myshader_gs->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
+        myshader_gs->setVec3("cameraPos", camera.GetPos());
+        myshader_gs->setMatrix("lightMat", (lightProjection * lightView));
+        myshader_gs->setMatrix("model_inverse_t", (model_inverse_t));
+        myshader_gs->setMatrixArray("voxelViewProjection", voxelViewProjction);
+        myshader_gs->setFloat("voxelResolution", voxel_resolution);
+        myshader_gs->setFloat("voxelWidthWorld", voxel_width_world);
+        myshader_gs->setMatrixArray("voxelViewProjectionInverse", voxelViewProjctionInverse);
+        myshader_gs->setVec3("worldMinPoint", voxelWorldMinPoint);
+        myshader_gs->setFloat("RasterScale", RasterScale);
+        myshader_gs->setInt("VoxelNormalBlend", voxelnormalBlend);
+        myshader_gs->setInt("staticFlag", 1);
+        for (unsigned int i = 0; i < 4; i++)
+        {
+            // calculate the model matrix for each object and pass it to shader before drawing
+            lights[i].SetLight(*myshader_gs);
+        }
+       //if(Time<2.0f)
+        voxel_rt[0].format = GL_R32UI;
+        voxel_rt[1].format = GL_R32UI;
+  
+            ourModel->Draw(*myshader_gs, rt, nullptr, voxel_rt, &VoxelCullCamera);
+  
+        voxel_rt[0].format = GL_RGBA8;
+        voxel_rt[1].format = GL_RGBA8;
+        //myshader_gs->setMatrix("model", floormodel);
+        //roomModel->Draw(*myshader_gs, rt, nullptr, voxel_rt);
+        ubotest->ClearSizeNow();
+        voxelization->BindFrameBufferOver();//1.8ms
+  
+        /*CalculateDeltaTime();
+        std::cout << to_string(1000 * deltaTime) + "voxelization" << endl;*/
+       // EnableVoxelization = false;
+    }
  
     //CalculateDeltaTime();
     glViewport(0, 0, shadowwidth, shadowheight);
     depthMapDefer->BindFrameBufferInit();
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
@@ -424,52 +426,43 @@ void VoxelProcess::Process()
 
     //rt[0] = depthMap->texture;
     
-
-    glViewport(0, 0, width, height);
-    posteffect->BindFrameBufferInit();
-
-
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-
-
-    glDepthFunc(GL_LEQUAL);
-    ubotest->SetMatrix(projection);
-    ubotest->SetMatrix(view);//* camera.CaculateReflectMatrix(glm::vec3(0,1,0),glm::vec3(0,0,0))
-    skyBoxShader->use();
-
-    skyBoxShader->setMatrix("model", modelskyBox);
-    skyBoxShader->setMatrix("projection", projection);
-    glm::mat4 viewskyBox = glm::mat4(glm::mat3(view));
-    skyBoxShader->setMatrix("view", viewskyBox);
-    cubemap->Draw(*skyBoxShader);
-    glDepthFunc(GL_LESS);
-   
-    myshader->use();
-    myshader->setMatrix("model", model);
-    myshader->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
-    myshader->setVec3("cameraPos", camera.GetPos());
-    myshader->setMatrix("lightMat", (lightProjection * lightView));
-    myshader->setMatrix("model_inverse_t", (model_inverse_t));
-    for (unsigned int i = 0; i < 4; i++)
+    if (limit.x > 0.3) 
     {
-        // calculate the model matrix for each object and pass it to shader before drawing
-        lights[i].SetLight(*myshader);
+        glViewport(0, 0, width, height);
+        posteffect->BindFrameBufferInit();
+
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+
+
+        glDepthFunc(GL_LEQUAL);
+        ubotest->SetMatrix(projection);
+        ubotest->SetMatrix(view);//* camera.CaculateReflectMatrix(glm::vec3(0,1,0),glm::vec3(0,0,0))
+        skyBoxShader->use();
+
+        skyBoxShader->setMatrix("model", modelskyBox);
+        skyBoxShader->setMatrix("projection", projection);
+        glm::mat4 viewskyBox = glm::mat4(glm::mat3(view));
+        skyBoxShader->setMatrix("view", viewskyBox);
+        cubemap->Draw(*skyBoxShader);
+        glDepthFunc(GL_LESS);
+
+        myshader->use();
+        myshader->setMatrix("model", model);
+        myshader->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
+        myshader->setVec3("cameraPos", camera.GetPos());
+        myshader->setMatrix("lightMat", (lightProjection * lightView));
+        myshader->setMatrix("model_inverse_t", (model_inverse_t));
+        for (unsigned int i = 0; i < 4; i++)
+        {
+            // calculate the model matrix for each object and pass it to shader before drawing
+            lights[i].SetLight(*myshader);
+        }
     }
     
-   //ourModel->Draw(*myshader, rt,nullptr,voxel_rt);
-    //myshader_gs->use();
-    //myshader_gs->setMatrix("model", model);
-    //myshader_gs->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
-    //myshader_gs->setVec3("cameraPos", camera.GetPos());
-    //myshader_gs->setMatrix("lightMat", (lightProjection * lightView));
-    //myshader_gs->setMatrix("model_inverse_t", (model_inverse_t));
-    //myshader_gs->setFloat("voxelResolution", 32.0);
-    //myshader_gs->setMatrixArray("voxelViewProjection", voxelViewProjction);
-    //myshader_gs->setMatrixArray("voxelViewProjectionInverse", voxelViewProjctionInverse);
-    //ourModel->Draw(*myshader_gs, rt, nullptr, voxel_rt);
+
      
     
     //FloorShader->use();
@@ -511,30 +504,33 @@ void VoxelProcess::Process()
 
 
   /*  CalculateDeltaTime();*/
-    glm::mat4 modelVoxel_inverse_t = glm::transpose(glm::inverse(modelVoxel));
-    Calcradiance->use();
-    Calcradiance->setMatrix("lightMat", (lightProjection * lightView));
-    Calcradiance->setMatrix("model", modelVoxel);
-    Calcradiance->setMatrix("model_inverse_t", (modelVoxel_inverse_t));
-    Calcradiance->setFloat("voxelResolution", voxel_resolution);
-    Calcradiance->setInt("voxelResolutionI", voxel_resolution);
-    Calcradiance->setFloat("voxelWidthWorld", voxel_width_world);
-    Calcradiance->setVec3("worldMinPoint", voxelWorldMinPoint);
-    glActiveTexture(GL_TEXTURE0 +3);
-    Calcradiance->setInt(rt[0].nameInShader, 3);
-    Calcradiance->setInt("openNormalBlend", normalBlend);
-    glBindTexture(GL_TEXTURE_2D, rt[0].id);
-    for (unsigned int i = 0; i < 4; i++)
-    {
-        // calculate the model matrix for each object and pass it to shader before drawing
-        lights[i].SetLight(*Calcradiance);
+    if (updateRadianceNow == updateRadianceCount) {
+        glm::mat4 modelVoxel_inverse_t = glm::transpose(glm::inverse(modelVoxel));
+        Calcradiance->use();
+        Calcradiance->setMatrix("lightMat", (lightProjection * lightView));
+        Calcradiance->setMatrix("model", modelVoxel);
+        Calcradiance->setMatrix("model_inverse_t", (modelVoxel_inverse_t));
+        Calcradiance->setFloat("voxelResolution", voxel_resolution);
+        Calcradiance->setInt("voxelResolutionI", voxel_resolution);
+        Calcradiance->setFloat("voxelWidthWorld", voxel_width_world);
+        Calcradiance->setVec3("worldMinPoint", voxelWorldMinPoint);
+        glActiveTexture(GL_TEXTURE0 + 3);
+        Calcradiance->setInt(rt[0].nameInShader, 3);
+        Calcradiance->setInt("openNormalBlend", normalBlend);
+        glBindTexture(GL_TEXTURE_2D, rt[0].id);
+        for (unsigned int i = 0; i < 4; i++)
+        {
+            // calculate the model matrix for each object and pass it to shader before drawing
+            lights[i].SetLight(*Calcradiance);
+        }
+
+        Calcradiance->dispatch();
+        Calcradiance->wait();//0.85ms
     }
-   
-    Calcradiance->dispatch();
-    Calcradiance->wait();//0.85ms
-   /*     CalculateDeltaTime();
+    /*     CalculateDeltaTime();
     cout << to_string(1000 * deltaTime) + "Calcraidance" << endl;*/
- 
+
+    
     
 
 
@@ -549,57 +545,42 @@ void VoxelProcess::Process()
     lights[3].Draw();  //draw cube
 
 
- 
-    /*CalculateDeltaTime();*/
-   GenerateMipmap();//0.2ms
-
- /*           CalculateDeltaTime();
-    cout << to_string(1000 * deltaTime) + "GenerateMipmap" << endl;*/
+    if (updateRadianceNow==updateRadianceCount) {
+        GenerateMipmap();//0.2ms
 
 
-   if (InjectFirstBounce) 
-   {
-       VoxelConeTracing->use();
-       VoxelConeTracing->setInt("voxelResolution", voxel_resolution);
-       VoxelConeTracing->setFloat("IndirectLight", IndirectLight);
-       VoxelConeTracing->setFloat("directLight", directLight);
-       VoxelConeTracing->dispatch();
-       VoxelConeTracing->wait();
 
-       GenerateMipmap();
-   }
-  
+        if (InjectFirstBounce)
+        {
+            VoxelConeTracing->use();
+            VoxelConeTracing->setInt("voxelResolution", voxel_resolution);
+            VoxelConeTracing->setFloat("IndirectLight", IndirectLight);
+            VoxelConeTracing->setFloat("directLight", directLight);
+            VoxelConeTracing->dispatch();
+            VoxelConeTracing->wait();
+
+            GenerateMipmap();
+        }
+        updateRadianceNow =0.0;
+    }
+    EnableVoxelization = false;
                 
+   if (limit.x > 0.3) 
+   {
+       drawVoxel->use();
+       drawVoxel->setMatrix("model", modelVoxel);
+       drawVoxel->setVec3("cameraPos", camera.GetPos());
+       drawVoxel->setMatrix("lightMat", (lightProjection * lightView));
+       drawVoxel->setMatrix("model_inverse_t", (model_inverse_t));
+       drawVoxel->setMatrixArray("voxelViewProjection", voxelViewProjction);
+       drawVoxel->setFloat("voxelResolution", voxel_resolution);
+       drawVoxel->setInt("voxelResolutionI", voxel_resolution);
+       drawVoxel->setFloat("voxelWidthWorld", voxel_width_world);
+       drawVoxel->setMatrixArray("voxelViewProjectionInverse", voxelViewProjctionInverse);
+       drawVoxel->setVec3("worldMinPoint", voxelWorldMinPoint);
 
-    drawVoxel->use();
-    drawVoxel->setMatrix("model", modelVoxel);
-    drawVoxel->setVec3("cameraPos", camera.GetPos());
-    drawVoxel->setMatrix("lightMat", (lightProjection * lightView));
-    drawVoxel->setMatrix("model_inverse_t", (model_inverse_t));
-    drawVoxel->setMatrixArray("voxelViewProjection", voxelViewProjction);
-    drawVoxel->setFloat("voxelResolution", voxel_resolution);
-    drawVoxel->setInt("voxelResolutionI", voxel_resolution);
-    drawVoxel->setFloat("voxelWidthWorld", voxel_width_world);
-    drawVoxel->setMatrixArray("voxelViewProjectionInverse", voxelViewProjctionInverse);
-    drawVoxel->setVec3("worldMinPoint", voxelWorldMinPoint);
-    if(limit.x>0.3)
-    voxelModel->Draw(*drawVoxel, voxel_rt);
-
-    //voxelShaderRender->use();
-    //voxelShaderRender->setMatrix("model", model);
-    //voxelShaderRender->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
-    //voxelShaderRender->setVec3("cameraPos", camera.GetPos());
-    //voxelShaderRender->setMatrix("lightMat", (lightProjection * lightView));
-    //voxelShaderRender->setMatrix("model_inverse_t", (model_inverse_t));
-    //voxelShaderRender->setVec3("worldMinPoint", voxelWorldMinPoint);
-    //voxelShaderRender->setInt("voxelResolutionI", voxel_resolution);
-    //voxelShaderRender->setFloat("voxelWidthWorld", voxel_width_world);
-    //for (unsigned int i = 0; i < 4; i++)
-    //{
-    //    // calculate the model matrix for each object and pass it to shader before drawing
-    //    lights[i].SetLight(*myshader);
-    //}
-    //ourModel->Draw(*voxelShaderRender, rt, nullptr, voxel_rt);
+       voxelModel->Draw(*drawVoxel, voxel_rt);
+   }
     
 
 
@@ -615,17 +596,14 @@ void VoxelProcess::Process()
     
 
     if (limit.x < 0.3) 
-    {
-       /* posteffect->DebugDraw(depthMap->texture.id);*/
-        
+    {   
        
         {
             CalculateDeltaTime();
             blit1->BindFrameBufferInit();
             glViewport(0, 0, width, height);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             lightPass->UseShader();
             for (int i = 0; i < 4; i++) {
                 glActiveTexture(GL_TEXTURE0 + i + 1);
@@ -794,6 +772,7 @@ void VoxelProcess::Process()
     //posteffect->DebugDraw(WaveParticleShader->texes_output[0].id);
     // glViewport(0, 0, width, height);
      //posteffect->DebugDraw(WaveParticleShader->texes_output[0].initid);
+    updateRadianceNow++;
     if (showwindow)
     {
         lightshader->use();

@@ -19,7 +19,7 @@
 #include "FBO.h"
 #include"Mymath.h"
 #include"Wave_Particle_Pool.h"
-#include "B_Spine.h"
+#include "B_Spline.h"
 #include"WaveProcess.h"
 #include"VoxelProcess.h"
 
@@ -35,6 +35,8 @@ glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
 float cameraSpeed = 15.0f;
 float deltaTime = 0.0f; // 当前帧与上一帧的时间差
 float lastFrame = 0.0f; // 上一帧的时间
+float deltaTimeOptimazation = 0.0f; // 当前帧与上一帧的时间差
+float lastFrameOptimazation = 0.0f; // 上一帧的时间
 int width = 1024;
 int height = 1024;
 int CSwidth = 256;
@@ -51,7 +53,7 @@ float BubblesThreshold = 0.7f;
 float BubblesScale = 1.0f;
 float jacobScale = 100.0f;
 float Input_N = 64;
-float B_Spine_count = 1024;
+float B_Spline_count = 1024;
 float scale_Wave = 0.2f;
 float scale_Ocean = 10.0f;
 float scale_subsurface = 1.0f;
@@ -147,6 +149,13 @@ void CalculateDeltaTime() {
     lastFrame = currentFrame;
 
 }
+void CalculateDeltaTimeOP() {
+
+    float currentFrame = glfwGetTime();
+    deltaTimeOptimazation = currentFrame - lastFrameOptimazation;
+    lastFrameOptimazation= currentFrame;
+
+}
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
@@ -206,7 +215,7 @@ int main(int, char**)
     }
 
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+    glfwSwapInterval(0); // Enable vsync (Before screen swaps Buffer,it should wait the num of frame)
         // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -286,14 +295,15 @@ int main(int, char**)
  //   std::vector<Texture> rt = std::vector<Texture>(7);
     WaveProcess* process = new WaveProcess(camera);
     process->Init();
-   /*    VoxelProcess* process = new VoxelProcess(camera);
-       process->Init();*/
+       //VoxelProcess* process = new VoxelProcess(camera);
+       //process->Init();
     //int coutFrame = 0;
     
        auto  vendor = glGetString(GL_VENDOR);
        auto  renderer = glGetString(GL_RENDERER);
        int countFrame = 0;
        float timeFrame = 0;
+       float timeFrameOptimazation = 0;
        float avgfps = 0;
     while (!glfwWindowShouldClose(window))
     {
@@ -306,10 +316,12 @@ int main(int, char**)
             timeFrame = 0.0f;
 
         }*/
+       /* CalculateDeltaTime();
+        Time += deltaTime;*/
+       // process1->SetCameraAndTime(camera, Time*1.00);
         CalculateDeltaTime();
         Time += deltaTime;
-       // process1->SetCameraAndTime(camera, Time*1.00);
-        process->SetCameraAndTime(camera, Time);
+        process->SetCameraAndTime(camera, Time*1.0);
         // Start the Dear ImGui frame
         
         ImGui_ImplOpenGL3_NewFrame();
@@ -323,36 +335,46 @@ int main(int, char**)
         processInput(window);
        
       //  process1->Process();
-         CalculateDeltaTime();
-        process->Process();
-        CalculateDeltaTime();
-        Time += deltaTime;
+        
+      process->Process();
+        
+      
+      
         
         
           
         
-       
+      CalculateDeltaTimeOP();
         ImGui::Render();
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         
         glViewport(0, 0, display_w, display_h);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+       // CalculateDeltaTimeOP();
         glfwPollEvents();
-        glfwSwapBuffers(window);
-      
+     
+        glfwSwapBuffers(window);//swapBuffer Cost Lots of time
+        //CalculateDeltaTimeOP();
+        CalculateDeltaTimeOP();
+
+        timeFrameOptimazation += deltaTimeOptimazation;
         timeFrame += deltaTime;
         countFrame++;
+       
         if (countFrame == 60) {
+            timeFrameOptimazation /= 60.0;
             timeFrame /= 60.0;
-             avgfps = 1 / timeFrame;
-             cout <<  1000*timeFrame << endl;
+             avgfps = 1 / timeFrameOptimazation;
+             cout << "Real: "<<1000*timeFrame<<" Optimazation: " <<1000* timeFrameOptimazation << endl;
+             
+             timeFrameOptimazation = 0.0;
              timeFrame = 0.0;
              countFrame = 0;
              
            
         }//need to Calc UI
-      
+        
         
     }
    

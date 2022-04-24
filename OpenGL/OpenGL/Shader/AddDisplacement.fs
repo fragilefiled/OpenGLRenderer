@@ -46,7 +46,7 @@ float A=steepness/k;
 float x_gerstner=dir.x*0.1*cos(f+0.5*PI);
 float y_gerstner=0.1*sin(f+0.5*PI);
 float z_gerstner=dir.y*0.1*cos(f+0.5*PI);
-float t=fract( uv.x*5.0-0.4*Time)/wave_length;
+float t=fract( uv.x*2.0-0.4*Time)/wave_length;
 int pownum=int(1.0*fract(uv.x));
 
 x_gerstner=0.5*cos(2*PI*pow(t,1.0+1.0*fract(uv.x)));//powuse(t,pownum)
@@ -60,7 +60,10 @@ x_gerstner=0.5*cos(2*PI*pow(t,1.0+1.0*fract(uv.x)));//powuse(t,pownum)
 
 
 vec2 uv_use=fract(-uv_now);
-vec4 B_spine=((texture(waveMap, -vec2(uv_use.x,0.0)))*cos((uv.y-0.5)*PI))*Scale_control.x*20;
+
+
+
+vec4 B_spine=((texture(waveMap, -vec2(uv_use.x,uv.x*0.5+0.25))))*20*Scale_control.x*(1.0-uv.x)*cos((uv.y-0.5)*PI);//uv.x*0.5+0.25 uv出了点问题
 FragColor=B_spine+(texture(screen_RT,uv))*Scale_control.y+vec4(x_gerstner,y_gerstner,z_gerstner,0.0)*Scale_control.z;
 //+texture(screen_RT,0.5uv)挺有意思的想法
 

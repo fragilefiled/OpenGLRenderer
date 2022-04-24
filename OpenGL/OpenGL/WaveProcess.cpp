@@ -11,97 +11,110 @@ void WaveProcess::SetCameraAndTime(Camera& camera, float time)
 void WaveProcess::Init()
 {
     showwindow = true;
-   
-    bubbleDiffuse = new Texture(".//Model//Foam//BubbleDiffuse2.jpg",Texture::Normal);
+
+    bubbleDiffuse = new Texture(".//Model//Foam//BubbleDiffuse2.jpg", Texture::Normal);
     //bubbleNormal = new Texture(".//Model//Foam//BubbleNormal1.jpg", Texture::Normal);
-     myshader = new Shader(".//Shader//MyVertexShader.vs", ".//Shader//LightingCubeShader.fs");
+    myshader = new Shader(".//Shader//MyVertexShader.vs", ".//Shader//LightingCubeShader.fs");
     // Shader lightshader = Shader(".//Shader//MyVertexShader.vs", ".//Shader//lightshader->fs", ".//Shader//lightshader->gs");
-   lightshader = new Shader(".//Shader//LightShader.vs", ".//Shader//LightShader.fs");
+    lightshader = new Shader(".//Shader//LightShader.vs", ".//Shader//LightShader.fs");
     screenShader = new Shader(".//Shader//PostEffect.vs", ".//Shader//PostEffect.fs");
     InstanceShader = new Shader(".//Shader//InstanceShader.vs", ".//Shader//LightingCubeShader.fs");
-    FloorShader =new Shader(".//Shader//floorShader.vs", ".//Shader//floorShader.fs");
+    FloorShader = new Shader(".//Shader//floorShader.vs", ".//Shader//floorShader.fs");
     //  Shader OceanShader = Shader(".//Shader//oceanShader.vs", ".//Shader//oceanShader.fs");
     roomModel = new Model(".//Model//floor//floor3.obj");
-   ourModel=new Model(".//Model//nanosuit//nanosuit.obj");
+    ourModel = new Model(".//Model//nanosuit//nanosuit.obj");
 
     //delete roomModel;
     //Model sponzaModel(".//Model//sponza//sponza.obj");
-    depthShader =new Shader(".//Shader//DepthShader.vs", ".//Shader//DepthShader.fs");
+    depthShader = new Shader(".//Shader//DepthShader.vs", ".//Shader//DepthShader.fs");
     depthOceanShader = new Shader(".//Shader//DepthOceanShader.vs", ".//Shader//DepthShader.fs");
     // Model ourModel(".//Model//planet//planet.obj");
     //  Model ourModel1(".//Model//rock//rock.obj",true,modelMatrices,amount);
      //Model ourModel1(".//Model//rock//rock.obj");
-   skyBoxShader = new Shader(".//Shader//CubeMap.vs", ".//Shader//CubeMap.fs");
-    GaussianShader = new ComputeShader(".//Shader//Test.comp", glm::vec3(CSwidth, CSheight,1.0));
-   HeightSpectrumShader = new ComputeShader(".//Shader//Height.comp", glm::vec3(CSwidth, CSheight, 1.0));
+    skyBoxShader = new Shader(".//Shader//CubeMap.vs", ".//Shader//CubeMap.fs");
+    GaussianShader = new ComputeShader(".//Shader//Test.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight));
+    HeightSpectrumShader = new ComputeShader(".//Shader//Height.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight));
     GaussianBlurShader_h = new Shader(".//Shader//PostEffect_gaussian_h.vs", ".//Shader//GaussionBlur_h.fs");
-     GaussianBlurShader_v = new Shader(".//Shader//PostEffect_gaussian_v.vs", ".//Shader//GaussionBlur_h.fs");
+    GaussianBlurShader_v = new Shader(".//Shader//PostEffect_gaussian_v.vs", ".//Shader//GaussionBlur_h.fs");
     AddDisplacementShader = new  Shader(".//Shader//PostEffect.vs", ".//Shader//AddDisplacement.fs");
     WaveParticleShader_h = new Shader(".//Shader//WaveParticle_h.vs", ".//Shader//WaveParticle_h.fs");
-     WaveParticleShader_v = new Shader(".//Shader//WaveParticle_h.vs", ".//Shader//WaveParticle_v.fs");
-     gammaCorrectionShader = new Shader(".//Shader//PostEffect.vs", ".//Shader//GammaCorrection.fs");
+    WaveParticleShader_v = new Shader(".//Shader//WaveParticle_h.vs", ".//Shader//WaveParticle_v.fs");
+    gammaCorrectionShader = new Shader(".//Shader//PostEffect.vs", ".//Shader//GammaCorrection.fs");
     DrawPoint = new Shader(".//Shader//DrawPoint.vs", ".//Shader//DrawPoint.fs");
     //  Shader GroundShader = Shader(".//Shader//ground.vs", ".//Shader//ground.fs");
-    OffsetSpectrumShader = new ComputeShader(".//Shader//Offset.comp", glm::vec3(CSwidth, CSheight, 1.0), 2);
-    FftXShader = new ComputeShader(".//Shader//Fftx.comp", glm::vec3(CSwidth, CSheight, 1.0), 3, 3);
-     FftYShader = new ComputeShader(".//Shader//Ffty.comp", glm::vec3(CSwidth, CSheight, 1.0), 3, 3);
-    FftXendShader = new ComputeShader(".//Shader//Fftxend.comp", glm::vec3(CSwidth, CSheight, 1.0), 3, 3);
-     FftYendShader = new ComputeShader(".//Shader//Fftyend.comp", glm::vec3(CSwidth, CSheight, 1.0), 3, 3);
-     DisplacementShader = new ComputeShader(".//Shader//Displacement.comp", glm::vec3(CSwidth, CSheight, 1.0), 4, 3);
-     normalShader = new ComputeShader(".//Shader//normalCalc.comp", glm::vec3(CSwidth, CSheight, 1.0), 5, 1);
-     WaveParticleShader = new ComputeShader(".//Shader//WaveParticle.comp", glm::vec3(wave_particle_resolution, wave_particle_resolution, 1.0), 1, 2, 0, false);
-     GaussianBlur_h = new ComputeShader(".//Shader//GaussianBlur_h.comp", glm::vec3(wave_particle_resolution, wave_particle_resolution, 1.0), 1, 1);
-     GaussianBlur_v = new ComputeShader(".//Shader//GaussianBlur_v.comp", glm::vec3(wave_particle_resolution, wave_particle_resolution, 1.0), 1, 1);
-     GaussianBlur_h1 = new ComputeShader(".//Shader//GaussianBlur_h.comp", glm::vec3(width, height, 1.0), 1, 1);
-     GaussianBlur_v1 = new ComputeShader(".//Shader//GaussianBlur_v.comp", glm::vec3(width, height, 1.0), 1, 1);
-     normalShader1 = new ComputeShader(".//Shader//normalCalc.comp", glm::vec3(width, height, 1.0), 5, 1);
-     blit6 = new PostEffect(*WaveParticleShader_v, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     blit5 = new PostEffect(*WaveParticleShader_h, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     blit4 = new PostEffect(*screenShader, B_Spine_count, B_Spine_count, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     blit3 = new PostEffect(*AddDisplacementShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     blit2 = new PostEffect(*GaussianBlurShader_h, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     blit1 = new PostEffect(*GaussianBlurShader_v, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     blit = new PostEffect(*screenShader, wave_particle_resolution, wave_particle_resolution, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     copy = new PostEffect(*screenShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     copyWaveParticle= new PostEffect(*screenShader, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     posteffect = new PostEffect(*gammaCorrectionShader, width, height, true, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     
+    OffsetSpectrumShader = new ComputeShader(".//Shader//Offset.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight), 2);
+    FftXShader = new ComputeShader(".//Shader//Fftx.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight), 3, 3);
+    FftYShader = new ComputeShader(".//Shader//Ffty.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight), 3, 3);
+    FftXendShader = new ComputeShader(".//Shader//Fftxend.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight), 3, 3);
+    FftYendShader = new ComputeShader(".//Shader//Fftyend.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight), 3, 3);
+    DisplacementShader = new ComputeShader(".//Shader//Displacement.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight), 4, 3);
+    normalShader = new ComputeShader(".//Shader//normalCalc.comp", glm::vec3(CSwidth / 8.0, CSheight / 8.0, 1.0), glm::vec2(CSwidth, CSheight), 5, 1);
+    WaveParticleShader = new ComputeShader(".//Shader//WaveParticle.comp", glm::vec3(wave_particle_resolution / 8.0, wave_particle_resolution / 8.0, 1.0), glm::vec2(wave_particle_resolution, wave_particle_resolution), 1, 2, 0, false);
+    GaussianBlur_h = new ComputeShader(".//Shader//GaussianBlur_h.comp", glm::vec3(wave_particle_resolution, wave_particle_resolution, 1.0), glm::vec2(wave_particle_resolution, wave_particle_resolution), 1, 1);
+    GaussianBlur_v = new ComputeShader(".//Shader//GaussianBlur_v.comp", glm::vec3(wave_particle_resolution, wave_particle_resolution, 1.0), glm::vec2(wave_particle_resolution, wave_particle_resolution), 1, 1);
+    GaussianBlur_h1 = new ComputeShader(".//Shader//GaussianBlur_h.comp", glm::vec3(width, height, 1.0), glm::vec2(width, height), 1, 1);
+    GaussianBlur_v1 = new ComputeShader(".//Shader//GaussianBlur_v.comp", glm::vec3(width, height, 1.0), glm::vec2(width, height), 1, 1);
+    normalShader1 = new ComputeShader(".//Shader//normalCalc.comp", glm::vec3(width / 8.0, height / 8.0, 1.0), glm::vec2(width, height), 5, 1);
+    blit6 = new PostEffect(*WaveParticleShader_v, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    blit5 = new PostEffect(*WaveParticleShader_h, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    blit4 = new PostEffect(*screenShader, B_Spline_count, B_Spline_count, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    blit3 = new PostEffect(*AddDisplacementShader, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    blit2 = new PostEffect(*GaussianBlurShader_h, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    blit1 = new PostEffect(*GaussianBlurShader_v, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    blit = new PostEffect(*screenShader, wave_particle_resolution, wave_particle_resolution, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    copy = new PostEffect(*screenShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    copyWaveParticle = new PostEffect(*screenShader, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    posteffect = new PostEffect(*gammaCorrectionShader, width, height, true, GL_RGBA32F, GL_RGBA, GL_FLOAT);
 
-     shadowwidth = 2 * width;
-     shadowheight = 2 * height;
-     depthMap = new  FBO(shadowwidth, shadowheight, "_depthTexture", FBO::Depth);
-     wavemap = new FBO(wave_particle_resolution_fliter, wave_particle_resolution_fliter, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     temp1 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     temp2 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     temp3 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     temp4 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     temp5 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     temp6 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+
+    shadowwidth = 2 * width;
+    shadowheight = 2 * height;
+    depthMap = new  FBO(shadowwidth, shadowheight, "_depthTexture", FBO::Depth);
+    wavemap = new FBO(wave_particle_resolution_fliter, wave_particle_resolution_fliter, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    temp1 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    temp2 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    temp3 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    temp4 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    temp5 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    temp6 = new FBO(width, height, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     temp7 = new FBO(wave_particle_resolution_fliter, wave_particle_resolution_fliter, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     temp8 = new FBO(wave_particle_resolution_fliter, wave_particle_resolution_fliter, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    temp8 = new FBO(wave_particle_resolution_fliter, wave_particle_resolution_fliter, "_wavemap", FBO::Color, GL_RGBA32F, GL_RGBA, GL_FLOAT);
 
     // vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(11,0),glm::vec2(17,8),glm::vec2(24,10),glm::vec2(26,19),glm::vec2(26,0),glm::vec2(26,0),glm::vec2(26,0),glm::vec2(40,0),glm::vec2(45,0) });
     //vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(11,0),glm::vec2(17,8),glm::vec2(24,18),glm::vec2(26,19),glm::vec2(26.2,0),glm::vec2(30,0) });
      // vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(11,0),glm::vec2(12,8),glm::vec2(24,18),glm::vec2(26,19),glm::vec2(26.2,8),glm::vec2(27,0) });
     //  vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(5,0),glm::vec2(12,8),glm::vec2(24,18),glm::vec2(30,19),glm::vec2(26.2,8),glm::vec2(36,0) });
      // vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(5,0),glm::vec2(12,8),glm::vec2(24,18),glm::vec2(30,maxY),glm::vec2(26.2,8),glm::vec2(36,0), glm::vec2(41,0) });
-      vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,5),glm::vec2(5,0),glm::vec2(12,8),glm::vec2(18,12),glm::vec2(31,maxY),glm::vec2(26.2,8),glm::vec2(36,0), glm::vec2(41,5) });
-    //  vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,5),glm::vec2(11,7),glm::vec2(17,8),glm::vec2(24,18),glm::vec2(26,19),glm::vec2(26.2,0),glm::vec2(30,0) });
-    B_Spine b_spine = B_Spine(B_Spine_count, 4, control, vector<double>(0));
-    b_spine.generate_u();
-    b_spine.produce_height_array();
+    vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(5,0),glm::vec2(12,8),glm::vec2(18,12),glm::vec2(25,maxY),glm::vec2(26.2,8),glm::vec2(36,0), glm::vec2(41,2) });
+    vector<glm::vec2> control1 = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(5,0),glm::vec2(12,8),glm::vec2(18,12),glm::vec2(35,maxY),glm::vec2(26.2,8),glm::vec2(36,0), glm::vec2(41,2) });
+    //vector<glm::vec2> control1 = vector<glm::vec2>({ glm::vec2(-20,0),glm::vec2(0,0),glm::vec2(15,9),glm::vec2(20.2,8),glm::vec2(25.2,3),glm::vec2(30,0),glm::vec2(40,0) });
+  //  vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,5),glm::vec2(11,7),glm::vec2(17,8),glm::vec2(24,18),glm::vec2(26,19),glm::vec2(26.2,0),glm::vec2(30,0) });
+    B_Spline b_Spline = B_Spline(B_Spline_count, 4, control, vector<double>(0));
+    b_Spline.generate_u();
+    b_Spline.produce_height_array();
+    B_Spline b_Spline1 = B_Spline(B_Spline_count, 4, control1, vector<double>(0));
+    b_Spline1.generate_u();
+    b_Spline1.produce_height_array();
 
-
-    particleImage =new TextureImage(Input_N, Input_N);
+    vector<float> v3;
+    v3.resize(b_Spline1.y_array.size() + b_Spline.y_array.size());//合并前需要准备空间
+    for (int i = 0; i < b_Spline1.y_array.size(); i++)
+        v3[i] = b_Spline1.y_array[i];
+    for (int i = 0; i < b_Spline.y_array.size(); i++)
+        v3[i + b_Spline.y_array.size()] = b_Spline.y_array[i];
+    particleImage = new TextureImage(Input_N, Input_N);
     particleImage->Bind();
     particleImage1 = new TextureImage(Input_N, Input_N);
     particleImage1->Bind();
-     waveImage1 = new TextureImage(B_Spine_count, 1);
+    waveImage1 = new TextureImage(B_Spline_count, 2);
     waveImage1->Bind();
-    waveImage1->setData(b_spine.y_array);
+    waveImage1->setData(v3);
     auto temp = std::vector<float>(0);
-    b_spine.y_array.swap(temp);
-
+    b_Spline.y_array.swap(temp);
+    auto temp1 = std::vector<float>(0);
+    b_Spline1.y_array.swap(temp1);
+    auto temp2 = std::vector<float>(0);
+    v3.swap(temp2);
 
 
 
@@ -111,8 +124,8 @@ void WaveProcess::Init()
     glm::vec3 lightDir = lightPos;
     glm::vec4 lightColor(1, 1, 1, 0);
 
-    light=new Light(DIRLIGHT, glm::vec3(0.0, 15.0, 1.0), -glm::vec3(0.0, 0.4, 0.5), lightColor);
-    pointLight= new Light(POINTLIGHT, lightPos, -lightDir, lightColor);
+    light = new Light(DIRLIGHT, glm::vec3(0.0, 15.0, 1.0), -glm::vec3(0.0, 0.4, 0.5), lightColor);
+    pointLight = new Light(POINTLIGHT, lightPos, -lightDir, lightColor);
     pointLight1 = new Light(POINTLIGHT, lightPos1, -lightDir, lightColor);
     pointLight->lightProperty = glm::vec3(1.0f, 0.9f, 0.032f);
     pointLight1->lightProperty = glm::vec3(1.0f, 0.9f, 0.032f);
@@ -130,7 +143,7 @@ void WaveProcess::Init()
            ".//Model//skybox//front.jpg",
            ".//Model//skybox//back.jpg"});*/
 
-     cubemap = new CubeMap(vector<string>{".//Model//skybox//FS000_Day_04.png_Rig.jpg",
+    cubemap = new CubeMap(vector<string>{".//Model//skybox//FS000_Day_04.png_Rig.jpg",
         ".//Model//skybox//FS000_Day_04.png_Lef.jpg",
         ".//Model//skybox//FS000_Day_04.png_Top.jpg",
         ".//Model//skybox//FS000_Day_04.png_Bot.jpg",
@@ -150,7 +163,7 @@ void WaveProcess::Init()
 
     //unsigned int pointVAO, pointVBO;
 
-    
+
     bubbleDiffuse->Bind();
     posteffect->BindQuad();
     blit->BindQuad();
@@ -164,7 +177,7 @@ void WaveProcess::Init()
 
     copyWaveParticle->BindQuad();
     cubemap->Bind();
-    
+
 
 
     // framebuffer configuration
@@ -180,7 +193,7 @@ void WaveProcess::Init()
     copyWaveParticle->SetFrameBuffer();
     ubotest = new UBO(2 * sizeof(glm::mat4));
 
-    shaders=vector<Shader>{ *lightshader, *myshader,*FloorShader };
+    shaders = vector<Shader>{ *lightshader, *myshader,*FloorShader };
     ubotest->SetUnifromBlockIndexAndBind(shaders, "Matrices");
     ubotest->BindUniformBuffer();
     if (enableWaveParticle) {
@@ -190,15 +203,15 @@ void WaveProcess::Init()
             scale_Wave = 0.9f;
 
     }
-    
+
     if (enableWaveParticle_hvfliter)
-        pool =new Wave_Particle_Pool(Input_N * Input_N, wave_particle_resolution_fliter,enableWaveParticle_hvfliter);
+        pool = new Wave_Particle_Pool(Input_N * Input_N, wave_particle_resolution_fliter, enableWaveParticle_hvfliter);
     else
         pool = new Wave_Particle_Pool(Input_N * Input_N, wave_particle_resolution);
     pointVAO = pool->pointVAO;
     pointVBO = pool->pointVBO;
     srand((int)time(0));
-    
+
     if (!enableWaveParticle_hvfliter)
     {
 
@@ -221,14 +234,14 @@ void WaveProcess::Init()
             pool->PushToParticles(glm::vec2(randomNum, randomNum3), glm::vec2(randomNum, randomNum3), glm::vec2(a * randomNum1, b * randomNum2), height, 5.0f, 60, 0.0);
 
         }
-      //  pool->PushToParticles(glm::vec2(32, 32), glm::vec2(32, 32), glm::vec2(0.1, 0.1), 0.5f, 5.0f, 60, 0.0);
+        //  pool->PushToParticles(glm::vec2(32, 32), glm::vec2(32, 32), glm::vec2(0.1, 0.1), 0.5f, 5.0f, 60, 0.0);
     }
     if (enableWaveParticle_hvfliter)
     {
-       /* pool->PushToParticles(glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0),glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0), 4.0f * glm::vec2(0.005 * wave_particle_resolution_fliter, 0.005 * wave_particle_resolution_fliter), 20.0f, 50.0f, 60, 0.0);
-        pool->PushToParticles(glm::vec2(wave_particle_resolution_fliter / 4.0, wave_particle_resolution_fliter / 4.0),  glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0), 4.0f * glm::vec2(0.005 * wave_particle_resolution_fliter, 0.005 * wave_particle_resolution_fliter), 20.0f, 50.0f, 60, 0.0);
-        pool->PushToParticles(glm::vec2(wave_particle_resolution_fliter / 8.0, wave_particle_resolution_fliter / 8.0),  glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0), 4.0f * glm::vec2(0.005 * wave_particle_resolution_fliter, 0.005 * wave_particle_resolution_fliter), 20.0f, 50.0f, 60, 0.0);
-        pool->PushToParticles(glm::vec2(wave_particle_resolution_fliter / 16.0, wave_particle_resolution_fliter / 16.0),  glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0), 4.0f * glm::vec2(0.005 * wave_particle_resolution_fliter, 0.005 * wave_particle_resolution_fliter), 20.0f, 50.0f, 60, 0.0);*/
+        /* pool->PushToParticles(glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0),glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0), 4.0f * glm::vec2(0.005 * wave_particle_resolution_fliter, 0.005 * wave_particle_resolution_fliter), 20.0f, 50.0f, 60, 0.0);
+         pool->PushToParticles(glm::vec2(wave_particle_resolution_fliter / 4.0, wave_particle_resolution_fliter / 4.0),  glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0), 4.0f * glm::vec2(0.005 * wave_particle_resolution_fliter, 0.005 * wave_particle_resolution_fliter), 20.0f, 50.0f, 60, 0.0);
+         pool->PushToParticles(glm::vec2(wave_particle_resolution_fliter / 8.0, wave_particle_resolution_fliter / 8.0),  glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0), 4.0f * glm::vec2(0.005 * wave_particle_resolution_fliter, 0.005 * wave_particle_resolution_fliter), 20.0f, 50.0f, 60, 0.0);
+         pool->PushToParticles(glm::vec2(wave_particle_resolution_fliter / 16.0, wave_particle_resolution_fliter / 16.0),  glm::vec2(wave_particle_resolution_fliter / 2.0, wave_particle_resolution_fliter / 2.0), 4.0f * glm::vec2(0.005 * wave_particle_resolution_fliter, 0.005 * wave_particle_resolution_fliter), 20.0f, 50.0f, 60, 0.0);*/
         for (int i = 0; i < particle_num; i++)
         {
             int randomNum = rand() % wave_particle_resolution_fliter;;
@@ -249,17 +262,19 @@ void WaveProcess::Init()
                 height = 12.0 * height;
             else if (wave_particle_resolution_fliter == 512)
                 height = 4.0 * height;
-            else if(wave_particle_resolution_fliter == 1024)
+            else if (wave_particle_resolution_fliter == 1024)
                 height = 1.0 * height;
             else if (wave_particle_resolution_fliter == 128)
                 height = 24.0 * height;
-            pool->PushToParticles(glm::vec2(randomNum, randomNum3), glm::vec2(randomNum, randomNum3), 80.0f * glm::vec2(a * randomNum1, b * randomNum2)*(float)((wave_particle_resolution_fliter)/1024.0), height, 5.0f, 60, 0.0);
+            else if (wave_particle_resolution_fliter == 64)
+                height = 36.0 * height;
+            pool->PushToParticles(glm::vec2(randomNum, randomNum3), glm::vec2(randomNum, randomNum3), 40.0f * glm::vec2(a * randomNum1, b * randomNum2) * (float)((wave_particle_resolution_fliter) / 1024.0), height, 5.0f, 60, 0.0);
 
         }
     }
     /* pool->PushToParticles(glm::vec2(64, 64), glm::vec2(64, 64), glm::vec2(0.1, 0.1), 0.3f, 5.0f, 60, 0.0);*/
      //pool->particles.push_back(Wave_Particle( glm::vec2(16, 16), glm::vec2(16, 16), glm::vec2(0.1, 0.1), 1.0, 2.5, 30, 0.0));
-  
+
 }
 
 void WaveProcess::Process()
@@ -267,12 +282,21 @@ void WaveProcess::Process()
     /*   glEnable(GL_BLEND);
           glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
     if (ChangeBSpine) {
-        
-        vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(5,0),glm::vec2(12,8),glm::vec2(24,18),glm::vec2(30,maxY),glm::vec2(26.2,8),glm::vec2(36,0), glm::vec2(41,0) });
-        b_spine.control_Point = control;
-        b_spine.generate_u();
-        b_spine.produce_height_array();
-        waveImage1->setData(b_spine.y_array);
+        vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(5,0),glm::vec2(12,8),glm::vec2(18,12),glm::vec2(25,19),glm::vec2(26.2,8),glm::vec2(36,0), glm::vec2(41,2) });
+        vector<glm::vec2> control1 = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(5,0),glm::vec2(12,8),glm::vec2(18,12),glm::vec2(35,maxY),glm::vec2(26.2,8),glm::vec2(36,0), glm::vec2(41,2) });
+        B_Spline b_Spline = B_Spline(B_Spline_count, 4, control, vector<double>(0));
+        b_Spline.generate_u();
+        b_Spline.produce_height_array();
+        B_Spline b_Spline1 = B_Spline(B_Spline_count, 4, control1, vector<double>(0));
+        b_Spline1.generate_u();
+        b_Spline1.produce_height_array();
+        vector<float> v3;
+        v3.resize(b_Spline1.y_array.size() + b_Spline.y_array.size());//合并前需要准备空间
+        for (int i = 0; i < b_Spline1.y_array.size(); i++)
+            v3[i] = b_Spline1.y_array[i];
+        for (int i = 0; i < b_Spline.y_array.size(); i++)
+            v3[i + b_Spline.y_array.size()] = b_Spline.y_array[i];
+        waveImage1->setData(v3);
         ChangeBSpine = false;
     }
 
@@ -318,14 +342,16 @@ void WaveProcess::Process()
     }
     WaveParticleShader->texes_output[0].InitId();
     DisplacementShader->texes_output[3].InitId();
-  
+
     if (!enableWaveParticle)
     {
-
-        GaussianShader->use();
-        GaussianShader->setInt("N", CSwidth);
-        GaussianShader->dispatch();
-        GaussianShader->wait();
+        if (initGaussian == false) {
+            GaussianShader->use();
+            GaussianShader->setInt("N", CSwidth);
+            GaussianShader->dispatch();
+            GaussianShader->wait();
+            initGaussian = false;
+        }//可以增加随机性效果还差的蛮大的
 
 
         HeightSpectrumShader->texes_input[0] = GaussianShader->texes_output[0];
@@ -351,67 +377,68 @@ void WaveProcess::Process()
         FftXShader->texes_input[2] = OffsetSpectrumShader->texes_input[0];
 
 
-              for (int i = 0; i < log2(CSwidth); i++)
-           {
-               int a = log2(CSwidth);
-               int Ns = pow(2, i);
-               if (i == log2(CSwidth) - 1)
-               {
-                   FftXendShader->texes_input[0] = FftXShader->texes_input[0];
-                   FftXendShader->texes_input[1] = FftXShader->texes_input[1];
-                   FftXendShader->texes_input[2] = FftXShader->texes_input[2];
-                   FftXendShader->use();
-                   FftXendShader->setInt("N", CSwidth);
-                   FftXendShader->setInt("Ns", Ns);
-                   FftXendShader->dispatch();
-                   FftXendShader->wait();
+        for (int i = 0; i < log2(CSwidth); i++)
+        {
+            int a = log2(CSwidth);
+            int Ns = pow(2, i);
+            if (i == log2(CSwidth) - 1)
+            {
+                FftXendShader->texes_input[0] = FftXShader->texes_input[0];
+                FftXendShader->texes_input[1] = FftXShader->texes_input[1];
+                FftXendShader->texes_input[2] = FftXShader->texes_input[2];
+                FftXendShader->use();
+                FftXendShader->setInt("N", CSwidth);
+                FftXendShader->setInt("Ns", Ns);
+                FftXendShader->dispatch();
+                FftXendShader->wait();
 
-               }
-               else
-               {
-                   FftXShader->use();
-                   FftXShader->setInt("N", CSwidth);
-                   FftXShader->setInt("Ns", Ns);
-                   FftXShader->dispatch();
-                   FftXShader->wait();
-                   FftXShader->texes_input[0].Swap(FftXShader->texes_output[0]);
-                   FftXShader->texes_input[1].Swap(FftXShader->texes_output[1]);
-                   FftXShader->texes_input[2].Swap(FftXShader->texes_output[2]);
-               }
+            }
+            else
+            {
+                FftXShader->use();
+                FftXShader->setInt("N", CSwidth);
+                FftXShader->setInt("Ns", Ns);
+                FftXShader->dispatch();
+                FftXShader->wait();
+                FftXShader->texes_input[0].Swap(FftXShader->texes_output[0]);
+                FftXShader->texes_input[1].Swap(FftXShader->texes_output[1]);
+                FftXShader->texes_input[2].Swap(FftXShader->texes_output[2]);
+            }
 
-           }
-           FftYShader->texes_input[0] = FftXendShader->texes_output[0];
-           FftYShader->texes_input[1] = FftXendShader->texes_output[1];
-           FftYShader->texes_input[2] = FftXendShader->texes_output[2];
-           for (int i = 0; i < log2(CSwidth); i++)
-           {
-               int a = log2(CSwidth);
-               int Ns = pow(2, i);
-               if (i == log2(CSwidth) - 1)
-               {
-                   FftYendShader->texes_input[0] = FftYShader->texes_input[0];
-                   FftYendShader->texes_input[1] = FftYShader->texes_input[1];
-                   FftYendShader->texes_input[2] = FftYShader->texes_input[2];
-                   FftYendShader->use();
-                   FftYendShader->setInt("N", CSwidth);
-                   FftYendShader->setInt("Ns", Ns);
-                   FftYendShader->dispatch();
-                   FftYendShader->wait();
+        }
+        FftYShader->texes_input[0] = FftXendShader->texes_output[0];
+        FftYShader->texes_input[1] = FftXendShader->texes_output[1];
+        FftYShader->texes_input[2] = FftXendShader->texes_output[2];
+        for (int i = 0; i < log2(CSwidth); i++)
+        {
+            int a = log2(CSwidth);
+            int Ns = pow(2, i);
+            if (i == log2(CSwidth) - 1)
+            {
+                FftYendShader->texes_input[0] = FftYShader->texes_input[0];
+                FftYendShader->texes_input[1] = FftYShader->texes_input[1];
+                FftYendShader->texes_input[2] = FftYShader->texes_input[2];
+                FftYendShader->use();
+                FftYendShader->setInt("N", CSwidth);
+                FftYendShader->setInt("Ns", Ns);
+                FftYendShader->dispatch();
 
-               }
-               else
-               {
-                   FftYShader->use();
-                   FftYShader->setInt("N", CSwidth);
-                   FftYShader->setInt("Ns", Ns);
-                   FftYShader->dispatch();
-                   FftYShader->wait();
-                   FftYShader->texes_input[0].Swap(FftYShader->texes_output[0]);
-                   FftYShader->texes_input[1].Swap(FftYShader->texes_output[1]);
-                   FftYShader->texes_input[2].Swap(FftYShader->texes_output[2]);
-               }
+                FftYendShader->wait();
 
-           }
+            }
+            else
+            {
+                FftYShader->use();
+                FftYShader->setInt("N", CSwidth);
+                FftYShader->setInt("Ns", Ns);
+                FftYShader->dispatch();
+                FftYShader->wait();
+                FftYShader->texes_input[0].Swap(FftYShader->texes_output[0]);
+                FftYShader->texes_input[1].Swap(FftYShader->texes_output[1]);
+                FftYShader->texes_input[2].Swap(FftYShader->texes_output[2]);
+            }
+
+        }
         DisplacementShader->texes_input[0] = FftYendShader->texes_output[0];
         DisplacementShader->texes_input[1] = FftYendShader->texes_output[1];
         DisplacementShader->texes_input[2] = FftYendShader->texes_output[2];
@@ -429,7 +456,7 @@ void WaveProcess::Process()
         normalShader->setFloat("BubblesThreshold", BubblesThreshold);
         normalShader->setFloat("jacobScale", jacobScale);
         normalShader->setFloat("jacobScaleEdge", jacobScaleEdge);
-        normalShader->setFloat("resolutioninv", 2.0f * scale_Ocean / (float)CSwidth);//平面的长度为2
+        normalShader->setFloat("resolutioninv", 2.0f*scale_Ocean  / (float)CSwidth);//平面的长度为2 scale_Ocean是为了平滑法线
         normalShader->dispatch();
         normalShader->wait();
 
@@ -440,7 +467,6 @@ void WaveProcess::Process()
                 blit1->BindFrameBufferInit();
                 glViewport(0, 0, blit1->width, blit1->height);
                 glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit1->UseShader();
@@ -454,7 +480,6 @@ void WaveProcess::Process()
                 blit1->BindFrameBufferInit();
                 glViewport(0, 0, blit1->width, blit1->height);
                 glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit1->UseShader();
@@ -467,7 +492,6 @@ void WaveProcess::Process()
             blit2->BindFrameBufferInit();
             glViewport(0, 0, blit2->width, blit2->height);
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glDepthFunc(GL_LEQUAL);
             blit2->UseShader();
@@ -485,7 +509,6 @@ void WaveProcess::Process()
                 blit1->BindFrameBufferInit();
                 glViewport(0, 0, blit1->width, blit1->height);
                 glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit1->UseShader();
@@ -499,7 +522,6 @@ void WaveProcess::Process()
                 blit1->BindFrameBufferInit();
                 glViewport(0, 0, blit1->width, blit1->height);
                 glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit1->UseShader();
@@ -512,7 +534,6 @@ void WaveProcess::Process()
             blit2->BindFrameBufferInit();
             glViewport(0, 0, blit2->width, blit2->height);
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glDepthFunc(GL_LEQUAL);
             blit2->UseShader();
@@ -526,22 +547,22 @@ void WaveProcess::Process()
     }
     else
     {
-   
+
         //CalculateDeltaTime();
         pool->ExPand();
-       
+
         //vector<float> all(Input_N * Input_N * 4, 0);
        // vector<float> all3(wave_particle_resolution * wave_particle_resolution * 6, 0);
         //vector<float> all1(Input_N * Input_N * 4, 0);
         int particlesize = pool->nowUse;
-        vector<float> all(Input_N* Input_N * 4, 0);
+        vector<float> all(Input_N * Input_N * 4, 0);
         vector<float> all3(particlesize * 6, 0);
-        vector<float> all1(Input_N* Input_N * 4, 0);
+        vector<float> all1(Input_N * Input_N * 4, 0);
         vector<int> indexArray = pool->indexArray_out;//输入的indexArray
-        
+
         omp_set_num_threads(4);
-        #pragma omp parallel
-        #pragma omp for
+#pragma omp parallel
+#pragma omp for
         for (int j = 0; j < particlesize; j++)
         {
             int i = j;
@@ -561,7 +582,7 @@ void WaveProcess::Process()
                 all1[j * 4 + 2] = 0;
                 all1[j * 4 + 3] = 0;
             }
-            if (enableWaveParticle_hvfliter) 
+            if (enableWaveParticle_hvfliter)
             {
                 all3[j * 4 + 0] = (float)pos.x / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
                 all3[j * 4 + 1] = (float)pos.y / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
@@ -571,35 +592,33 @@ void WaveProcess::Process()
                 all3[j * 4 + 5] = dir.y;
             }
         }
-        
-        
-         if (!enableWaveParticle_hvfliter) 
-         {
-             WaveParticleShader->texes_input[0] = *particleImage;
-             WaveParticleShader->texes_input[0].setData(all);
-             WaveParticleShader->texes_input[1] = *particleImage1;
-             WaveParticleShader->texes_input[1].setData(all1);
-         }
-       
+
+
+        if (!enableWaveParticle_hvfliter)
+        {
+            WaveParticleShader->texes_input[0] = *particleImage;
+            WaveParticleShader->texes_input[0].setData(all);
+            WaveParticleShader->texes_input[1] = *particleImage1;
+            WaveParticleShader->texes_input[1].setData(all1);
+        }
+
 
         if (enableWaveParticle_hvfliter)
             pool->UpdatePoints(all3);
-       
-    
-          //   CalculateDeltaTime(); //0.72ms
-          //CalcAvgDeltaTime("Draw Point Map");
+        //3ms
 
-        
+
+
+
         if (enableWaveParticle_hvfliter)
         {
-           
-           //CalculateDeltaTime();
-            //将Wavemap拉伸到1024*1024
+
+            //CalculateDeltaTime();
+             //将Wavemap拉伸到1024*1024
             copy->BindFrameBufferInit();
             glViewport(0, 0, copy->width, copy->height);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glDepthFunc(GL_LEQUAL);
             //  blit->DrawQuad(WaveParticleShader->texes_output[0].id, true);
             DrawPoint->use();
@@ -608,79 +627,87 @@ void WaveProcess::Process()
             glBindVertexArray(pool->pointVAO);
             //绘制顶点 
             glDrawArrays(GL_POINTS, 0, particle_num);
-            copy->Blit(*temp6);
+           // copy->Blit(*temp6);
             copy->BindFrameBufferOver();
-            
+            glViewport(0, 0, blit1->width, blit1->height);
+            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             for (int i = 0; i < particleBlurPassNum; i++)
             {
 
-
+                if(i==0)
                 {
                     blit1->BindFrameBufferInit();
-                    glViewport(0, 0, blit1->width, blit1->height);
-                    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                    glClear(GL_COLOR_BUFFER_BIT);
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
                     glDepthFunc(GL_LEQUAL);
                     blit1->UseShader();
-                    blit1->shader.setFloat("texelsize_v", (particleBlurPassNum -i)*1.0f / (float)height);
-                    blit1->DrawQuad(temp6->texture.id, false);
-                    blit1->Blit(*temp5);
+                    blit1->shader.setFloat("texelsize_v", (particleBlurPassNum ) * 1.0f / (float)height);
+                    blit1->DrawQuad(copy->textureColorbuffer , false);
+                   // blit1->Blit(*temp5);
                     blit1->BindFrameBufferOver();
+                }
+                else 
+                {
+
+                    blit1->BindFrameBufferInit();
+
+                    glDepthFunc(GL_LEQUAL);
+                    blit1->UseShader();
+                    blit1->shader.setFloat("texelsize_v", (particleBlurPassNum) * 1.0f / (float)height);
+                    blit1->DrawQuad(blit2->textureColorbuffer, false);
+                    //blit1->Blit(*temp5);
+                    blit1->BindFrameBufferOver();
+
                 }
 
                 blit2->BindFrameBufferInit();
-                glViewport(0, 0, blit2->width, blit2->height);
-                glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+                //glViewport(0, 0, blit2->width, blit2->height);
+                //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+                //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit2->UseShader();
-                blit2->shader.setFloat("texelsize_h", (particleBlurPassNum - i) * 1.0f / (float)width);
-                blit2->DrawQuad(temp5->texture.id, false);
-                blit2->Blit(*temp6);
+                blit2->shader.setFloat("texelsize_h", (particleBlurPassNum ) * 1.0f / (float)width);
+                blit2->DrawQuad(blit1->textureColorbuffer, false);
+               // blit2->Blit(*temp6);
                 blit2->BindFrameBufferOver();
 
             }
 
-            
             blit5->BindFrameBufferInit();
             glViewport(0, 0, blit5->width, blit5->height);
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glDepthFunc(GL_LEQUAL);
             blit5->UseShader();
-            blit5->shader.setFloat("N",wave_particle_resolution_fliter);
+            blit5->shader.setFloat("N", wave_particle_resolution_fliter);
             blit5->shader.setFloat("radius", radius);
             blit5->shader.setFloat("Scale", scale_Wave);
-            blit5->DrawQuad(temp6->texture.id, false);
-            blit5->Blit(*temp4);
+            blit5->DrawQuad(blit2->textureColorbuffer, false);
+           // blit5->Blit(*temp4);
             blit5->BindFrameBufferOver();
             blit6->BindFrameBufferInit();
-            glViewport(0, 0, blit6->width, blit6->height);
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            //glViewport(0, 0, blit6->width, blit6->height);
+            //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glDepthFunc(GL_LEQUAL);
             blit6->UseShader();
             glActiveTexture(GL_TEXTURE0 + 1);
             temp4->texture.nameInShader = "particle_map";
             blit6->shader.setInt(temp4->texture.nameInShader, 1);
-            glBindTexture(GL_TEXTURE_2D, temp4->texture.id);
+            glBindTexture(GL_TEXTURE_2D, blit5->textureColorbuffer);
             blit6->shader.setFloat("N", wave_particle_resolution_fliter);
             blit6->shader.setFloat("radius", radius);
             blit6->shader.setFloat("Scale", scale_Wave);
             blit6->DrawQuad(temp6->texture.id, false);
-            blit6->Blit(*temp5);
+           // blit6->Blit(*temp5);
             blit6->BindFrameBufferOver();
-            WaveParticleShader->texes_output[0].id = temp5->texture.id;
+            WaveParticleShader->texes_output[0].id = blit6->textureColorbuffer;
             // over
             // over
             //CalculateDeltaTime(); //0.93ms
             //CalcAvgDeltaTime("Wave Particle Map Produce");
-            
-        }
+
+        }//2.3ms
         else
         {
 
@@ -691,41 +718,30 @@ void WaveProcess::Process()
             WaveParticleShader->dispatch();
             WaveParticleShader->wait();
         }
-        
+
         {
 
             // CalculateDeltaTime(); //0.05ms
-  
+
 
             //将Wavemap拉伸到1024*1024
-            copy->BindFrameBufferInit();
+          /*  copy->BindFrameBufferInit();
             glViewport(0, 0, copy->width, copy->height);
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glDepthFunc(GL_LEQUAL);
             copy->DrawQuad(WaveParticleShader->texes_output[0].id, true);
             copy->Blit(*wavemap);
-            copy->BindFrameBufferOver();
-        
+            copy->BindFrameBufferOver();*/
 
-           /* blit4->BindFrameBufferInit();
-            glViewport(0, 0, blit4->width, blit4->height);
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-            glDepthFunc(GL_LEQUAL);
-            blit4->DrawQuad(waveImage1->id, true);
-            blit4->Blit(*temp3);
-            blit4->BindFrameBufferOver();
-            blit4->Draw();*/
+
+
 
 
             blit3->BindFrameBufferInit();
             glViewport(0, 0, blit3->width, blit3->height);
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             glDepthFunc(GL_LEQUAL);
             blit3->UseShader();
             glActiveTexture(GL_TEXTURE0 + 1);
@@ -735,83 +751,92 @@ void WaveProcess::Process()
             blit3->shader.setFloat("Time", Time);
             blit3->shader.setVec4("Scale_control", scale_Control_WaveParicle);
             glBindTexture(GL_TEXTURE_2D, waveImage1->id);
-            blit3->DrawQuad(wavemap->texture.id, false);
-            blit3->Blit(*temp2);
+            blit3->DrawQuad(WaveParticleShader->texes_output[0].id, false);
+            //blit3->Blit(*temp2);
             blit3->BindFrameBufferOver();
-           
+            glViewport(0, 0, blit1->width, blit1->height);
+            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
             for (int i = 0; i < displacementBlurPassNum; i++)
             {
 
-
+               if(i==0)
                 {
                     blit1->BindFrameBufferInit();
-                    glViewport(0, 0, blit1->width, blit1->height);
-                    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                    glClear(GL_COLOR_BUFFER_BIT);
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
                     glDepthFunc(GL_LEQUAL);
                     blit1->UseShader();
                     blit1->shader.setFloat("texelsize_v", 3.0f / (float)height);
-                    blit1->DrawQuad(temp2->texture.id, false);
-                    blit1->Blit(*temp1);
+                    blit1->DrawQuad(blit3->textureColorbuffer, false);
+                    //blit1->Blit(*temp1);
                     blit1->BindFrameBufferOver();
 
 
-
-
-
                 }
+               else 
+               {
+
+
+                   blit1->BindFrameBufferInit();
+
+                   glDepthFunc(GL_LEQUAL);
+                   blit1->UseShader();
+                   blit1->shader.setFloat("texelsize_v", 3.0f / (float)height);
+                   blit1->DrawQuad(blit2->textureColorbuffer, false);
+                   //blit1->Blit(*temp1);
+                   blit1->BindFrameBufferOver();
+               }
+
 
                 blit2->BindFrameBufferInit();
-                glViewport(0, 0, blit2->width, blit2->height);
-                glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+                //glViewport(0, 0, blit2->width, blit2->height);
+                //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+                //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 glDepthFunc(GL_LEQUAL);
                 blit2->UseShader();
                 blit2->shader.setFloat("texelsize_h", 3.0f / (float)width);
-                blit2->DrawQuad(temp1->texture.id, false);
-                blit2->Blit(*temp2);
+                blit2->DrawQuad(blit1->textureColorbuffer, false);
+               // blit2->Blit(*temp2);
                 blit2->BindFrameBufferOver();
 
             }
-           
-            WaveParticleShader->texes_output[0].id = temp2->texture.id;
-              //CalculateDeltaTime(); //0.7ms
-              //cout << 1000 * deltaTime <<"DisplacementCalc"<< endl;
-          
-           
+
+            WaveParticleShader->texes_output[0].id = blit2->textureColorbuffer;
+            //CalculateDeltaTime(); //0.7ms
+            //cout << 1000 * deltaTime <<"DisplacementCalc"<< endl;
+            //1.2ms
+
 
         }
-       
 
 
-        
-     
-       // CalculateDeltaTime();
+
+
+
+        // CalculateDeltaTime();
         normalShader1->texes_input[0] = WaveParticleShader->texes_output[0];
         normalShader1->use();
         normalShader1->setFloat("BubblesScale", BubblesScale);
         normalShader1->setFloat("BubblesThreshold", BubblesThreshold);
         normalShader1->setFloat("jacobScaleEdge", jacobScaleEdge);
         normalShader1->setFloat("jacobScale", jacobScale);
-        normalShader1->setFloat("resolutioninv", 2.0f * scale_Ocean / (float)width);
+        normalShader1->setFloat("resolutioninv", 2.0f*scale_Ocean / (float)width);//平滑法线
+        normalShader1->setVec2("Hmaxmin", Hmaxmin);
         normalShader1->dispatch();
         normalShader1->wait();
-       
+        //2.5ms
+        
 
-      
-          //CalculateDeltaTime(); //0.05ms
-          //CalcAvgDeltaTime("NormalCalc");
+        //CalculateDeltaTime(); //0.05ms
+        //CalcAvgDeltaTime("NormalCalc");
     }
 
-    
-    
+
+
     //CalculateDeltaTime(); 
     glViewport(0, 0, shadowwidth, shadowheight);
     depthMap->BindFrameBufferInit();
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
@@ -851,47 +876,46 @@ void WaveProcess::Process()
     //CalculateDeltaTime(); //0.57ms
     //CalcAvgDeltaTime("DepthDraw");
 
-   
-    
-    {
-       // CalculateDeltaTime();
-        //将Wavemap拉伸到1024*1024
-        copy->BindFrameBufferInit();
-        glViewport(0, 0, copy->width, copy->height);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glDepthFunc(GL_LEQUAL);
-        glDepthFunc(GL_LEQUAL);
-        ubotest->SetMatrix(projection);
-        ubotest->SetMatrix(view * camera.CaculateReflectMatrix(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0)));//* camera.CaculateReflectMatrix(glm::vec3(0,1,0),glm::vec3(0,0,0))
-        skyBoxShader->use();
 
-        skyBoxShader->setMatrix("model", modelskyBox);
-        skyBoxShader->setMatrix("projection", projection);
-        glm::mat4 viewskyBox = glm::mat4(glm::mat3(view)) * camera.CaculateReflectMatrix(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0));
-        skyBoxShader->setMatrix("view", viewskyBox);
-        cubemap->Draw(*skyBoxShader);
-        glDepthFunc(GL_LESS);
-        myshader->use();
-        myshader->setMatrix("model", model);
-        myshader->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
-        myshader->setVec3("cameraPos", camera.GetPos());
-        myshader->setMatrix("lightMat", (lightProjection * lightView));
-        for (unsigned int i = 0; i < 4; i++)
-        {
-            // calculate the model matrix for each object and pass it to shader before drawing
-            lights[i].SetLight(*myshader);
-        }
-        ourModel->Draw(*myshader,rt);
-        copy->Blit(*temp6);
-        copy->BindFrameBufferOver();
-        ubotest->ClearSizeNow();
 
-      //  CalculateDeltaTime(); //0.97ms
-        //CalcAvgDeltaTime("Reflect");
-    }//draw reflect
-    
+    //{
+    //    // CalculateDeltaTime();
+    //     //将Wavemap拉伸到1024*1024
+    //    copy->BindFrameBufferInit();
+    //    glViewport(0, 0, copy->width, copy->height);
+    //    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    //    glDepthFunc(GL_LEQUAL);
+    //    glDepthFunc(GL_LEQUAL);
+    //    ubotest->SetMatrix(projection);
+    //    ubotest->SetMatrix(view * camera.CaculateReflectMatrix(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0)));//* camera.CaculateReflectMatrix(glm::vec3(0,1,0),glm::vec3(0,0,0))
+    //    skyBoxShader->use();
+
+    //    skyBoxShader->setMatrix("model", modelskyBox);
+    //    skyBoxShader->setMatrix("projection", projection);
+    //    glm::mat4 viewskyBox = glm::mat4(glm::mat3(view)) * camera.CaculateReflectMatrix(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0));
+    //    skyBoxShader->setMatrix("view", viewskyBox);
+    //    cubemap->Draw(*skyBoxShader);
+    //    glDepthFunc(GL_LESS);
+    //    myshader->use();
+    //    myshader->setMatrix("model", model);
+    //    myshader->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
+    //    myshader->setVec3("cameraPos", camera.GetPos());
+    //    myshader->setMatrix("lightMat", (lightProjection * lightView));
+    //    for (unsigned int i = 0; i < 4; i++)
+    //    {
+    //        // calculate the model matrix for each object and pass it to shader before drawing
+    //        lights[i].SetLight(*myshader);
+    //    }
+    //    ourModel->Draw(*myshader, rt);
+    //   // copy->Blit(*temp6);
+    //    copy->BindFrameBufferOver();
+    //    ubotest->ClearSizeNow();
+
+    //    //  CalculateDeltaTime(); //0.97ms
+    //      //CalcAvgDeltaTime("Reflect");
+    //}//draw reflect
+
 
     //CalculateDeltaTime();
     glViewport(0, 0, width, height);
@@ -899,7 +923,6 @@ void WaveProcess::Process()
 
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
@@ -938,25 +961,25 @@ void WaveProcess::Process()
      lightshader->setMatrix("model", model);
      ourModel->Draw(lightshader);
      glStencilMask(0xFF);*/
-   // ourModel->Draw(*myshader, rt);
+     // ourModel->Draw(*myshader, rt);
 
-       // glm::mat4 model1 = glm::mat4(1.0f);
-       // model1 = glm::translate(model1, glm::vec3(0, 0, 1));
-       // model1 = glm::scale(model1, glm::vec3(0.2f));
+         // glm::mat4 model1 = glm::mat4(1.0f);
+         // model1 = glm::translate(model1, glm::vec3(0, 0, 1));
+         // model1 = glm::scale(model1, glm::vec3(0.2f));
 
-       // InstanceShader.use();
-       // InstanceShader.setMatrix("model", model1);
-       // InstanceShader.setMatrix("view", camera.GetView());
-       // InstanceShader.setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
-       // InstanceShader.setVec3("cameraPos", camera.GetPos());
-       // InstanceShader.setMatrix("projection", projection);
-       // for (unsigned int i = 0; i < 4; i++)
-       // {
-       //     // calculate the model matrix for each object and pass it to shader before drawing
-       //     lights[i].SetLight(InstanceShader);
-       // }
-       // for(int i=0;i<1;i++)
-       //ourModel1.Draw(InstanceShader);
+         // InstanceShader.use();
+         // InstanceShader.setMatrix("model", model1);
+         // InstanceShader.setMatrix("view", camera.GetView());
+         // InstanceShader.setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
+         // InstanceShader.setVec3("cameraPos", camera.GetPos());
+         // InstanceShader.setMatrix("projection", projection);
+         // for (unsigned int i = 0; i < 4; i++)
+         // {
+         //     // calculate the model matrix for each object and pass it to shader before drawing
+         //     lights[i].SetLight(InstanceShader);
+         // }
+         // for(int i=0;i<1;i++)
+         //ourModel1.Draw(InstanceShader);
 
     FloorShader->use();
     for (unsigned int i = 0; i < 4; i++)
@@ -981,8 +1004,9 @@ void WaveProcess::Process()
         rt[2] = (normalShader1->texes_output[0]);
         normalShader1->texes_output[1].nameInShader = "_bubbleMap";
         rt[3] = (normalShader1->texes_output[1]);
-        waveImage1->nameInShader = "_waveMap";
-        rt[4] = *(waveImage1);
+        temp6->texture.nameInShader = "_reflectionMap";
+        rt[4] = (temp6->texture);
+        rt[4].id = copy->textureColorbuffer;
         normalShader1->texes_output[2].nameInShader = "_tangentMap";
         rt[5] = normalShader1->texes_output[2];
         normalShader1->texes_output[3].nameInShader = "_biotangentMap";
@@ -992,7 +1016,7 @@ void WaveProcess::Process()
         normalShader1->texes_output[4].nameInShader = "_bubbleDiffuseMask";
         rt[8] = normalShader1->texes_output[4];
     }
-    else 
+    else
     {
         DisplacementShader->texes_output[3].nameInShader = "_displacementMap";
         rt[1] = DisplacementShader->texes_output[3];
@@ -1010,7 +1034,7 @@ void WaveProcess::Process()
         rt[7] = *bubbleDiffuse;
         normalShader->texes_output[4].nameInShader = "_bubbleDiffuseMask";
         rt[8] = normalShader->texes_output[4];
-        
+
 
     }
 
@@ -1025,18 +1049,18 @@ void WaveProcess::Process()
     posteffect->BindFrameBufferOver();
 
     posteffect->Draw();
- 
-  //  CalculateDeltaTime(); //1.06ms
-  //  CalcAvgDeltaTime("Draw Final");
 
-    //posteffect->DebugDraw(normalShader->texes_output[3].id);
-  ///posteffect->DebugDraw(normalShader->texes_output[4].id);
-    //posteffect->DebugDraw(DisplacementShader->texes_output[3].id);
-    //posteffect->DebugDraw(WaveParticleShader->texes_output[0].id);
-    // glViewport(0, 0, width, height);
-     //posteffect->DebugDraw(WaveParticleShader->texes_output[0].initid);
-    //CalculateDeltaTime();
-    //CalcAvgDeltaTime("All Draw");//5.11ms
+    //  CalculateDeltaTime(); //1.06ms
+    //  CalcAvgDeltaTime("Draw Final");
+
+      //posteffect->DebugDraw(normalShader->texes_output[3].id);
+    ///posteffect->DebugDraw(normalShader->texes_output[4].id);
+      //posteffect->DebugDraw(DisplacementShader->texes_output[3].id);
+      //posteffect->DebugDraw(WaveParticleShader->texes_output[0].id);
+      // glViewport(0, 0, width, height);
+       //posteffect->DebugDraw(WaveParticleShader->texes_output[0].initid);
+      //CalculateDeltaTime();
+      //CalcAvgDeltaTime("All Draw");//5.11ms
     if (showwindow)
     {
         lightshader->use();
@@ -1061,7 +1085,7 @@ void WaveProcess::Process()
         ImGui::SliderFloat4("WindSeed", (float*)&(windspeed), 0.0f, 50.0f);
         ImGui::SliderFloat("WaveScale", (float*)&(scale_Wave), 0.0f, 4.0f);
         ImGui::SliderFloat4("Scale_control_WaveParticle", (float*)&(scale_Control_WaveParicle), 0.0f, 2.0f);
-        ImGui::SliderFloat("Scale_subsurface", (float*)&(scale_subsurface), 0.0f, 1.0f);
+        ImGui::SliderFloat("Scale_subsurface", (float*)&(scale_subsurface), 0.0f, 2.0f);
         ImGui::SliderFloat("Glossness", (float*)&(glossiness), 0.0f, 1.0f);
         ImGui::SliderFloat("Metallic", (float*)&(metallic), 0.0f, 1.0f);
         ImGui::SliderInt("BlurPassParticleNum", &particleBlurPassNum, 0, 10);
@@ -1069,6 +1093,7 @@ void WaveProcess::Process()
         ImGui::SliderInt("Maxy", &maxY, 0, 50);
         ImGui::SliderInt("powPower", &powPower, 0, 8);
         ImGui::Checkbox("BSpineBox", &ChangeBSpine);
+        ImGui::SliderFloat2("Hmaxmin", (float*)&(Hmaxmin), 0.0, 4.0);
         for (unsigned int i = 0; i < 4; i++)
         {
             // calculate the model matrix for each object and pass it to shader before drawing
@@ -1194,6 +1219,6 @@ WaveProcess::~WaveProcess()
     delete depthMap;
     delete pool;
     delete bubbleDiffuse;
-   // delete bubbleNormal;
-    
+    // delete bubbleNormal;
+
 }

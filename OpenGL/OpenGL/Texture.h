@@ -15,6 +15,7 @@ public:
 	GLenum readformat;
 	GLenum datatype;
 	std::string path;
+	GLenum filterType;
 	 enum TextureType
 	{
 		Diffuse,

@@ -13,7 +13,7 @@
 #include "FBO.h"
 #include"Mymath.h"
 #include"Wave_Particle_Pool.h"
-#include "B_Spine.h"
+#include "B_Spline.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -37,7 +37,7 @@ public:
 	float BubblesScale = 1.0f;
 	float jacobScale = 100.0f;
 	float Input_N = 64;
-	float B_Spine_count = 1024;
+	float B_Spline_count = 1024;
 	float scale_Wave = 0.3f;//0.2f
 	float scale_Ocean = 10.0f;
 	float scale_subsurface = 1.0f;
@@ -45,17 +45,18 @@ public:
     float metallic = 0.987f;
     float jacobScaleEdge = 2.0f;
     float lastFrame;
+    glm::vec2 Hmaxmin = glm::vec2(1.0, 0.5);
 	//glm::vec4 scale_Control_WaveParicle = glm::vec4(1.8f, 1.0f, 0.0, 0.71f);
-    glm::vec4 scale_Control_WaveParicle = glm::vec4(1.0f, 0.612f, 0.0, 0.71f);
+    glm::vec4 scale_Control_WaveParicle = glm::vec4(2.0f, 0.306f, 0.0, 0.71f);
 	//glm::vec4 scale_Control_WaveParicle = glm::vec4(0.0f, 1.0f, 0.0, 0.0f);
 	int wave_particle_resolution = 64;
-	int wave_particle_resolution_fliter =1024;
-	float radius = 100*(wave_particle_resolution_fliter/1024.0f );
+	int wave_particle_resolution_fliter =256;
+	float radius = 100*(wave_particle_resolution_fliter/1024.0f )*0.8;
     bool enableWaveParticle = true;
     bool enableWaveParticle_hvfliter = true;
     bool ChangeBSpine = false;
-    int particleBlurPassNum = 0;//粒子去锯齿 原来都是3
-    int displacementBlurPassNum = 0;//Displacement 去锯齿 原来都是3
+    int particleBlurPassNum = 2;//粒子去锯齿 原来都是3
+    int displacementBlurPassNum = 1;//Displacement 去锯齿 原来都是3
     int maxY = 19;
     int powPower = 1;
     Shader* myshader = nullptr;
@@ -121,7 +122,7 @@ public:
     //vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(11,0),glm::vec2(17,8),glm::vec2(24,18),glm::vec2(26,19),glm::vec2(26.2,0),glm::vec2(30,0) });
     vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,0),glm::vec2(11,3),glm::vec2(17,8),glm::vec2(24,18),glm::vec2(26,19),glm::vec2(26.2,0),glm::vec2(50,0) });
     //  vector<glm::vec2> control = vector<glm::vec2>({ glm::vec2(0,5),glm::vec2(11,7),glm::vec2(17,8),glm::vec2(24,18),glm::vec2(26,19),glm::vec2(26.2,0),glm::vec2(30,0) });
-    B_Spine b_spine = B_Spine(B_Spine_count, 4, control, vector<double>(0));
+    
 
 
     TextureImage *particleImage = nullptr;
@@ -162,8 +163,9 @@ public:
     int shadowheight = 2 * height;
     FBO *depthMap = nullptr;
     Wave_Particle_Pool* pool;
-    int particle_num = 3000;
+    int particle_num = 2000;
     std::vector<Texture> rt = std::vector<Texture>(10);
+    bool initGaussian = false;
     ~WaveProcess();
        
       

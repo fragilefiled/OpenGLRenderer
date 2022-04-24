@@ -50,7 +50,9 @@ float sqr(float x){
 	return x*x; 
 }
 float pow5(float x){
-return x*x*x*x*x;
+  float a=x*x;
+  
+return a*a*x;
 }
 float GGXNormalDistribution(float roughness, float NdotH)
 {
@@ -108,16 +110,16 @@ void main(){
         float roughness = 1- (_Glossiness * _Glossiness);   // 1 - smoothness*smoothness
         roughness = roughness * roughness;
 
-        vec2 lightuv=(modelPos/modelPos.w).xy*0.5+0.5;
-        float depthz=(modelPos/modelPos.w).z*0.5+0.5;
-        float bias = max(0.05 , 0.005);
+        // vec2 lightuv=(modelPos/modelPos.w).xy*0.5+0.5;
+        // float depthz=(modelPos/modelPos.w).z*0.5+0.5;
+        // float bias = max(0.05 , 0.005);
         
-        float shadow=depthz-0.002<texture(_depthTexture,lightuv).r?1.0:0.0;
-        if(depthz>1.0)
-        shadow=1.0;
+        // float shadow=depthz-0.002<texture(_depthTexture,lightuv).r?1.0:0.0;
+        // if(depthz>1.0)
+        // shadow=1.0;
       
         
-        FragColor=vec4(shadow,0,0,0);
+       // FragColor=vec4(shadow,0,0,0);
         vec4 ambient=vec4(0.1,0.1,0.1,0.1)*0.5;
         vec4 normal= model_inverse_t*vec4(((texture(_normalMap,fs_in.texCoord).xyz*2.0-vec3(1.0,1.0,1.0))),0.0);
         vec3 real_normal=normalize(normal.xyz);
@@ -128,13 +130,14 @@ void main(){
         // bubbleNormal=vec3(dot(bubbleNormal,t0),dot(bubbleNormal,t1),dot(bubbleNormal,t2));
         vec3 viewDir=normalize(cameraPos-fs_in.worldPos);
         // float facing = max((dot(viewDir, real_normal)),0.0);    
-        vec4 _OceanColorDeep=pow(vec4(0,132,255,0.0)/255.0*0.5,vec4(2.2));//vec4(0.0738,0.1869,0.2673,0.0);
+       // vec4 _OceanColorDeep=pow(vec4(0,132,255,0.0)/255.0*0.5,vec4(2.2));//vec4(0.0738,0.1869,0.2673,0.0);
         vec4 _OceanColorShallow=vec4(32,178,170,0.0)/255.0;
-        vec4 _OceanColorReal=pow(vec4(11,45,100,0.0)/255.0*2.55,vec4(2.2));        
+       // vec4 _OceanColorReal=pow(vec4(11,45,100,0.0)/255.0*2.55,vec4(2.2));   
+        vec4 _OceanColorReal=vec4(0.0077,0.172,1,0.0);     
          //vec4 oceanColor = mix(_OceanColorShallow, _OceanColorDeep, facing);
          // oceanColor=_OceanColorDeep;
-        vec4 diffuse=max(-dot(real_normal,normalize(dirLight.lightDir)),0.01)*_OceanColorDeep;//pow(vec4(78,119,140,0)/255.0,2.2);
-       vec4 spec=pow(max(dot((-dirLight.lightDir+normalize(cameraPos-fs_in.worldPos))/2,real_normal),0.0),100)*vec4(0.5,0.5,0.5,0);
+       // vec4 diffuse=max(-dot(real_normal,normalize(dirLight.lightDir)),0.01)*_OceanColorDeep;//pow(vec4(78,119,140,0)/255.0,2.2);
+      // vec4 spec=pow(max(dot((-dirLight.lightDir+normalize(cameraPos-fs_in.worldPos))/2,real_normal),0.0),100)*vec4(0.5,0.5,0.5,0);
         //FragColor=vec4(pow(dot((-dirLight.lightDir+normalize(cameraPos-fs_in.worldPos))/2,real_normal),1000));
        // FragColor=spec+diffuse+ambient;
         float bubble=texture(_bubbleDiffuseMap,fs_in.texCoord).x;
@@ -151,13 +154,14 @@ void main(){
         // if(_bubbleMapPower>0.5)
         // bubblecolor=texture(_bubbleMap,fs_in.texCoord)*vec4(bubble)*bubblecolor+bubblecolor;
         vec4 reflectionMap=texture(_reflectionMap,((aPos_uv+1.0)/2.0).xy);
-       float facing = pow(max((dot(viewDir, -dirLight.lightDir)),0.0),5);
-        vec4 sss=(vec4(0.3,0.3,0.3,0.3)+vec4(0.2,0.2,0.2,0.2)*facing)*_OceanColorShallow;
+       float facing = pow5(max((dot(viewDir, -dirLight.lightDir)),0.0));
+        vec4 sss=(vec4(0.3,0.3,0.3,0.3)+vec4(0.3,0.3,0.3,0.3)*facing)*_OceanColorShallow;
         sss*=(1.0-abs(viewDir.y)*abs(viewDir.y))*texture(_displacementMap,fs_in.texCoord).y*10;
        vec3 dir=normalize(dirLight.lightDir);
-       float Fresnel=0.5+(1-0.5)*pow(1-dot(viewDir,real_normal),5);
+      // float Fresnel=0.5+(1-0.5)*pow5(1-dot(viewDir,real_normal));
 
       vec3 reflectdir=reflect(-viewDir,real_normal);
+  //    reflectdir=normalize(reflectdir+normalize(fs_in.worldPos));
         vec4 reflectcol=texture(skybox,reflectdir );
       
       FragColor=sss*Scale_subsurface+bubblecolor+FragColor+reflectcol*0.1;
@@ -187,7 +191,7 @@ void main(){
     //   vec4 bubblediffusecolor=bubblerealColor*bubblecolor*max(dot(bubbleNormal,-dirLight.lightDir),0.0);
     //  vec4  bubblespeccolor=bubblecolor*pow(max(dot((-dirLight.lightDir+normalize(cameraPos-fs_in.worldPos))/2,bubbleNormal),0.0),10.0);
 
-      FragColor=((vec4(brdf)*(vec4(0.5)+reflectcol))+sss*Scale_subsurface+bubblecolor+diffuse_ds+ambient+reflectcol*0.1);
+      FragColor=((vec4(brdf)*(vec4(0.5)+reflectcol*0.1))+sss*Scale_subsurface+bubblecolor+diffuse_ds+ambient+reflectcol*0.1);
      //FragColor=texture(_bubbleMap,fs_in.texCoord);
     // FragColor=vec4(texture(_bubbleDiffuseMask,fs_in.texCoord).x);
       //FragColor=texture(_bubbleDiffuseMap,fs_in.texCoord);

@@ -198,8 +198,8 @@ void PostEffect::DrawQuad(unsigned int test_RT,bool use_shader) {
     // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
     glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
     // clear all relevant buffers
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+    //glClear(GL_COLOR_BUFFER_BIT);
     glBindVertexArray(quadVAO);
     glBindTexture(GL_TEXTURE_2D, test_RT);
     glDrawArrays(GL_TRIANGLES, 0, 6);
