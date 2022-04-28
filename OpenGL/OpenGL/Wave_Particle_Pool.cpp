@@ -74,7 +74,8 @@ void Wave_Particle_Pool::SinglePointUpdate(int a,int b)
 				particles[i].pos.y = 0;
 			}
 		}
-		else {
+		else 
+		{
 
 			if (particles[i].pos.x >= bound - 2 * particles[i].radius) {
 				particles[i].wave_speed.x *= -1;
@@ -82,6 +83,7 @@ void Wave_Particle_Pool::SinglePointUpdate(int a,int b)
 			}
 			if (particles[i].pos.x <= 2 * particles[i].radius) {
 				particles[i].wave_speed.x *= -1;
+				particles[i].wave_speed.x = abs(particles[i].wave_speed.x);
 				particles[i].pos.x = 2 * particles[i].radius;
 			}
 			if (particles[i].pos.y >= bound - 2 * particles[i].radius) {
@@ -90,6 +92,7 @@ void Wave_Particle_Pool::SinglePointUpdate(int a,int b)
 			}
 			if (particles[i].pos.y <= 2 * particles[i].radius) {
 				particles[i].wave_speed.y *= -1;
+				particles[i].wave_speed.y = abs(particles[i].wave_speed.y);
 				particles[i].pos.y = 2 * particles[i].radius;
 			}
 		}

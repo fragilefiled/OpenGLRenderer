@@ -184,7 +184,8 @@ void main(){
        //FragColor=sss*Scale_subsurface+bubblecolor+diffuse+spec+ambient+reflectcol*0.1;
        float FD90=0.5+2*sqr(LdotH)*roughness;
        //float FD90=0.5+2*sqr(VdotH)*roughness;
-      vec4 diffuse_ds=_OceanColorReal/PI*(1+(FD90-1)*pow5(1-NdotL))*(1+(FD90-1)*pow5(1-NdotV));
+       float Fresneldiffuse=(1+(FD90-1)*pow5(1-NdotL))*(1+(FD90-1)*pow5(1-NdotV));
+      vec4 diffuse_ds=_OceanColorReal/PI*Fresneldiffuse;
     
     //   float bubblethrelod=clamp(0,1,bubblecolor.x);
     //   vec4 bubblerealColor=mix(texture(_bubbleDiffuseMap,fs_in.texCoord)*0.01,vec4(1.0),bubblethrelod);

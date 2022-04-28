@@ -77,7 +77,10 @@ void Mesh::Draw(Shader& shader,vector<Texture>&textures_RT, CubeMap* cubemap, ve
 		glBindImageTexture(i, voxel_RT[i].id, 0, GL_FALSE, 0, GL_READ_WRITE, voxel_RT[i].format);
 
 	}
-	
+	if (normalIndex > 0)
+		shader.setBool("enableNormalMap", true);
+	else
+		shader.setBool("enableNormalMap", false);
 	// draw mesh
 	glBindVertexArray(VAO);
 	if(!drawinstance)

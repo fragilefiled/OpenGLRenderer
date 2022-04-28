@@ -93,6 +93,8 @@ std::vector<glm::vec2> B_Spline::produce_height_array()
 		//y_array[i]= (y_array[i] - min_x) / (max_x - min_x)-(float)i/4.0/(height_array.size()-1);
 		y_array[i + 1] = (y_array[i + 1] - min_y) / (max_y - min_y) / (max_x - min_x);
 		y_array[i] = (y_array[i] - min_x) / (max_x - min_x) / (max_y - min_y) - (float)i / 4.0 / (height_array.size() - 1) / (max_y - min_y);
+		//we need x offset so it should minus i / 4.0 / (height_array.size() - 1) / (max_y - min_y); (xy_array[i] - min_x) / (max_x - min_x) /(max_x-min_x) is in [0,1] 
+		//so  the seoncd terms only devided (max_y - min_y)
 		/*if (y_array[i + 1] == 0.0)
 			y_array[i] = 0.0;*/
 		

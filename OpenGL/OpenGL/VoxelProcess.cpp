@@ -32,7 +32,8 @@ void VoxelProcess::Init()
    // ourModel = new Model(".//Model//Suzanne//Suzanne.obj");
 //ourModel = new Model(".//Model//Cornell-Box//ProRender.obj");
 //   ourModel = new Model(".//Model//Cornell-Box//cornell_box.obj");
- ourModel= new Model(".//Model//sponza//sponza.obj");
+ //ourModel= new Model(".//Model//sponza//sponza.obj");
+     ourModel = new Model(".//Model//crytek-sponza-noflag//sponza.obj");
     voxelModel = new VoxelModel(voxel_resolution * voxel_resolution * voxel_resolution);
     //delete roomModel;
     //Model sponzaModel(".//Model//sponza//sponza.obj");
@@ -246,8 +247,9 @@ void VoxelProcess::Process()
    model = glm::translate(model, glm::vec3(ScaleUse.x, -ScaleUse.y, ScaleUse.z));
   ;
    // model = glm::scale(model, glm::vec3(0.8f));
-  float tempScale = 0.008f;
-  //tempScale = 0.04f;
+  float tempScale = 0.006f;
+ //tempScale = 0.04f;
+  //tempScale = 0.8f;
     model = glm::scale(model, glm::vec3(tempScale));
    // model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
    // model = glm::scale(model, glm::vec3(4.0f));
@@ -290,6 +292,7 @@ void VoxelProcess::Process()
         Gemetory_Pass->setMatrix("mvp", projection*view*model);
         Gemetory_Pass->setVec3("baseColor", glm::vec3(0.5, 0.5, 0.5));
         Gemetory_Pass->setVec3("cameraPos", camera.GetPos());
+        Gemetory_Pass->setVec3("limit", limit);
         Gemetory_Pass->setMatrix("lightMat", (lightProjection * lightView));
         Gemetory_Pass->setMatrix("model_inverse_t", (model_inverse_t));
         for (unsigned int i = 0; i < 4; i++)
@@ -647,7 +650,9 @@ void VoxelProcess::Process()
             lightPass->shader.setFloat("stepLength", stepLength);
             lightPass->shader.setFloat("Aperture", aperture);
             lightPass->shader.setFloat("occ_falloff", occ_falloff);
+            lightPass->shader.setFloat("specCone", specCone);
             lightPass->shader.setBool("enableAmbientOcc", EnableAmbientOcc);
+            lightPass->shader.setBool("showAmbientOcc", showAmbientOcc);
             lightPass->DrawQuad(0, false);
             blit1->Blit(*temp1);
             blit1->BindFrameBufferOver();
@@ -800,11 +805,13 @@ void VoxelProcess::Process()
         ImGui::SliderFloat("directLight", &directLight, 0.0, 5.0);
         ImGui::Checkbox("InjectFirstBounce", &InjectFirstBounce);
         ImGui::Checkbox("EnableAmbientOcc", &EnableAmbientOcc);
+        ImGui::Checkbox("ShowAmbientOcc", &showAmbientOcc);
         ImGui::Checkbox("EnableVoxelization", &EnableVoxelization);
         ImGui::SliderFloat("deferDirLight", &deferDirLight,0.0,2.0);
         ImGui::SliderFloat("deferInDirLight", &deferInDirLight, 0.0, 10.0);
         ImGui::SliderFloat("maxdistance", &maxdistance, 0.0, 10.0);
         ImGui::SliderFloat("stepLength", &stepLength, 0.1, 2.0);
+        ImGui::SliderFloat("specCone", &specCone, 0.0, 1.0);
        
         for (unsigned int i = 0; i < 4; i++)
         {

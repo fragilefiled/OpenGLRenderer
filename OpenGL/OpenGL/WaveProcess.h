@@ -47,13 +47,14 @@ public:
     float lastFrame;
     glm::vec2 Hmaxmin = glm::vec2(1.0, 0.5);
 	//glm::vec4 scale_Control_WaveParicle = glm::vec4(1.8f, 1.0f, 0.0, 0.71f);
-    glm::vec4 scale_Control_WaveParicle = glm::vec4(2.0f, 0.306f, 0.0, 0.71f);
+    glm::vec4 scale_Control_WaveParicle = glm::vec4(2.0f, 0.648f, 0.0, 0.71f);
 	//glm::vec4 scale_Control_WaveParicle = glm::vec4(0.0f, 1.0f, 0.0, 0.0f);
 	int wave_particle_resolution = 64;
 	int wave_particle_resolution_fliter =256;
 	float radius = 100*(wave_particle_resolution_fliter/1024.0f )*0.8;
-    bool enableWaveParticle = true;
+    bool enableWaveParticle =true;
     bool enableWaveParticle_hvfliter = true;
+    bool enableGPUParticles = false;
     bool ChangeBSpine = false;
     int particleBlurPassNum = 2;//粒子去锯齿 原来都是3
     int displacementBlurPassNum = 1;//Displacement 去锯齿 原来都是3
@@ -98,6 +99,7 @@ public:
     ComputeShader* GaussianBlur_h1 = nullptr;
     ComputeShader* GaussianBlur_v1 = nullptr;
     ComputeShader* normalShader1 = nullptr;
+    ComputeShader* UpdateParticles = nullptr;
     PostEffect* blit6 = nullptr;
     PostEffect* blit5 = nullptr;
     PostEffect* blit4 = nullptr;
@@ -166,9 +168,10 @@ public:
     int particle_num = 2000;
     std::vector<Texture> rt = std::vector<Texture>(10);
     bool initGaussian = false;
+    bool initPool = false;
     ~WaveProcess();
-       
-      
+    void GPUUpdateParticles();
+    void CPUUpdateParticles();
     
 private:
     

@@ -36,7 +36,7 @@ vec2 uv_now=vec2(uv.x*3.0-Time*0.5,uv.y*3.0-Time*0.5);
 // float omega=2*PI/3.0;
 // float x_gerstner=uv_now.x-k/0.5*A*sin(k*uv_now.x-omega*Time);
 // float y_gerstner=A*cos(k_control*uv_now.x-omega*Time);
-vec2 dir=normalize(vec2(1.0,0.0));
+vec2 dir=normalize(vec2(0.5,0.5));
 float wave_length=1.0;
 float k=2*PI/wave_length;
 float f=k*(dot(uv_now,dir)+0.04*Time);
@@ -46,12 +46,13 @@ float A=steepness/k;
 float x_gerstner=dir.x*0.1*cos(f+0.5*PI);
 float y_gerstner=0.1*sin(f+0.5*PI);
 float z_gerstner=dir.y*0.1*cos(f+0.5*PI);
-float t=fract( uv.x*2.0-0.4*Time)/wave_length;
+float t=fract( uv.x*3.0-0.4*Time)/wave_length;
 int pownum=int(1.0*fract(uv.x));
 
-x_gerstner=0.5*cos(2*PI*pow(t,1.0+1.0*fract(uv.x)));//powuse(t,pownum)
- //z_gerstner=0.5*cos(2*PI*powuse(t,powPower));
- y_gerstner=0.5*sin(2*PI*pow(t,1.0+1.0*fract(uv.x)));//pow 可以预计算的
+// x_gerstner=0.5*cos(2*PI*pow(t,1.0+1.0*fract(uv.x)));//powuse(t,pownum)
+// z_gerstner=0.0;
+//  //z_gerstner=0.5*0.8*cos(2*PI*pow(t,1.0+1.0*fract(uv.x)));
+//  y_gerstner=0.5*sin(2*PI*pow(t,1.0+1.0*fract(uv.x)))*0.5+0.25;//pow 可以预计算的
 
 // else{
 //  x_gerstner=0.4*sin(2*PI*powuse(t,powPower+1));
@@ -62,7 +63,7 @@ x_gerstner=0.5*cos(2*PI*pow(t,1.0+1.0*fract(uv.x)));//powuse(t,pownum)
 vec2 uv_use=fract(-uv_now);
 
 
-
+//
 vec4 B_spine=((texture(waveMap, -vec2(uv_use.x,uv.x*0.5+0.25))))*20*Scale_control.x*(1.0-uv.x)*cos((uv.y-0.5)*PI);//uv.x*0.5+0.25 uv出了点问题
 FragColor=B_spine+(texture(screen_RT,uv))*Scale_control.y+vec4(x_gerstner,y_gerstner,z_gerstner,0.0)*Scale_control.z;
 //+texture(screen_RT,0.5uv)挺有意思的想法

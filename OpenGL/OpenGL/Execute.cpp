@@ -295,8 +295,8 @@ int main(int, char**)
  //   std::vector<Texture> rt = std::vector<Texture>(7);
     WaveProcess* process = new WaveProcess(camera);
     process->Init();
-       //VoxelProcess* process = new VoxelProcess(camera);
-       //process->Init();
+    /*   VoxelProcess* process = new VoxelProcess(camera);
+       process->Init();*/
     //int coutFrame = 0;
     
        auto  vendor = glGetString(GL_VENDOR);

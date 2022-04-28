@@ -52,6 +52,7 @@ public:
     bool InjectFirstBounce = false;
     bool EnableAmbientOcc = false;
     bool EnableVoxelization = true;
+    bool showAmbientOcc = false;
     Shader* deferVoxelConeTracing = nullptr;
     Shader* Gemetory_Pass = nullptr;
     Shader* depthVoxelShader = nullptr;
@@ -141,6 +142,7 @@ public:
     float directLight = 1.0;
     float deferDirLight = 1.0;
     float deferInDirLight = 1.0;
+    float specCone = 1.0;
     FBO* depthMap = nullptr;
     FBO* depthMapDefer = nullptr;
     Wave_Particle_Pool* pool;

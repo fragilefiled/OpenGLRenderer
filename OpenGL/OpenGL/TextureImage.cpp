@@ -29,10 +29,10 @@ void TextureImage::Swap(TextureImage& t)
 	this->Copy(temp);
 
 }
-std::vector<float> TextureImage::getData()
+std::vector<float> TextureImage::getData(bool enableupdate)
 {
 	
-	if (data.size()==0) {
+	if (data.size()==0||enableupdate) {
 		data = std::vector<float>(width * height * 4);
 		glBindTexture(GL_TEXTURE_2D, this->id);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, data.data());

@@ -17,7 +17,7 @@ public:
 	std::vector<float>data;
 	void Copy(const TextureImage& t);
 	void Swap(TextureImage& t);
-	std::vector<float> getData();
+	std::vector<float> getData(bool enableupdate=false);
 	void setData(std::vector<float> colorarray);
 	 unsigned int Bind();
 	int rw;

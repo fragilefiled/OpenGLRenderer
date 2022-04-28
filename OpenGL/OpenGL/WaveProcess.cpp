@@ -21,7 +21,7 @@ void WaveProcess::Init()
     InstanceShader = new Shader(".//Shader//InstanceShader.vs", ".//Shader//LightingCubeShader.fs");
     FloorShader = new Shader(".//Shader//floorShader.vs", ".//Shader//floorShader.fs");
     //  Shader OceanShader = Shader(".//Shader//oceanShader.vs", ".//Shader//oceanShader.fs");
-    roomModel = new Model(".//Model//floor//floor3.obj");
+    roomModel = new Model(".//Model//floor//floor6.obj");//和floor3效果差不多
     ourModel = new Model(".//Model//nanosuit//nanosuit.obj");
 
     //delete roomModel;
@@ -55,6 +55,7 @@ void WaveProcess::Init()
     GaussianBlur_h1 = new ComputeShader(".//Shader//GaussianBlur_h.comp", glm::vec3(width, height, 1.0), glm::vec2(width, height), 1, 1);
     GaussianBlur_v1 = new ComputeShader(".//Shader//GaussianBlur_v.comp", glm::vec3(width, height, 1.0), glm::vec2(width, height), 1, 1);
     normalShader1 = new ComputeShader(".//Shader//normalCalc.comp", glm::vec3(width / 8.0, height / 8.0, 1.0), glm::vec2(width, height), 5, 1);
+    UpdateParticles = new ComputeShader(".//Shader//UpdateParticles.comp", glm::vec3(Input_N / 8.0, Input_N / 8.0, 1.0), glm::vec2(Input_N, Input_N), 0, 2);
     blit6 = new PostEffect(*WaveParticleShader_v, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     blit5 = new PostEffect(*WaveParticleShader_h, wave_particle_resolution_fliter, wave_particle_resolution_fliter, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     blit4 = new PostEffect(*screenShader, B_Spline_count, B_Spline_count, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
@@ -547,67 +548,15 @@ void WaveProcess::Process()
     }
     else
     {
-
-        //CalculateDeltaTime();
-        pool->ExPand();
-
-        //vector<float> all(Input_N * Input_N * 4, 0);
-       // vector<float> all3(wave_particle_resolution * wave_particle_resolution * 6, 0);
-        //vector<float> all1(Input_N * Input_N * 4, 0);
-        int particlesize = pool->nowUse;
-        vector<float> all(Input_N * Input_N * 4, 0);
-        vector<float> all3(particlesize * 6, 0);
-        vector<float> all1(Input_N * Input_N * 4, 0);
-        vector<int> indexArray = pool->indexArray_out;//输入的indexArray
-
-        omp_set_num_threads(4);
-#pragma omp parallel
-#pragma omp for
-        for (int j = 0; j < particlesize; j++)
+        if (enableGPUParticles) 
         {
-            int i = j;
-            glm::vec2 pos = pool->particles[i].pos;
-            float a0 = pool->particles[i].amplitude;
-            float r = pool->particles[i].radius;
-            glm::vec2 dir = glm::normalize(pool->particles[i].wave_speed);
-
-            if (!enableWaveParticle_hvfliter)
-            {
-                all[j * 4 + 0] = pos.x;
-                all[j * 4 + 1] = pos.y;
-                all[j * 4 + 2] = a0;
-                all[j * 4 + 3] = r;
-                all1[j * 4 + 0] = dir.x;
-                all1[j * 4 + 1] = dir.y;
-                all1[j * 4 + 2] = 0;
-                all1[j * 4 + 3] = 0;
-            }
-            if (enableWaveParticle_hvfliter)
-            {
-                all3[j * 4 + 0] = (float)pos.x / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
-                all3[j * 4 + 1] = (float)pos.y / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
-                all3[j * 4 + 2] = a0;
-                all3[j * 4 + 3] = r;
-                all3[j * 4 + 4] = dir.x;
-                all3[j * 4 + 5] = dir.y;
-            }
+            GPUUpdateParticles();
         }
+        else {
 
-
-        if (!enableWaveParticle_hvfliter)
-        {
-            WaveParticleShader->texes_input[0] = *particleImage;
-            WaveParticleShader->texes_input[0].setData(all);
-            WaveParticleShader->texes_input[1] = *particleImage1;
-            WaveParticleShader->texes_input[1].setData(all1);
+            CPUUpdateParticles();
         }
-
-
-        if (enableWaveParticle_hvfliter)
-            pool->UpdatePoints(all3);
-        //3ms
-
-
+        
 
 
         if (enableWaveParticle_hvfliter)
@@ -1186,6 +1135,7 @@ WaveProcess::~WaveProcess()
     delete GaussianBlur_h1;
     delete GaussianBlur_v1;
     delete normalShader1;
+    delete UpdateParticles;
     delete blit6;
     delete blit5;
     delete blit4;
@@ -1221,4 +1171,184 @@ WaveProcess::~WaveProcess()
     delete bubbleDiffuse;
     // delete bubbleNormal;
 
+}
+
+void WaveProcess::GPUUpdateParticles()
+{
+    //CalculateDeltaTime();
+    if (initPool == false) {
+        pool->ExPand();
+    }
+    int particlesize = pool->nowUse;
+    vector<float> all(Input_N * Input_N * 4, 0);
+    vector<float> all3(particlesize * 6, 0);
+    vector<float> all1(Input_N * Input_N * 4, 0);
+    vector<int> indexArray = pool->indexArray_out;//输入的indexArray
+    if (initPool == false)
+    {
+        omp_set_num_threads(4);
+#pragma omp parallel
+#pragma omp for
+        for (int j = 0; j < particlesize; j++)
+        {
+            int i = j;
+            glm::vec2 pos = pool->particles[i].pos;
+            float a0 = pool->particles[i].amplitude;
+            float r = pool->particles[i].radius;
+            glm::vec2 dir = (pool->particles[i].wave_speed);
+
+            if (!enableWaveParticle_hvfliter || enableGPUParticles)
+            {
+                all[j * 4 + 0] = pos.x;
+                all[j * 4 + 1] = pos.y;
+                all[j * 4 + 2] = a0;
+                all[j * 4 + 3] = r;
+                all1[j * 4 + 0] = dir.x;
+                all1[j * 4 + 1] = dir.y;
+                all1[j * 4 + 2] = 0;
+                all1[j * 4 + 3] = 0;
+            }
+            if (enableWaveParticle_hvfliter)
+            {
+                all3[j * 4 + 0] = (float)pos.x / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
+                all3[j * 4 + 1] = (float)pos.y / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
+                all3[j * 4 + 2] = a0;
+                all3[j * 4 + 3] = r;
+                all3[j * 4 + 4] = dir.x;
+                all3[j * 4 + 5] = dir.y;
+            }
+        }
+
+
+        if (!enableWaveParticle_hvfliter)
+        {
+            WaveParticleShader->texes_input[0] = *particleImage;
+            WaveParticleShader->texes_input[0].setData(all);
+            WaveParticleShader->texes_input[1] = *particleImage1;
+            WaveParticleShader->texes_input[1].setData(all1);
+            UpdateParticles->texes_input[0] = *particleImage;
+            UpdateParticles->texes_input[1] = *particleImage1;
+        }
+
+
+        if (enableWaveParticle_hvfliter) {
+            pool->UpdatePoints(all3);
+            particleImage->setData(all);
+            particleImage1->setData(all1);
+            UpdateParticles->texes_input[0] = *particleImage;
+            UpdateParticles->texes_input[1] = *particleImage1;
+        }
+        //3ms
+        initPool = true;
+    }
+    else
+    {
+        //  all = particleImage->getData();
+        UpdateParticles->use();
+        if (enableWaveParticle_hvfliter) {
+            UpdateParticles->setFloat("N", wave_particle_resolution_fliter);
+            UpdateParticles->setFloat("bound_radius", 5.0f);
+        }
+        else 
+        {
+            UpdateParticles->setFloat("N", wave_particle_resolution);
+            UpdateParticles->setFloat("bound_radius", 0);
+        }
+        
+        UpdateParticles->dispatch();
+        UpdateParticles->wait();
+
+        all = particleImage->getData(true);
+        all1 = particleImage1->getData(true);
+        if (enableWaveParticle_hvfliter) 
+        {
+            omp_set_num_threads(4);
+#pragma omp parallel
+#pragma omp for
+            for (int j = 0; j < particlesize; j++)
+            {
+                int i = j;
+                glm::vec2 pos = glm::vec2(all[i * 4 + 0], all[i * 4 + 1]);
+                float a0 = all[i * 4 + 2];
+                float r = all[i * 4 + 3];
+                glm::vec2 dir = glm::vec2(all1[i * 4 + 0], all1[i * 4 + 1]);
+                if (enableWaveParticle_hvfliter)
+                {
+                    all3[j * 4 + 0] = (float)pos.x / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
+                    all3[j * 4 + 1] = (float)pos.y / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
+                    all3[j * 4 + 2] = a0;
+                    all3[j * 4 + 3] = r;
+                    all3[j * 4 + 4] = dir.x;
+                    all3[j * 4 + 5] = dir.y;
+                }
+            }
+
+            pool->UpdatePoints(all3);
+        }
+
+    }
+}
+
+void WaveProcess::CPUUpdateParticles()
+{
+
+
+    //CalculateDeltaTime();
+    pool->ExPand();
+
+    //vector<float> all(Input_N * Input_N * 4, 0);
+   // vector<float> all3(wave_particle_resolution * wave_particle_resolution * 6, 0);
+    //vector<float> all1(Input_N * Input_N * 4, 0);
+    int particlesize = pool->nowUse;
+    vector<float> all(Input_N * Input_N * 4, 0);
+    vector<float> all3(particlesize * 6, 0);
+    vector<float> all1(Input_N * Input_N * 4, 0);
+    vector<int> indexArray = pool->indexArray_out;//输入的indexArray
+
+    omp_set_num_threads(4);
+#pragma omp parallel
+#pragma omp for
+    for (int j = 0; j < particlesize; j++)
+    {
+        int i = j;
+        glm::vec2 pos = pool->particles[i].pos;
+        float a0 = pool->particles[i].amplitude;
+        float r = pool->particles[i].radius;
+        glm::vec2 dir = glm::normalize(pool->particles[i].wave_speed);
+
+        if (!enableWaveParticle_hvfliter)
+        {
+            all[j * 4 + 0] = pos.x;
+            all[j * 4 + 1] = pos.y;
+            all[j * 4 + 2] = a0;
+            all[j * 4 + 3] = r;
+            all1[j * 4 + 0] = dir.x;
+            all1[j * 4 + 1] = dir.y;
+            all1[j * 4 + 2] = 0;
+            all1[j * 4 + 3] = 0;
+        }
+        if (enableWaveParticle_hvfliter)
+        {
+            all3[j * 4 + 0] = (float)pos.x / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
+            all3[j * 4 + 1] = (float)pos.y / (float)wave_particle_resolution_fliter * 2.0 - 1.0;
+            all3[j * 4 + 2] = a0;
+            all3[j * 4 + 3] = r;
+            all3[j * 4 + 4] = dir.x;
+            all3[j * 4 + 5] = dir.y;
+        }
+    }
+
+
+    if (!enableWaveParticle_hvfliter)
+    {
+        WaveParticleShader->texes_input[0] = *particleImage;
+        WaveParticleShader->texes_input[0].setData(all);
+        WaveParticleShader->texes_input[1] = *particleImage1;
+        WaveParticleShader->texes_input[1].setData(all1);
+    }
+
+
+    if (enableWaveParticle_hvfliter)
+        pool->UpdatePoints(all3);
+    //3ms
 }

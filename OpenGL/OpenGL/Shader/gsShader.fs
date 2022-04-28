@@ -67,8 +67,6 @@ void imageAtomicRGBA8Avg(layout(r32ui) volatile coherent uimage3D grid, ivec3 co
 
         ++numIterations;
     }
-    // if(numIterations==255)
-    // imageStore(grid,coords,ivec4(255,255,255,255));
 }
 
 void imageAtomicRGBA8Avg_normal(layout(r32ui) volatile coherent uimage3D grid, ivec3 coords, vec4 value)
