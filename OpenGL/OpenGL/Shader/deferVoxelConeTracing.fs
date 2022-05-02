@@ -9,6 +9,7 @@ uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 uniform sampler3D voxelMap_radiance;
 uniform sampler3D voxelMap_normal;
+uniform sampler2D noiseMap;
 struct DirLight
 {
     vec3 lightDir;
@@ -56,6 +57,7 @@ uniform float occ_falloff;
 uniform bool enableAmbientOcc;
 uniform bool showAmbientOcc;
 uniform float specCone;
+uniform float Time;
 const vec3 diffuseConeDirections[] =
 {
     vec3(0.0f, 1.0f, 0.0f),
@@ -188,11 +190,11 @@ vec4 ConeTracing(vec3 pos,vec3 dir,vec3 worldPos,vec3 normal,float aperture,bool
     +textureLod(voxelMipMap[y_select],samplePosVoxel,mipmaplevel)*weight.y
     +textureLod(voxelMipMap[z_select],samplePosVoxel,mipmaplevel)*weight.z;
     
-      if(mipmaplevel < 1.0f)
-    {
-        vec4 baseColor = texture(voxelMap_radiance, samplePosVoxel);
-        sampleColor = mix(baseColor, sampleColor, clamp(mipmaplevel, 0.0f, 1.0f));
-    }
+    //   if(mipmaplevel < 1.0f)
+    // {
+    //     vec4 baseColor = texture(voxelMap_radiance, samplePosVoxel);
+    //     sampleColor = mix(baseColor, sampleColor, clamp(mipmaplevel, 0.0f, 1.0f));
+    // }
     if(enabelAO)
     occlusion=occlusion+(1-occlusion)*sampleColor.a/(1+diameter*falloff);
     
@@ -236,16 +238,18 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal,vec4 albedo)
     vec3 dir=normalize(reflect(viewDir,normal));
     vec4 result=vec4(0.0);
      vec3 origin=worldToVoxel(pos);
+     if(albedo.a>0.0){
      float aperture = clamp(tan(HALF_PI * (1.0f - albedo.a)), 0.0174533f, PI);
-    result+=specCone*ConeTracing(origin/float(voxelResolutionI),dir,pos,normal,aperture,false);
-    
+    result+=ConeTracing(origin/float(voxelResolutionI),dir,pos+specCone*vec3(texture(noiseMap,uv+vec2(Time)).x),normal,aperture,false);
+     }
+    //cost  a lot
 
    
   
     if(abs(dot(updir,normal))==1)
       updir=vec3(0,0,1);
-      vec3 z_axis=normalize(cross(updir,normal));
-     vec3 x_axis=normalize(cross(z_axis,normal));
+      vec3 x_axis=normalize(cross(updir,normal));
+     vec3 z_axis=normalize(cross(x_axis,normal));
 
       // vec3 x_axis=normalize(updir - dot(normal,updir) * normal);
       // vec3 z_axis=cross(x_axis,normal);

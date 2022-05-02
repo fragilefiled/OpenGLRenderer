@@ -118,9 +118,9 @@ void main()
     // pos_project_over[1].z=-(trianglePlane.x*pos_project_expand[1].x+trianglePlane.y*pos_project_expand[1].y+trianglePlane.w)/trianglePlane.z;
     // pos_project_over[2].z=-(trianglePlane.x*pos_project_expand[2].x+trianglePlane.y*pos_project_expand[2].y+trianglePlane.w)/trianglePlane.z;
     
-    // // pos_project_over[0].z=pos_project[0].z;
-    // // pos_project_over[1].z=pos_project[1].z;
-    // // pos_project_over[2].z=pos_project[2].z;
+    // pos_project_over[0].z=pos_project[0].z;
+    // pos_project_over[1].z=pos_project[1].z;
+    // pos_project_over[2].z=pos_project[2].z;
     // pos_project_over[0].xy=pos_project_expand[0].xy;
     // pos_project_over[1].xy=pos_project_expand[1].xy;
     // pos_project_over[2].xy=pos_project_expand[2].xy;

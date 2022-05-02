@@ -125,8 +125,8 @@ void main()
     vec3 initnormal=normal;
     normal=normal*2.0-vec3(1.0);
     normal=normalize(normal);
-    vec4 shadowworldPos=voxelPosToWorldPos(vec3(id)+normal*0.5);
-    vec4 worldPos=voxelPosToWorldPos(vec3(id));
+    vec4 shadowworldPos=voxelPosToWorldPos(vec3(id)+normal*0.5+vec3(0.5));//需要偏移半个单位
+    vec4 worldPos=voxelPosToWorldPos(vec3(id)+vec3(0.5));
     
     float shadow=shadowCalc(shadowworldPos,normal);
     vec4 dirlightColor=CalcDirLight(worldPos,normal,albedo,shadow);

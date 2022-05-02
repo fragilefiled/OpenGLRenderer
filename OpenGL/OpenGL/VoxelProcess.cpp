@@ -30,7 +30,7 @@ void VoxelProcess::Init()
    //ourModel = new Model(".//Model//planet//planet.obj");
     //ourModel = new Model(".//Model//planet//planet.obj");
    // ourModel = new Model(".//Model//Suzanne//Suzanne.obj");
-//ourModel = new Model(".//Model//Cornell-Box//ProRender.obj");
+//ourModel = new Model(".//Model//Cornell-Box//ProRender1.obj");//prorender 模型有点问题捏
 //   ourModel = new Model(".//Model//Cornell-Box//cornell_box.obj");
  //ourModel= new Model(".//Model//sponza//sponza.obj");
      ourModel = new Model(".//Model//crytek-sponza-noflag//sponza.obj");
@@ -75,6 +75,7 @@ void VoxelProcess::Init()
     voxel_normal = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
     voxel_radiance = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, 2);
     voxel_static_mark = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_R8UI, GL_RED, GL_UNSIGNED_BYTE);
+    noiseMap= new Texture("./Model/noise/noise.jpg");
     shadowwidth = 2 * width;
     shadowheight = 2 * height;
     depthMap = new  FBO(shadowwidth, shadowheight, "_depthTexture", FBO::Depth);
@@ -131,6 +132,7 @@ void VoxelProcess::Init()
     voxel_radiance->Bind();
     voxel_diffuse->Bind();
     voxel_normal->Bind();
+    noiseMap->Bind();
 
     gBuffer->setupFBO();
     lightPass->BindQuad();
@@ -247,8 +249,8 @@ void VoxelProcess::Process()
    model = glm::translate(model, glm::vec3(ScaleUse.x, -ScaleUse.y, ScaleUse.z));
   ;
    // model = glm::scale(model, glm::vec3(0.8f));
-  float tempScale = 0.006f;
- //tempScale = 0.04f;
+  float tempScale = 0.009f;
+// tempScale = 0.04f;
   //tempScale = 0.8f;
     model = glm::scale(model, glm::vec3(tempScale));
    // model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -257,7 +259,7 @@ void VoxelProcess::Process()
     model_inverse_t = glm::transpose(glm::inverse(model));
     
     modelVoxel = glm::scale(modelVoxel, glm::vec3(Xscale));
-    modelVoxel = glm::translate(modelVoxel, glm::vec3(-(voxel_resolution-1) * 0.5, -(voxel_resolution - 1) * 0.5, -(voxel_resolution - 1) * 0.5));
+    modelVoxel = glm::translate(modelVoxel, glm::vec3(-(voxel_resolution) * 0.5, -(voxel_resolution ) * 0.5, -(voxel_resolution ) * 0.5));
 
   /*  CalculateDeltaTime();*/
     camera.GenerateFrustum(projection*view);
@@ -637,6 +639,11 @@ void VoxelProcess::Process()
             lightPass->shader.setInt(voxel_normal->nameInShader, 13);
             glBindTexture(GL_TEXTURE_3D, voxel_normal->id);
 
+            glActiveTexture(GL_TEXTURE0 + 14);
+            noiseMap->nameInShader = "noiseMap";
+            lightPass->shader.setInt(noiseMap->nameInShader, 14);
+            glBindTexture(GL_TEXTURE_2D, noiseMap->id);
+
             lightPass->shader.setMatrix("lightMat", (lightProjection * lightView));
             lightPass->shader.setInt("voxelResolutionI", voxel_resolution);
             lightPass->shader.setFloat("voxelWidthWorld", voxel_width_world);
@@ -653,6 +660,7 @@ void VoxelProcess::Process()
             lightPass->shader.setFloat("specCone", specCone);
             lightPass->shader.setBool("enableAmbientOcc", EnableAmbientOcc);
             lightPass->shader.setBool("showAmbientOcc", showAmbientOcc);
+            lightPass->shader.setFloat("Time", Time);
             lightPass->DrawQuad(0, false);
             blit1->Blit(*temp1);
             blit1->BindFrameBufferOver();
@@ -962,6 +970,7 @@ VoxelProcess::~VoxelProcess()
     delete voxel_normal;
     delete voxel_radiance;
     delete voxel_static_mark;
+    delete noiseMap;
     delete lightPass;
     delete AddInDirLight;
     for (int i = 0; i < 6; i++) {

@@ -38,7 +38,7 @@ public:
     glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
     //glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
    // glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
-    glm::vec3 ScaleUse = glm::vec3(11.0f, 11.0f, 11.0f);
+    glm::vec3 ScaleUse = glm::vec3(11, 11, 11);//(11,11,11)
     float maxdistance=0.5f;
     float stepLength = 0.5;
     float aperture = 1.0f;
@@ -125,16 +125,17 @@ public:
     Texture3D* voxel_radiance = nullptr;
     Texture3D* voxel_static_mark = nullptr;
     Texture3D* voxel_anisotropicmipmap[6];;
+    Texture* noiseMap = nullptr;
     bool showwindow;
     UBO* ubotest = nullptr;
 
     vector<Shader> shaders;
 
-    int shadowwidth = width;
-    int shadowheight =  height;
+    int shadowwidth = width*1.0;
+    int shadowheight =  height * 1.0;
     int voxel_resolution = 256;
-    int voxel_width_world = 24;
-    float RasterScale = 1.3f;
+    int voxel_width_world = 32;
+    float RasterScale = 2.0f;
     float Xscale = voxel_width_world/(float)voxel_resolution;
     int normalBlend = 0;
     int voxelnormalBlend = 0;
