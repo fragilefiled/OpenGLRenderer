@@ -32,7 +32,7 @@ Camera camera = Camera(pos, frontDir, upDir);
 glm::mat4 view;
 glm::vec4 windspeed = glm::vec4(11.0f, 23.0f, 28.0f, 0.0f);
 glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
-float cameraSpeed = 15.0f;
+float cameraSpeed = 2.0f;
 float deltaTime = 0.0f; // 当前帧与上一帧的时间差
 float lastFrame = 0.0f; // 上一帧的时间
 float deltaTimeOptimazation = 0.0f; // 当前帧与上一帧的时间差

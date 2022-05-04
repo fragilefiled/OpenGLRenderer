@@ -12,9 +12,11 @@ public:
 	void BindFrameBufferInit();
 	~Gbuffer();
 	int width,height;
-	GLuint  gDepth,gPosition, gNormal, gAlbedoSpec;
+	GLuint  gDepth,gPosition, gNormal, gAlbedoSpec,gVelocity,gTangent;
 	GLuint rboDepth,gBuffer;;
 	Texture gBufferTex[4];
+	Texture gBufferVelocity;
+	Texture gBufferTangent;
 private:
 
 };

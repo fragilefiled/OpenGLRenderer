@@ -10,6 +10,8 @@ uniform sampler2D gAlbedoSpec;
 uniform sampler3D voxelMap_radiance;
 uniform sampler3D voxelMap_normal;
 uniform sampler2D noiseMap;
+uniform sampler2D noiseMap1;
+uniform sampler2D gTangent;
 struct DirLight
 {
     vec3 lightDir;
@@ -238,13 +240,27 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal,vec4 albedo)
     vec3 dir=normalize(reflect(viewDir,normal));
     vec4 result=vec4(0.0);
      vec3 origin=worldToVoxel(pos);
-     if(albedo.a>0.0){
+     if(albedo.a>0.0)
+     {
      float aperture = clamp(tan(HALF_PI * (1.0f - albedo.a)), 0.0174533f, PI);
-    result+=ConeTracing(origin/float(voxelResolutionI),dir,pos+specCone*vec3(texture(noiseMap,uv+vec2(Time)).x),normal,aperture,false);
+     float noise=texture(noiseMap,uv+10.0*vec2(Time)).x;
+     float angle=texture(noiseMap1,uv+10.5*vec2(Time)).x;
+   //  vec3  real_noise=vec3(noise*0.5,sqrt(0.75-noise),sqrt(1.0-0.25*noise*noise));
+     vec3  real_noise=vec3(noise*cos(2*PI*angle),sqrt(1-noise*noise),noise*sin(2*PI*angle));
+    // real_noise=vec3(real_noise)*2.0-vec3(1.0);
+     vec3 tangent=normalize(texture(gTangent,uv)).xyz;
+     vec3 biotangent=normalize(cross(tangent,normal));
+     vec3 randomDir=real_noise.x*tangent*0.5+real_noise.y*normal+real_noise.z*biotangent*0.5;
+     if(occ_falloff>850||(abs(tangent.x)<=1e-6&&abs(tangent.y)<=1e-6&&abs(tangent.z)<=1e-6))
+     randomDir=vec3(real_noise);
+    //  else
+    //  randomDir=(real_noise.x*2.0-1.0)*tangent+real_noise.y*normal+(real_noise.z*2.0-1.0)*biotangent;
+    result+=1.0*ConeTracing(origin/float(voxelResolutionI),dir,pos+specCone*randomDir,normal,aperture,false);
      }
     //cost  a lot
+    // if(albedo.a>0.99f)
+    // return vec4(result.rgb*vec3(0.8),1.0);
 
-   
   
     if(abs(dot(updir,normal))==1)
       updir=vec3(0,0,1);
@@ -262,10 +278,12 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal,vec4 albedo)
 
 
       }
+
       if(enableAmbientOcc)
     return vec4((result*albedo).rgb,clamp(1.0f - result.a , 0.0f, 1.0f) );
     else
       return vec4((result*albedo).rgb,1.0f );
+    
 }
 vec4 brdf(vec3 pos,vec3 normal,vec4 albedo)
 {

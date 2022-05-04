@@ -34,6 +34,20 @@ void Gbuffer::setupFBO()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+    // Velocity TAA
+    glGenTextures(1, &gVelocity);
+    glBindTexture(GL_TEXTURE_2D, gVelocity);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, width, height, 0, GL_RG, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, gVelocity, 0);
+    // Tangent
+    glGenTextures(1, &gTangent);
+    glBindTexture(GL_TEXTURE_2D, gTangent);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, gTangent, 0);
     ////Depth
     glGenTextures(1, &gDepth);
     glBindTexture(GL_TEXTURE_2D, gDepth);
@@ -55,9 +69,13 @@ void Gbuffer::setupFBO()
     Texture::allTextures.push_back(gNormal);
     Texture::allTextures.push_back(gAlbedoSpec);
     Texture::allTextures.push_back(gDepth);
+    gBufferVelocity= Texture(Texture::Other, "gVelocity", gVelocity, width, height, 1);
+    Texture::allTextures.push_back(gVelocity);
+    gBufferTangent = Texture(Texture::Other, "gTangent", gTangent, width, height, 1);
+    Texture::allTextures.push_back(gTangent);
 
-    GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-    glDrawBuffers(3, attachments);
+    GLuint attachments[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2,GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4 };
+    glDrawBuffers(5, attachments);
     // - Create and attach depth buffer (renderbuffer)
    //将gDepthTexture 作为深度缓冲
     /*glGenRenderbuffers(1, &rboDepth);

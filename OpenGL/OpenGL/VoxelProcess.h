@@ -30,7 +30,7 @@ public:
     void Init();
     void Process();
     void GenerateMipmap();
-    
+
    // float deltaTime = 0.0f; // 当前帧与上一帧的时间差
     float lastFrame = 0.0f;
     glm::mat4 view;
@@ -38,7 +38,7 @@ public:
     glm::vec3 limit = glm::vec3(0.2f, 0.4f, 1.0f);
     //glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
    // glm::vec3 ScaleUse = glm::vec3(8.0f, 8.0f, 7.0f);
-    glm::vec3 ScaleUse = glm::vec3(11, 11, 11);//(11,11,11)
+    glm::vec3 ScaleUse = glm::vec3(0, 0, 0);//(11,11,11)
     float maxdistance=0.5f;
     float stepLength = 0.5;
     float aperture = 1.0f;
@@ -53,12 +53,15 @@ public:
     bool EnableAmbientOcc = false;
     bool EnableVoxelization = true;
     bool showAmbientOcc = false;
+    bool EnableReflectObject = false;
+    bool EnableTAA = false;
     Shader* deferVoxelConeTracing = nullptr;
     Shader* Gemetory_Pass = nullptr;
     Shader* depthVoxelShader = nullptr;
     Shader* myshader = nullptr;
     Shader* voxelShaderRender = nullptr;
     Shader* drawVoxel = nullptr;
+    Shader* TaaShader = nullptr;
     Shader* myshader_gs = nullptr;
     // Shader lightshader = Shader(".//Shader//MyVertexShader.vs", ".//Shader//LightShader.fs", ".//Shader//LightShader.gs");
     Shader* lightshader = nullptr;
@@ -91,6 +94,7 @@ public:
     PostEffect* rasterization = nullptr;
     PostEffect* lightPass = nullptr;
     PostEffect* AddInDirLight = nullptr;
+    PostEffect* TaaPass = nullptr;
     FBO* temp1 = nullptr;
     FBO* temp2 = nullptr;
     FBO* voxelRT = nullptr;
@@ -102,7 +106,10 @@ public:
 
 
     glm::mat4 trans = glm::mat4(1.0f);
-
+    glm::mat4 preProjection = glm::mat4(1.0f);
+    glm::mat4 preView= glm::mat4(1.0f);
+    glm::mat4 preModel = glm::mat4(1.0f);
+    glm::mat4 preModel1 = glm::mat4(1.0f);
     glm::vec3 lightPos;
     glm::vec3 lightPos1;
     glm::vec3 lightDir;;
@@ -126,6 +133,7 @@ public:
     Texture3D* voxel_static_mark = nullptr;
     Texture3D* voxel_anisotropicmipmap[6];;
     Texture* noiseMap = nullptr;
+    Texture* noiseMap1 = nullptr;
     bool showwindow;
     UBO* ubotest = nullptr;
 
@@ -143,7 +151,8 @@ public:
     float directLight = 1.0;
     float deferDirLight = 1.0;
     float deferInDirLight = 1.0;
-    float specCone = 1.0;
+    float specCone = 0.5;
+    float TAAVarianceClipGamma = 2.5f;
     FBO* depthMap = nullptr;
     FBO* depthMapDefer = nullptr;
     Wave_Particle_Pool* pool;
@@ -155,6 +164,17 @@ public:
    // std::vector<float> data;
     glm::vec3  voxelWorldMinPoint;
     glm::vec3  voxelWorldMaxPoint;
+    const glm::vec2 Halton_2_3[8] =
+    {
+        glm::vec2(0.0f, -1.0f / 3.0f),
+       glm::vec2(-1.0f / 2.0f, 1.0f / 3.0f),
+       glm::vec2(1.0f / 2.0f, -7.0f / 9.0f),
+       glm::vec2(-3.0f / 4.0f, -1.0f / 9.0f),
+        glm::vec2(1.0f / 4.0f, 5.0f / 9.0f),
+       glm::vec2(-1.0f / 4.0f, -5.0f / 9.0f),
+       glm::vec2(3.0f / 4.0f, 1.0f / 9.0f),
+        glm::vec2(-7.0f / 8.0f, 7.0f / 9.0f)
+    };
     void CalculateDeltaTime();
     ~VoxelProcess();
 
