@@ -62,6 +62,7 @@ public:
     Shader* voxelShaderRender = nullptr;
     Shader* drawVoxel = nullptr;
     Shader* TaaShader = nullptr;
+    Shader* Bloom = nullptr;
     Shader* myshader_gs = nullptr;
     // Shader lightshader = Shader(".//Shader//MyVertexShader.vs", ".//Shader//LightShader.fs", ".//Shader//LightShader.gs");
     Shader* lightshader = nullptr;
@@ -95,6 +96,7 @@ public:
     PostEffect* lightPass = nullptr;
     PostEffect* AddInDirLight = nullptr;
     PostEffect* TaaPass = nullptr;
+    PostEffect* BloomPass = nullptr;
     FBO* temp1 = nullptr;
     FBO* temp2 = nullptr;
     FBO* voxelRT = nullptr;

@@ -14,6 +14,7 @@ void VoxelProcess::Init()
     showwindow = true;
     gBuffer = new Gbuffer(width, height);
     TaaShader= new Shader(".//Shader//PostEffect.vs", ".//Shader//TAA.fs");
+    Bloom=new Shader(".//Shader//PostEffect.vs", ".//Shader//Bloom.fs");
     drawVoxel = new Shader(".//Shader//DrawVoxel.vs", ".//Shader//DrawVoxel.fs", ".//Shader//DrawVoxel.gs");
     voxelShaderRender = new Shader(".//Shader//MyVertexShader.vs", ".//Shader//VoxelModelRender.fs");
     myshader = new Shader(".//Shader//MyVertexShader.vs", ".//Shader//LightingCubeShader.fs");
@@ -70,6 +71,7 @@ void VoxelProcess::Init()
     lightPass = new PostEffect(*deferVoxelConeTracing, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     AddInDirLight = new PostEffect(*AddShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     TaaPass= new PostEffect(*TaaShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    BloomPass = new PostEffect(*TaaShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     //voxel_diffuse = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution,true,GL_RGBA32F,GL_RGBA,GL_FLOAT);
     //voxel_normal = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     //voxel_radiance = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA32F, GL_RGBA, GL_FLOAT,2);
@@ -148,11 +150,13 @@ void VoxelProcess::Init()
     rasterization->BindQuad();
     AddInDirLight->BindQuad();
     TaaPass->BindQuad();
+    BloomPass->BindQuad();
     cubemap->Bind();
 
 
 
     // framebuffer configuration
+    BloomPass->SetFrameBuffer();
     TaaPass->SetFrameBuffer();
     AddInDirLight->SetFrameBuffer();
     lightPass->SetFrameBuffer();
@@ -271,7 +275,7 @@ void VoxelProcess::Process()
     model1_inverse_t = glm::transpose(glm::inverse(model1));
 
     modelVoxel = glm::scale(modelVoxel, glm::vec3(Xscale));
-    modelVoxel = glm::translate(modelVoxel, glm::vec3(-(voxel_resolution) * 0.5, -(voxel_resolution) * 0.5, -(voxel_resolution) * 0.5));
+    modelVoxel = glm::translate(modelVoxel, glm::vec3(-(voxel_resolution+1) * 0.5, -(voxel_resolution+1) * 0.5, -(voxel_resolution+1) * 0.5));
 
     /*  CalculateDeltaTime();*/
     camera.GenerateFrustum(projection * view);
@@ -1012,6 +1016,7 @@ VoxelProcess::~VoxelProcess()
     delete deferVoxelConeTracing;
     delete Gemetory_Pass;
     delete TaaShader;
+    delete Bloom;
     delete drawVoxel;
     delete myshader;
     delete voxelShaderRender;
@@ -1066,6 +1071,7 @@ VoxelProcess::~VoxelProcess()
     delete noiseMap1;
     delete lightPass;
     delete AddInDirLight;
+    delete BloomPass;
     delete TaaPass;
     for (int i = 0; i < 6; i++) {
         delete voxel_anisotropicmipmap[i];
