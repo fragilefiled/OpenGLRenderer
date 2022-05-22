@@ -66,7 +66,11 @@ void imageAtomicRGBA8Avg(layout(r32ui) volatile coherent uimage3D grid, ivec3 co
         newVal = convVec4ToRGBA8(curValF);
 
         ++numIterations;
-    }
+    } 
+    // curStoredVal=imageLoad(grid,coords)   
+    // if (prevStoredVal == val in grid) 
+    // { newVal store into the grid ;shut down the loop}
+    // else discard it contiune Loop
 }
 
 void imageAtomicRGBA8Avg_normal(layout(r32ui) volatile coherent uimage3D grid, ivec3 coords, vec4 value)

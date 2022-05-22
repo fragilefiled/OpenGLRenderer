@@ -248,7 +248,7 @@ vec4 CalcIndirectLighting(vec3 pos,vec3 normal,vec4 albedo)
      vec3 biotangent=normalize(cross(tangent,normal));
      vec3 randomDir=real_noise.x*tangent*0.5+real_noise.y*normal*1.0+real_noise.z*biotangent*0.5;
       if(occ_falloff>850||(abs(tangent.x)<=1e-6&&abs(tangent.y)<=1e-6&&abs(tangent.z)<=1e-6))
-      randomDir=vec3(real_noise);
+      randomDir=vec3(real_noise)*1.0;
 
      vec3 origin=worldToVoxel(pos);
      if(albedo.a>0.0)

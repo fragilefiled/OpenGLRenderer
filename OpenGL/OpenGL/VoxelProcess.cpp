@@ -59,10 +59,10 @@ void VoxelProcess::Init()
     MipmapProduceSecond = new ComputeShader(".//Shader//MipmapProduceSecond.comp", glm::vec3(voxel_resolution / 32.0f, voxel_resolution / 32.0f, voxel_resolution / 32.0f), glm::vec2(0, 0), 0, 0, 12, false, true, std::vector<int>(12, 0));
     VoxelConeTracing = new ComputeShader(".//Shader//ConeTracing.comp", glm::vec3(voxel_resolution / 8.0f, voxel_resolution / 8.0f, voxel_resolution / 8.0f), glm::vec2(0, 0), 0, 0, 9);
 
-    blit2 = new PostEffect(*BilateralFilterShader_h, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-    blit1 = new PostEffect(*BilateralFilterShader_v, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-    // blit2 = new PostEffect(*GaussianBlurShader_h, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-     //blit1 = new PostEffect(*GaussianBlurShader_v, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    //blit2 = new PostEffect(*BilateralFilterShader_h, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    //blit1 = new PostEffect(*BilateralFilterShader_v, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+     blit2 = new PostEffect(*GaussianBlurShader_h, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+     blit1 = new PostEffect(*GaussianBlurShader_v, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     blit = new PostEffect(*screenShader, CSwidth, CSheight, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     copy = new PostEffect(*screenShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     voxelization = new PostEffect(*screenShader, voxel_resolution, voxel_resolution, true, GL_RGBA32F, GL_RGBA, GL_FLOAT);
@@ -71,7 +71,7 @@ void VoxelProcess::Init()
     lightPass = new PostEffect(*deferVoxelConeTracing, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     AddInDirLight = new PostEffect(*AddShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     TaaPass= new PostEffect(*TaaShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
-    BloomPass = new PostEffect(*TaaShader, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
+    BloomPass = new PostEffect(*Bloom, width, height, false, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     //voxel_diffuse = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution,true,GL_RGBA32F,GL_RGBA,GL_FLOAT);
     //voxel_normal = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA32F, GL_RGBA, GL_FLOAT);
     //voxel_radiance = new Texture3D(voxel_resolution, voxel_resolution, voxel_resolution, true, GL_RGBA32F, GL_RGBA, GL_FLOAT,2);
@@ -851,8 +851,9 @@ void VoxelProcess::Process()
         cout << to_string(1000 * deltaTime) + "LightPass" << endl;*/
 
         posteffect->DebugDraw(blit1->textureColorbuffer);
-        if (EnableTAA)
+        if (EnableTAA) {
             posteffect->DebugDraw(TaaPass->textureColorbuffer);
+        }
         if (limit.x > 0.25)
             posteffect->DebugDraw(depthMapDefer->texture.id);
      
