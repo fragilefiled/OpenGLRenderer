@@ -185,14 +185,16 @@ void main(){
        float FD90=0.5+2*sqr(LdotH)*roughness;
        //float FD90=0.5+2*sqr(VdotH)*roughness;
        float Fresneldiffuse=(1+(FD90-1)*pow5(1-NdotL))*(1+(FD90-1)*pow5(1-NdotV));
-      vec4 diffuse_ds=_OceanColorReal/PI*Fresneldiffuse;
+      vec4 diffuse_ds=_OceanColorReal/PI*Fresneldiffuse;//应该要乘以NDOTL的
     
     //   float bubblethrelod=clamp(0,1,bubblecolor.x);
     //   vec4 bubblerealColor=mix(texture(_bubbleDiffuseMap,fs_in.texCoord)*0.01,vec4(1.0),bubblethrelod);
     //   vec4 bubblediffusecolor=bubblerealColor*bubblecolor*max(dot(bubbleNormal,-dirLight.lightDir),0.0);
     //  vec4  bubblespeccolor=bubblecolor*pow(max(dot((-dirLight.lightDir+normalize(cameraPos-fs_in.worldPos))/2,bubbleNormal),0.0),10.0);
 
-      FragColor=((vec4(brdf)*(vec4(0.5)+reflectcol*0.1))+sss*Scale_subsurface+bubblecolor+diffuse_ds+ambient+reflectcol*0.1);
+      FragColor=((vec4(brdf)*(vec4(1.0)+reflectcol*0.1))+sss*Scale_subsurface+bubblecolor+diffuse_ds+ambient+reflectcol*0.1);
+      //应该要乘以NDOTL的
+      
      //FragColor=texture(_bubbleMap,fs_in.texCoord);
     // FragColor=vec4(texture(_bubbleDiffuseMask,fs_in.texCoord).x);
       //FragColor=texture(_bubbleDiffuseMap,fs_in.texCoord);
