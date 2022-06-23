@@ -139,7 +139,6 @@ void Mesh::setupMesh()
 	
 	auto temp = std::vector<Vertex>(0);
 	vertices.swap(temp);
-
     glBindVertexArray(0);
 }
 bool Mesh::InFrustum(const glm::vec4 Plane[])

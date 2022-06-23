@@ -4,10 +4,11 @@ VoxelProcess::VoxelProcess(Camera& camera)
 {
     this->camera = camera;
 }
-void VoxelProcess::SetCameraAndTime(Camera& camera, float time)
+void VoxelProcess::SetCameraAndTime(Camera& camera, float time, float oneFrameTime)
 {
     this->camera = camera;
     this->Time = time;
+    this->oneFrameTime = oneFrameTime;
 }
 void VoxelProcess::Init()
 {

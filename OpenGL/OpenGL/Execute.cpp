@@ -22,6 +22,7 @@
 #include "B_Spline.h"
 #include"WaveProcess.h"
 #include"VoxelProcess.h"
+#include "AnimeProcess.h"
 
 static bool showwindow = true;
 glm::vec3 pos = glm::vec3(0.0f, 15.0f, -3.0f);
@@ -293,10 +294,12 @@ int main(int, char**)
 
 
  //   std::vector<Texture> rt = std::vector<Texture>(7);
- /*   WaveProcess* process = new WaveProcess(camera);
-    process->Init();*/
-       VoxelProcess* process = new VoxelProcess(camera);
-       process->Init();
+    WaveProcess* process = new WaveProcess(camera);
+    process->Init();
+     /*  VoxelProcess* process = new VoxelProcess(camera);
+       process->Init();*/
+      /* AnimeProcess* process = new AnimeProcess(camera);
+       process->Init();*/
     //int coutFrame = 0;
     
        auto  vendor = glGetString(GL_VENDOR);
@@ -321,7 +324,7 @@ int main(int, char**)
        // process1->SetCameraAndTime(camera, Time*1.00);
         CalculateDeltaTime();
         Time += deltaTime;
-        process->SetCameraAndTime(camera, Time*1.0);
+        process->SetCameraAndTime(camera, Time*1.0,deltaTime);
         // Start the Dear ImGui frame
         
         ImGui_ImplOpenGL3_NewFrame();

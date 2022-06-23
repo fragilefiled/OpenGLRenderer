@@ -21,7 +21,7 @@ class WaveProcess:public RenderProcess
 {
 public:
 	WaveProcess(Camera &camera);
-    void SetCameraAndTime(Camera&camera,float time);
+    void SetCameraAndTime(Camera& camera, float time, float oneFrameTime);
 	void Init();
 	void Process();
     void CalculateDeltaTime();
@@ -52,7 +52,7 @@ public:
 	int wave_particle_resolution = 64;
 	int wave_particle_resolution_fliter =256;
 	float radius = 100*(wave_particle_resolution_fliter/1024.0f )*0.8;
-    bool enableWaveParticle =true;
+    bool enableWaveParticle =false;
     bool enableWaveParticle_hvfliter = true;
     bool enableGPUParticles = false;
     bool ChangeBSpine = false;

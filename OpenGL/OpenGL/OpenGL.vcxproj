@@ -169,6 +169,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Animator.cpp" />
+    <ClCompile Include="AnimeProcess.cpp" />
+    <ClCompile Include="Bone.cpp" />
     <ClCompile Include="B_Spline.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CubeMap.cpp" />
@@ -202,6 +206,10 @@
     <ClCompile Include="Wave_Particle_Pool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="Animator.h" />
+    <ClInclude Include="AnimeProcess.h" />
+    <ClInclude Include="Bone.h" />
     <ClInclude Include="B_Spline.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeMap.h" />

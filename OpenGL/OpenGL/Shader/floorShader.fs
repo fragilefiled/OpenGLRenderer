@@ -199,6 +199,20 @@ void main(){
        // FragColor=sss*Scale_subsurface+bubblecolor+diffuse+spec+ambient+reflectcol*0.1;
       //FragColor=diffuse*5;
     // FragColor=vec4(real_normal,0.0);
-     
+    
+    // const float rho   = 0.5;
+    // const float ax    = 0.05;
+    // const float ay    = 0.05;
+    // vec3 x = cross(-dirLight.lightDir, real_normal);
+    // vec3 y = cross(x, real_normal);
+    // vec3 n=real_normal;
+    // vec3 v=normalize(cameraPos-fs_in.worldPos);
+    // vec3 h=normalize(normalize(-dirLight.lightDir)+normalize(cameraPos-fs_in.worldPos));
+    // float mult = (1.0/(4*PI)* rho / (ax * ay * sqrt(max(1e-5, dot(-dirLight.lightDir, n) * dot(v, n)))));
+    // float hdotx = dot(h, x) / ax;
+    // float hdoty = dot(h, y) / ay;
+    // float hdotn = dot(h, n);
+    // float spec = mult * exp(-((hdotx * hdotx) + (hdoty * hdoty)) / (hdotn * hdotn));
+    // FragColor=vec4(spec)*(vec4(0.4,0.5,0.0,0.0)+reflectcol*0.1)+sss*Scale_subsurface+bubblecolor+diffuse_ds+ambient+reflectcol*0.1;
     
 }

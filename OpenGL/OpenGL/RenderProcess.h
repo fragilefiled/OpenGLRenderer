@@ -12,8 +12,9 @@ public:
 	float timeFrame = 0;
 	int countFrame=0;
 	float deltaTime;
+	float oneFrameTime;
 	int frameNow = 0;
-	virtual void SetCameraAndTime(Camera& camera, float time) =0;
+	virtual void SetCameraAndTime(Camera& camera, float time,float oneFrameTime) =0;
 	virtual void CalculateDeltaTime() = 0;
 	void CalcAvgDeltaTime(std::string name,float count=60.0) {
 

@@ -114,6 +114,54 @@ void Model::CreateMesh()
 
 }
 
+void Model::GetBoneWeightForVertices(vector<Mesh::Vertex>& vertices, aiMesh* mesh)
+{
+    if (!mesh->HasBones())
+        return;
+    for (int boneIndex = 0; boneIndex < mesh->mNumBones; boneIndex++) 
+    {
+        auto bone = mesh->mBones[boneIndex];
+        string bonename = bone->mName.C_Str();
+        int boneID = -1;
+        if (m_BoneInfoMap.find(bonename) == m_BoneInfoMap.end()) 
+        {
+            BoneInfo boneinfo;
+            boneinfo.id = m_BoneCounter;
+            boneID = m_BoneCounter;
+            m_BoneCounter++;
+            boneinfo.offset = aiMatrix4x4ToGlm(&bone->mOffsetMatrix); 
+            m_BoneInfoMap[bonename] = boneinfo;
+            
+        }
+        else
+        {
+            boneID = m_BoneInfoMap[bonename].id;
+
+        }
+        auto weights = bone->mWeights;
+        int numWeights = bone->mNumWeights;
+        for (int weightIndex = 0; weightIndex < numWeights; weightIndex++) 
+        {
+            float weight = weights[weightIndex].mWeight;
+            auto vertexid = weights[weightIndex].mVertexId;
+         /*   vertices[vertexid].m_Weights[weightIndex] = weight;
+            vertices[vertexid].m_BoneIDs[weightIndex] = boneIndex;
+            std::cout << weightIndex<<" ";*/
+            for (int i = 0; i < MAX_BONE_INFLUENCE; ++i)
+            {
+                if (vertices[vertexid].m_BoneIDs[i] < 0)
+                {
+                    vertices[vertexid].m_Weights[i] = weight;
+                    vertices[vertexid].m_BoneIDs[i] = boneID;
+                    break;
+                }
+            }
+        }
+
+    }
+
+}
+
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
    
@@ -150,8 +198,14 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         vertex.Normal = glm::vec3(normal_assimp.x, normal_assimp.y, normal_assimp.z);
         vertex.Tangent = glm::vec3(tangent_assimp.x, tangent_assimp.y, tangent_assimp.z);
         vertex.BioTangent = glm::vec3(biotangent_assimp.x, biotangent_assimp.y, biotangent_assimp.z);
+        for (int i = 0; i < MAX_BONE_INFLUENCE; i++) {
+            vertex.m_Weights[i] = 0;
+            vertex.m_BoneIDs[i] = -1;
+        }
         vertices.push_back(vertex);
+        
     }
+    
     for (int i = 0; i < mesh->mNumFaces; i++) 
     {
         aiFace face = mesh->mFaces[i];
@@ -173,7 +227,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
             aiTextureType_HEIGHT, Texture::Normal);
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
     }
-   
+    GetBoneWeightForVertices(vertices, mesh);
     return Mesh(vertices,indices,textures,drawinstance,modelMatrices,instanceAmount);
     
 }

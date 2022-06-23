@@ -3,10 +3,11 @@ WaveProcess::WaveProcess(Camera& camera)
 {
     this->camera = camera;
 }
-void WaveProcess::SetCameraAndTime(Camera& camera, float time)
+void WaveProcess::SetCameraAndTime(Camera& camera, float time, float oneFrameTime)
 {
     this->camera = camera;
     this->Time = time;
+    this->oneFrameTime = oneFrameTime;
 }
 void WaveProcess::Init()
 {

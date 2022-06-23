@@ -26,7 +26,7 @@ class VoxelProcess :public RenderProcess
 {
 public:
     VoxelProcess(Camera& camera);
-    void SetCameraAndTime(Camera& camera, float time);
+    void SetCameraAndTime(Camera& camera, float time, float oneFrameTime);
     void Init();
     void Process();
     void GenerateMipmap();
